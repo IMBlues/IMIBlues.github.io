@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🏄‍♂️ SRE 冲浪记 - 4 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🏄‍♂️ SRE 冲浪记 - 4</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 7, 2023&nbsp;&nbsp;14:44:19</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><img src="/../images/%F0%9F%8F%84%E2%80%8D%E2%99%82%EF%B8%8F%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%204/2031686046139_.pic.jpg"></p>
+<p>2021年拍摄于深圳小梅沙海滨栈道</p>
+<h2 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h2><h3 id="Python-容易，Go-简单"><a href="#Python-容易，Go-简单" class="headerlink" title="Python 容易，Go 简单"></a>Python 容易，Go 简单</h3><p><a target="_blank" rel="noopener" href="https://preslav.me/2023/11/27/python-is-easy-golang-is-simple-simple-is-not-easy/">Python is Easy. Go is Simple. Simple !&#x3D; Easy.</a></p>
+<p>语法本身没太多可以讨论的，主要是文章后半段的引申，用 Python 做早期的概念验证、原型开发的成本要显著低于其他语言，在新的领域，需求不明确，量级不清晰的时候，用 Python 构建一个可行能跑的工程是最快、最轻松的，等到需求稳定、量级递增后，改用 Go 或者 Rust 重写是一个很好的选择。</p>
+<h3 id="Python-是一门编译语言"><a href="#Python-是一门编译语言" class="headerlink" title="Python 是一门编译语言"></a>Python 是一门编译语言</h3><p>作者通过 Python「有编译阶段」判断：Python 是编译语言（当然也是解释语言），它们并不是二分对立的，同时他认为“动态”和“静态”才是真正的区别。</p>
+<p><a target="_blank" rel="noopener" href="https://eddieantonio.ca/blog/2023/10/25/python-is-a-compiled-language/">Python is a Compiled Language</a></p>
+<h3 id="管道胶带程序员"><a href="#管道胶带程序员" class="headerlink" title="管道胶带程序员"></a>管道胶带程序员</h3><p>非常早的一篇文章，但是探讨了一个不过时的概念“管道胶带程序员”——能把代码问题解决，但是缺乏对细节和基本代码质量关注的程序员。</p>
+<p>与之对应的是 “建筑宇航员”，过分关注代码架构和过于洁癖，而没有实际产出软件的程序员。在我看来，这两个极端当然都不可取：<strong>对于一个长期服务的软件而言，如何在更长的时间尺度上，保证软件交付时间是程序员都需要持续练习的平衡之术。</strong></p>
+<p><img src="/../images/%F0%9F%8F%84%E2%80%8D%E2%99%82%EF%B8%8F%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%204/Untitled.png"></p>
+<p><a target="_blank" rel="noopener" href="https://www.joelonsoftware.com/2009/09/23/the-duct-tape-programmer/">The Duct Tape Programmer</a></p>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><h3 id="HTMX：-轻量级后端的-Web-网页开发方案"><a href="#HTMX：-轻量级后端的-Web-网页开发方案" class="headerlink" title="HTMX： 轻量级后端的 Web 网页开发方案"></a>HTMX： 轻量级后端的 Web 网页开发方案</h3><p>主要的目的是将一些 JavaScript 的功能封装到 HTML 标签里，很适合后端开发拿来做一些简单的小项目。</p>
+<p><a target="_blank" rel="noopener" href="https://htmx.org/">&lt;&#x2F;&gt; htmx - high power tools for html</a></p>
+<h3 id="Linux-观测实践"><a href="#Linux-观测实践" class="headerlink" title="Linux 观测实践"></a>Linux 观测实践</h3><p>系统观测是近段时间很热的领域，但实际上技术和实践早在前几年就开始逐步积累了。这篇几年前的文章很好地给“为什么要做系统观测”、“系统观测有哪些应了解的知识”、“系统观测有哪些技巧” 这几个问题做了解答，值得一读。</p>
+<p><a target="_blank" rel="noopener" href="https://tungdam.medium.com/things-you-should-know-to-begin-playing-with-linux-tracing-tools-part-i-x-225aae1aaf13">Things you should know to begin playing with Linux tracing tools ( Part I&#x2F;X )</a></p>
+<h3 id="Go-可读性代码规范"><a href="#Go-可读性代码规范" class="headerlink" title="Go 可读性代码规范"></a>Go 可读性代码规范</h3><p><a target="_blank" rel="noopener" href="https://google.github.io/styleguide/go/index">Go Style</a></p>
+<h3 id="Uber-的-Go-大仓实践"><a href="#Uber-的-Go-大仓实践" class="headerlink" title="Uber 的 Go 大仓实践"></a>Uber 的 Go 大仓实践</h3><p><a target="_blank" rel="noopener" href="https://www.uber.com/en-TW/blog/go-monorepo-bazel/?uclick_id=3e970f9b-fbd5-4b7a-b493-70f5d57e6601">传送门</a></p>
+<h3 id="一种避免指针-nil-的-Go-实践-NilAway"><a href="#一种避免指针-nil-的-Go-实践-NilAway" class="headerlink" title="一种避免指针 nil 的 Go 实践 - NilAway"></a>一种避免指针 nil 的 Go 实践 - <a target="_blank" rel="noopener" href="https://github.com/uber-go/nilaway">NilAway</a></h3><p>静态扫描器，把项目中潜在的空指针问题在编译阶段解决的工具。</p>
+<p><a target="_blank" rel="noopener" href="https://www.uber.com/en-NL/blog/nilaway-practical-nil-panic-detection-for-go/">传送门</a></p>
+<h2 id="小憩"><a href="#小憩" class="headerlink" title="小憩"></a>小憩</h2><h3 id="专业的-iOS-相机软件"><a href="#专业的-iOS-相机软件" class="headerlink" title="专业的 iOS 相机软件"></a>专业的 iOS 相机软件</h3><p>苹果拍宣传片也不用自家相机 Ap</p>
+<p><img src="/../images/%F0%9F%8F%84%E2%80%8D%E2%99%82%EF%B8%8F%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%204/Untitled%201.png"></p>
+<p><a target="_blank" rel="noopener" href="http://www.blackmagicdesign.com/products/blackmagiccamera">Blackmagic Camera | Blackmagic Design</a></p>
+<h3 id="Today-I-Learned"><a href="#Today-I-Learned" class="headerlink" title="Today I Learned"></a><a target="_blank" rel="noopener" href="https://github.com/jbranchaud/til">Today I Learned</a></h3><p>今天我学到了什么？一种以短小知识点构成的个人学习仓库，适合记录一些片段式的学习笔记（就像我的冲浪记一样）</p>
+<h3 id="Emoji-AI-生成器"><a href="#Emoji-AI-生成器" class="headerlink" title="Emoji AI 生成器"></a>Emoji AI 生成器</h3><p><a target="_blank" rel="noopener" href="https://emoji.fly.dev/">AI Emojis</a></p>
+<h3 id="Ascii-艺术画"><a href="#Ascii-艺术画" class="headerlink" title="Ascii 艺术画"></a>Ascii 艺术画</h3><p>适合放到各种 Terminal 里。</p>
+<p><a target="_blank" rel="noopener" href="https://asciiart.website/index.php">Christopher Johnson’s ASCII Art Collection</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/sre-surfing-4.html">https://emergencyexit.xyz/sre-surfing-4.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/surfing/"># surfing</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/sre-surfing-5.html">🔚 SRE 冲浪记 - 5</a>
+            
+            
+            <a class="next" rel="next" href="/django-static-quick-glance.html">🤌 几分钟搞清 Django 静态文件处理</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

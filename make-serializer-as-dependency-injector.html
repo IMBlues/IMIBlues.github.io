@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>👴 让 DRF Views 支持依赖注入 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">👴 让 DRF Views 支持依赖注入</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 24, 2021&nbsp;&nbsp;20:38:35</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>Django 和 <a target="_blank" rel="noopener" href="https://www.django-rest-framework.org/">Django REST framework</a> 是 Python 开发者常用的框架组合，通常来说，一个典型的 DRF 式 API 可能长这个样子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.generics <span class="keyword">import</span> ListAPIView</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ProfileViewSet</span>(<span class="title class_ inherited__">ListAPIView</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">login</span>(<span class="params">self, request</span>):</span><br><span class="line">        serializer = LoginSerializer(data=request.data)</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        validated_data = serializer.validated_data</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> Response(data=ProfileSerializer(results, many=<span class="literal">True</span>).data)</span><br></pre></td></tr></table></figure>
+
+<p>这样写在逻辑上是简单的，可以让开发者对用户请求处理有一个清晰的脉络，但同时也会带来问题：<code>Serializer</code> 的逻辑和主逻辑混杂，使单元测试构造困难。</p>
+<p>同时，输入输出的代码在多个 API 中是有一定程度重复的， <code>D.R.Y</code> 重度患者无法接受。</p>
+<h2 id="启发"><a href="#启发" class="headerlink" title="启发"></a>启发</h2><p>新贵框架 <a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">FastAPI</a> 的 <a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/tutorial/dependencies/#what-is-dependency-injection">依赖注入特性</a> 就能够很好的解决以上两点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> fastapi <span class="keyword">import</span> Depends, FastAPI</span><br><span class="line"></span><br><span class="line">app = FastAPI()</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.get(<span class="params"><span class="string">&quot;/items/&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">read_items</span>(<span class="params">commons: <span class="built_in">dict</span> = Depends(<span class="params">common_parameters</span>)</span>):</span><br><span class="line">    <span class="keyword">return</span> commons</span><br></pre></td></tr></table></figure>
+
+<p>然而，现实中的工程中切换框架往往是成本高昂的，仅仅为了依赖注入而切换框架显得有些小题大做。所以，如果能在 Django &amp; DRF 中实现类似依赖注入的功能，会较大程度提高 <code>views</code> 的可读性并降低 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Test-driven_development">TDD</a> 的门槛，间接提高代码质量。</p>
+<p>同时我们需要满足几个条件：</p>
+<ul>
+<li>能够兼容当前的 ViewSet 类</li>
+<li>能够复用 Serializer</li>
+<li>（可选）能够复用 <code>drf-yasg</code></li>
+</ul>
+<p>综上，我写了一个 <a target="_blank" rel="noopener" href="https://gist.github.com/IMBlues/e36e792159729f429f9abf656ba24d10">简单的文件</a> ，你可以将它 Copy 到你的 DRF 项目中就可以改造原来的 <code>ViewSet</code> </p>
+<p>（当前需求是比较简单的，封装成 SDK 然后安装依赖的成本反而高于直接复制粘贴，<del>这样大家可以一起偷懒</del>）</p>
+<h2 id="最后的效果："><a href="#最后的效果：" class="headerlink" title="最后的效果："></a>最后的效果：</h2><p>原来的 <code>ViewSet</code> （包含 <code>drf-yasg</code> 的 schema 生成）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ProfileViewSet</span>(<span class="title class_ inherited__">ListAPIView</span>):</span><br><span class="line"><span class="meta">    @swagger_auto_schema(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">        request_body=LoginSerializer,</span></span></span><br><span class="line"><span class="params"><span class="meta">        responses=&#123;status.HTTP_200_OK: ProfileSerializer(<span class="params"></span>)&#125;,</span></span></span><br><span class="line"><span class="params"><span class="meta">    </span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">login</span>(<span class="params">self, request</span>):</span><br><span class="line">        serializer = LoginSerializer(data=request.data)</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        validated_data = serializer.validated_data</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> Response(data=ProfileSerializer(results, many=<span class="literal">True</span>).data)</span><br></pre></td></tr></table></figure>
+
+<p>改造之后的效果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> some_path.inject <span class="keyword">import</span> serializer_inject</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ProfileViewSet</span>(<span class="title class_ inherited__">ListAPIView</span>):</span><br><span class="line"><span class="meta">    @serializer_inject(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">        in_cls=LoginSerializer,</span></span></span><br><span class="line"><span class="params"><span class="meta">        out_cls=ProfileSerializer,</span></span></span><br><span class="line"><span class="params"><span class="meta">        <span class="comment"># 选择去掉原有的 request 依赖</span></span></span></span><br><span class="line"><span class="params"><span class="meta">        config=&#123;<span class="string">&quot;remain_request&quot;</span>: <span class="literal">False</span>&#125;,</span></span></span><br><span class="line"><span class="params"><span class="meta">        out_params=&#123;<span class="string">&quot;many&quot;</span>: <span class="literal">True</span>&#125;,</span></span></span><br><span class="line"><span class="params"><span class="meta">    </span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">login</span>(<span class="params">self, validated_data: <span class="built_in">dict</span></span>):</span><br><span class="line">        <span class="comment"># 原来的逻辑部分</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> results</span><br></pre></td></tr></table></figure>
+
+<p>（可以通过 <a target="_blank" rel="noopener" href="https://gist.github.com/IMBlues/e36e792159729f429f9abf656ba24d10#gistcomment-3754830">gist 评论</a> 获取更多的例子）</p>
+<p>这样的改造我们得到了一些好处：</p>
+<ul>
+<li>仅需要简单改造原来的 <code>ViewSet</code></li>
+<li>完全继承原来的 <code>Serializer</code></li>
+<li>完整支持 <code>drf-yasg</code></li>
+<li>在原来主干逻辑没有依赖 <code>request</code> 对象的情况下，单元测试的用例构造被简化成了 <code>dict</code></li>
+</ul>
+<p>当然仍旧还有不完美的地方：</p>
+<ul>
+<li>没有使用 <code>Type Annotation</code> ，在声明上较 <code>FastAPI</code> 更为冗余</li>
+<li>对于返回值使用了 <code>context</code> 的 <code>Serializer</code> 需要通过 <code>inject.ResponseParams</code> 类来包装一次，显得不那么纯粹，暂时也没有更好的思路，<del>有空再慢慢改（咕咕🐦）。</del></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/make-serializer-as-dependency-injector.html">https://emergencyexit.xyz/make-serializer-as-dependency-injector.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/django/"># django</a>
+                    
+                        <a href="/tags/Dependencyinjection/"># Dependencyinjection</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/filebeat-hangs-problem.html">🧟‍♂️ FileBeat 启动假死问题</a>
+            
+            
+            <a class="next" rel="next" href="/strange-python-code.html">❓ 你看不懂的 Python 写法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

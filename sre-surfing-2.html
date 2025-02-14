@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🏄 SRE 冲浪记 - 2 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🏄 SRE 冲浪记 - 2</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 12, 2023&nbsp;&nbsp;14:40:33</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><img src="/../images/%F0%9F%8F%84%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%202/Untitled.png"><br>夜晚的鹦鹉洲长江大桥</p>
+<h2 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h2><h3 id="GIL-or-no-GIL"><a href="#GIL-or-no-GIL" class="headerlink" title="GIL or no GIL ?"></a>GIL or no GIL ?</h3><p>在损失 5-10% 单核情况下去掉 GIL，提升多核效率，这会是 Python 以后的发展方向吗？</p>
+<p><a target="_blank" rel="noopener" href="https://peps.python.org/pep-0703/">PEP 703 – Making the Global Interpreter Lock Optional in CPython | peps.python.org</a></p>
+<p>我们知道，提升多核的主要原因是需要释放更多的 CPU 计算能力，也就是在数据分析、AI 计算领域会有更大的用途，在传统的 Web 工程里，IO 出现瓶颈是更普遍的事，单核性能也许会更关键。</p>
+<p>随着 AI 等领域进一步发展，Python 在 Web 工程上的使用占比也许会进一步减少——根据 JetBrains 的调查统计，2022 年 Web 开发比 2021 年少了 6% 的占比 （<a target="_blank" rel="noopener" href="https://www.jetbrains.com/lp/devecosystem-2021/python/">2021</a> vs <a target="_blank" rel="noopener" href="https://www.jetbrains.com/lp/devecosystem-2022/python/">2022</a>），那么以后的 Python 是会拥抱大数据和 AI 领域，彻底走上去除 GIL 的道路，还是分裂成两个编译版本、两个社区呢？让我们拭目以待吧。</p>
+<h3 id="Why-did-Python-win"><a href="#Why-did-Python-win" class="headerlink" title="Why did Python win?"></a>Why did Python win?</h3><p>一些人讨论<a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=37308747">为什么 Python 比 Ruby 在这些年市场增长更快</a>。</p>
+<p>但 Python 真的赢了吗？在 Web 开发领域，现在依旧是不同领域有不同的专精语言和框架，远谈不上“赢”，而在 AI 领域，至少现在会有一些新兴的对手，比如 <a target="_blank" rel="noopener" href="https://www.modular.com/mojo">Mojo</a>，一个不管会不会流行，但注定会“火”的面向 AI 编程语言。</p>
+<h3 id="为什么-Python-没有尾递归优化？"><a href="#为什么-Python-没有尾递归优化？" class="headerlink" title="为什么 Python 没有尾递归优化？"></a>为什么 Python 没有尾递归优化？</h3><p>接上一期的尾递归优化内容，为什么 Python 里没有呢？核心原因是 Guido 并不认为递归是所有编程的基础。</p>
+<p><a target="_blank" rel="noopener" href="https://neopythonic.blogspot.com/2009/04/tail-recursion-elimination.html">Tail Recursion Elimination</a></p>
+<h3 id="旧文拾遗：如何做一个有质量的技术分享"><a href="#旧文拾遗：如何做一个有质量的技术分享" class="headerlink" title="旧文拾遗：如何做一个有质量的技术分享"></a>旧文拾遗：<strong>如何做一个有质量的技术分享</strong></h3><p><a target="_blank" rel="noopener" href="https://coolshell.cn/articles/21589.html">如何做一个有质量的技术分享 | 酷 壳 - CoolShell</a></p>
+<h3 id="为什么-Rust-是开发者中最受推崇的语言"><a href="#为什么-Rust-是开发者中最受推崇的语言" class="headerlink" title="为什么 Rust 是开发者中最受推崇的语言"></a>为什么 Rust 是开发者中最受推崇的语言</h3><p>不管你有没有开始写 Rust，但一定也被这股 “Rust 重写一切” 的风刮到过，为什么呢？Github 官方博客给出了他们的答案。</p>
+<p><a target="_blank" rel="noopener" href="https://github.blog/2023-08-30-why-rust-is-the-most-admired-language-among-developers/">Why Rust is the most admired language among developers</a></p>
+<p>（不说了，明天就开始学写 Rust 🫠）</p>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><h3 id="Go-的内存逃逸"><a href="#Go-的内存逃逸" class="headerlink" title="Go 的内存逃逸"></a>Go 的内存逃逸</h3><p>Go 的 GC 虽然有不少优化，但终究是 STW，减少逃逸代码是相对必要的。</p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000040450335">详解Go语言中的内存逃逸</a></p>
+<h3 id="Go-的-PGO-发布了"><a href="#Go-的-PGO-发布了" class="headerlink" title="Go 的 PGO 发布了"></a>Go 的 PGO 发布了</h3><p>可以想见，如果能够结合上 Continuous Profiling（可以看以前的一篇<a href="https://emergencyexit.xyz/continuous-profiling">漫谈</a>了解更多），翔实的线上数据作为分析基底，加上 PGO 的优化，也许会让一些比较稳定的成熟服务得到较大的性能提升。</p>
+<p><a target="_blank" rel="noopener" href="https://go.dev/blog/pgo">Profile-guided optimization in Go 1.21 - The Go Programming Language</a></p>
+<h3 id="函数柯里化"><a href="#函数柯里化" class="headerlink" title="函数柯里化"></a>函数柯里化</h3><p>在 JS 非常实用，在 Python 中我们该如何实现它呢？</p>
+<p><a target="_blank" rel="noopener" href="https://www.askpython.com/python/examples/currying-in-python">Currying in Python - A Beginner’s Introduction - AskPython</a></p>
+<p>虽然我还没想到它能在日常使用中提升什么可读性。</p>
+<h3 id="布谷鸟过滤器"><a href="#布谷鸟过滤器" class="headerlink" title="布谷鸟过滤器"></a>布谷鸟过滤器</h3><p>相较于更原始的布隆过滤器，有四个更优的点：</p>
+<ul>
+<li>它支持动态添加和删除项；</li>
+<li>它提供了比传统的布隆过滤器更高的查找性能，即使当其接近满载（例如，95%的空间已被使用）；</li>
+<li>它比诸如商过滤器等替代品更容易实现；</li>
+<li>在许多实际应用中，如果目标假阳性率 <code>ε</code> 小于3%，则它使用的空间小于布隆过滤器；</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="http://www.linvon.cn/posts/cuckoo/">布谷鸟过滤器：实际上优于布隆过滤器</a></p>
+<h3 id="pypi-timemachine"><a href="#pypi-timemachine" class="headerlink" title="pypi-timemachine"></a><a target="_blank" rel="noopener" href="https://github.com/astrofrog/pypi-timemachine">pypi-timemachine</a></h3><p>这个库有一点意思：能够模拟在你给定某个过去的时间点安装 pypi 依赖，对于很多没有 lock 文件的旧项目会有点用。不过都这年头了，<strong>还在用原生 pip 维护管理依赖的项目真的应该升级到新工具了😂</strong><br><img src="/../images/%F0%9F%8F%84%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%202/Untitled%201.png"></p>
+<h1 id="小憩"><a href="#小憩" class="headerlink" title="小憩"></a>小憩</h1><h2 id="meme-赏"><a href="#meme-赏" class="headerlink" title="meme 赏"></a>meme 赏</h2><p><img src="/../images/%F0%9F%8F%84%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%202/Untitled%202.png"></p>
+<h2 id="antigravity"><a href="#antigravity" class="headerlink" title="antigravity"></a>antigravity</h2><p><a target="_blank" rel="noopener" href="https://xkcd.com/">Marshmallow</a></p>
+<p>非常有名的网络漫画，在 Python <code>import antigravity</code> 就能打开。</p>
+<h2 id="全国地铁数据库"><a href="#全国地铁数据库" class="headerlink" title="全国地铁数据库"></a>全国地铁数据库</h2><p>有时可以从地铁数据一瞥城市的经济状态。</p>
+<p><a target="_blank" rel="noopener" href="https://metrodb.org/">地铁数据库 | 地铁客流量查询</a></p>
+<h2 id="Google-随机街景"><a href="#Google-随机街景" class="headerlink" title="Google 随机街景"></a>Google 随机街景</h2><p><a target="_blank" rel="noopener" href="https://neal.fun/wonders-of-street-view/">Wonders of Street View</a></p>
+<p>该网站收集了非常多奇怪且有趣的 Google 街景。比如我找到一个<a target="_blank" rel="noopener" href="https://neal.fun/wonders-of-street-view/?v=Cbkobw">波兰的盐矿教堂</a>，看起来立马让我想起了盐与避难所这款游戏。</p>
+<h1 id="Fin"><a href="#Fin" class="headerlink" title="Fin"></a>Fin</h1><p>等等，这个还有第二期？没想到吧，在胡乱编完了第一期后，又抠抠索索搞了第二期。</p>
+<p>以下是一些自问自答。</p>
+<p>Q：你这个发布有什么时间周期吗？</p>
+<p>A：没有，我觉得内容攒的差不多了就发一期，也许半个月也许一个月，取决于我日常工作是否繁忙。好吧，实际也没人关心这个。</p>
+<hr>
+<p>Q：为什么内容我好像在哪里看过？</p>
+<p>A：没错，我就是四处摘抄。网络上有不少很成熟的个人周刊、RSS，我这个就是从这些高手的信息流中淘漉而来。<del>做一个重口味的比喻，信息流的人体蜈蚣，我这个肯定是在很后面的一个。</del></p>
+<hr>
+<p>Q：内容有主题吗？</p>
+<p>A：没有，凡是我觉得有点子意思的内容（除了 NSFW），我就会摘抄过来。一定程度上，这些信息就是我个人的兴趣点展览。如果你也喜欢这里面的内容，欢迎评论交流，我们很可能可以聊得来；如果你不喜欢，也请轻喷或者直接关掉页面，不好意思浪费你时间了。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/sre-surfing-2.html">https://emergencyexit.xyz/sre-surfing-2.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/surfing/"># surfing</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/sre-surfing-3.html">🏄‍♀️ SRE 冲浪记 - 3</a>
+            
+            
+            <a class="next" rel="next" href="/trace-diagrams.html">🦾 观测利器：让天下没有难懂的 Trace</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

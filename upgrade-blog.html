@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🚧 从 奇思乱想 到 妙想天开 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🚧 从 奇思乱想 到 妙想天开</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 20, 2022&nbsp;&nbsp;20:14:42</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>两年前我在 <a href="https://emergencyexit.xyz/use-notion-as-blog.html">使用 Notion 搭建个人静态 Blog</a> 一文中描述了本博客站点的搭建方式，实现了个人博客 从零到一。随着这两年笔耕不辍，近二十篇水文陆续问世，对站点的功能有了更高的要求，于是决定对博客方案进行全新升级，也希望能从“奇思乱想“的水文时代，向”妙想天开“的高质量博客站点迈进。</p>
+<h2 id="升级"><a href="#升级" class="headerlink" title="升级"></a>升级</h2><h3 id="工具的局限"><a href="#工具的局限" class="headerlink" title="工具的局限"></a>工具的局限</h3><p>两年前工具选型时并未有太多的调研，看到 <a target="_blank" rel="noopener" href="https://github.com/dragonman225/notablog">notablog</a> 渲染出的站点样式好看、功能基本能满足需求，就立马实施上马。经过这两年的体验，总结了一些该工具功能上的缺失：</p>
+<ul>
+<li>缺少 RSS 支持</li>
+<li>不支持分页，文章越来越多，页面越来越长</li>
+<li>不支持搜索，和分页类似，文章越多越不友好，我还想多写几篇</li>
+<li>缺少持续的更新（例如不支持 Simple Table&#x2F;Mermaid 等 Notion 新特性、Go 代码块样式异常）</li>
+<li>缺少切换黑暗模式主题</li>
+</ul>
+<p>部分功能缺失<a target="_blank" rel="noopener" href="https://github.com/dragonman225/notablog/issues/created_by/IMBlues">我在 issue 中向作者提出了feature request</a> ，虽然都有回应，但也都束之高阁，很长时间都没见到开工的样子。</p>
+<p>于是我对其他 Notion 博客生成工具进行调研，表中列举了一些我关注的功能点（在这里更多考察的开箱即用的能力）</p>
+<h3 id="其他-Notion-工具"><a href="#其他-Notion-工具" class="headerlink" title="其他 Notion 工具"></a>其他 Notion 工具</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>概述</th>
+<th>RSS</th>
+<th>评论</th>
+<th>分析</th>
+<th>搜索</th>
+<th>sitemap</th>
+<th>黑暗模式</th>
+<th>响应式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/ijjk/notion-blog">https://github.com/ijjk/notion-blog</a></td>
+<td>Next.js 维护者，Vercel 公司工程师开发</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/craigary/nobelium">https://github.com/craigary/nobelium</a></td>
+<td>和 notablog 类似的静态构建工具：功能支持更多，使用 <a target="_blank" rel="noopener" href="https://nextjs.org/">https://nextjs.org/</a> 原生支持 Vercel</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/tangly1024/NotionNext">https://github.com/tangly1024/NotionNext</a></td>
+<td>在 Nobelium 的基础上支持了更多主题</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/transitive-bullshit/nextjs-notion-starter-kit">https://github.com/transitive-bullshit/nextjs-notion-starter-kit</a></td>
+<td>非常完善的构建工具，支持全文搜索</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/samuelkraft/notion-blog-nextjs">https://github.com/samuelkraft/notion-blog-nextjs</a></td>
+<td>Next.js + Notion 原生 API</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/leoncvlt/loconotion">https://github.com/leoncvlt/loconotion</a></td>
+<td>一个用 Python 编写的 Notion 静态页面生成器，与其他通过 Next.js 生成页面不同，它让 Notion 自己渲染，然后将页面抓取出来，理论上能最大程度上还原 Notion 的样式。默认并不能生成一个站点。</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<p>经过功能的简单筛选，优胜的工具有三个：Nobelium \ NotionNext \ Next.js Notion Starter Kit。</p>
+<p>个人更偏向于 Nobelium，原因如下：</p>
+<ul>
+<li>默认支持的样式符合我的审美</li>
+<li>在基本功能都支持的前提下，代码足够简单，作为后端开发我能够比较轻松的修改和维护</li>
+</ul>
+<p>另外两个工具：</p>
+<ul>
+<li>Next.js Notion Starter Kit 本身非常推荐，功能齐全，样式好看，比 Nobelium 稍微复杂一些，最大优势是仍旧在积极维护中。</li>
+<li>NotionNext 支持了更多主题，是否足够好看见仁见智，有一些类似<a target="_blank" rel="noopener" href="https://docs.tangly1024.com/zh/features/articleLock">“文章锁”</a>的功能用不上。</li>
+</ul>
+<p>秉承着 <a target="_blank" rel="noopener" href="https://zen-of-python.info/simple-is-better-than-complex.html">Simple is better than complex</a> 的原则，“妙想天开” 将选用 Nobelium 作为生成工具。</p>
+<h3 id="工具改造"><a href="#工具改造" class="headerlink" title="工具改造"></a>工具改造</h3><p>虽然 Nobelium 已经支持了我所有的需求，但我仍旧需要对它进行一些改造，因为它原生是面向 Vercel 部署构建的，而我想要一个纯静态站点部署在 Github Pages，而非 Next.js 所推崇的 SSR 服务端渲染。那么为啥不用 Vercel ？最直接的原因：墙。本身访问量就不多，进一步提高访问门槛只会更加门可罗雀。</p>
+<p>所以第一步就是如何通过 Action 将 Next.js 应用在 Github Pages 上。具体的做法可以参考<a target="_blank" rel="noopener" href="https://gregrickaby.com/2020/03/21/next-js-github-pages">这篇文章</a>和<a target="_blank" rel="noopener" href="https://github.com/gregrickaby/nextjs-github-pages">这个项目</a>。最后的效果就是，只需要将源码推到主分支，既可以自动执行 <code>npm build</code> 和 <code>npm export</code> 到 <code>gh-pages</code> 分支，然后 Pages 相关配置使用 <code>gh-pages</code> 即可。</p>
+<p>同时又因为我将动态渲染改成了静态站点，其中一些 <code>getserverSideProps</code> 动态部分（如 RSS）就需要改造成构建时生成，相关的步骤可以参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dev.to/kendalmintcode/create-a-next-js-rss-feed-for-your-static-website-210p">https://dev.to/kendalmintcode/create-a-next-js-rss-feed-for-your-static-website-210p</a></li>
+<li><a target="_blank" rel="noopener" href="https://sreetamdas.com/blog/rss-for-nextjs">https://sreetamdas.com/blog/rss-for-nextjs</a></li>
+</ul>
+<p>也可以直接参考<a target="_blank" rel="noopener" href="https://github.com/IMBlues/nobelium">我已经改造好的项目</a>。</p>
+<p>然后就可以开始对文章列表进行迁移了（完全手动的，一点点复制，还好写的文章不算特别多），其中有两点需要额外注意：</p>
+<ul>
+<li>尽量保证原文的 URL 一致。由于 notablog 默认会在 slug 后面多加一个 <code>.html</code> ，所以在新工具中旧文章的 <code>slug</code> 中需要额外加上 <code>.html</code> 后缀，来保证更换站点后，原文 URL 不变。</li>
+<li>由于我使用了 <a target="_blank" rel="noopener" href="https://utteranc.es/">**utterances</a>** 作为评论系统，需要保证文章迁移前后能够有同样的评论 (issueTerm → “pathname”)</li>
+</ul>
+<p>最后对站点整体样式进行一些个人化的样式微调，大功告成：<a target="_blank" rel="noopener" href="https://next.emergencyexit.xyz/">布鲁斯鱼的妙想天开</a> 🎊</p>
+<h2 id="后续可能的升级点——传播的局限"><a href="#后续可能的升级点——传播的局限" class="headerlink" title="后续可能的升级点——传播的局限"></a>后续可能的升级点——传播的局限</h2><p>由于之前并未有太多博客建站的经验，所以很多问题考虑不周，也大大制约了本博客的传播能力<del>（当然，主要是文章水分过高，价值不够）。</del></p>
+<p>主要有以下几个方面：</p>
+<ul>
+<li>缺少国内 CDN 加速。本站是中文站点，却经常引用 <a target="_blank" rel="noopener" href="https://unsplash.com/">Upslash</a> 的大图，丝毫没有把国内用户访问体验放在心上。</li>
+<li>搜索绝缘体。虽然我也不太看重百度搜索，也不想让自己的文章出现在一堆 CSDN、百度百家的文章中，但是由于未备案和 Github Pages 的部署性质，基本和国内的搜索说拜拜了。</li>
+<li><del>文章太水了，没有让人阅读和分享的欲望（这个暂时解决不了，能力一般，水平有限）</del></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/upgrade-blog.html">https://emergencyexit.xyz/upgrade-blog.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/guide/"># guide</a>
+                    
+                        <a href="/tags/blog/"># blog</a>
+                    
+                        <a href="/tags/web/"># web</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/python-udp-prom-aggregation-gateway.html">🖋️ 开发散文：使用 Python 以 UDP 协议发送 Prometheus 指标数据</a>
+            
+            
+            <a class="next" rel="next" href="/wtf-go-constants.html">🤔 WTF Go Constants</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

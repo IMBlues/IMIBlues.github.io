@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🤔 WTF Go Constants | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🤔 WTF Go Constants</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 11, 2022&nbsp;&nbsp;20:08:06</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">	<span class="string">&quot;math/rand&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// invalid operation: rand.Intn(10) * 1000 * time.Millisecond (mismatched types int and time.Duration)</span></span><br><span class="line">time.Sleep(rand.Intn(<span class="number">10</span>) * <span class="number">1000</span> * time.Millisecond) ❌</span><br><span class="line"></span><br><span class="line"><span class="comment">// 🤔 make sense.</span></span><br><span class="line">time.Sleep(time.Duration(rand.Intn(<span class="number">10</span>) * <span class="number">1000</span>) * time.Millisecond) ✅</span><br><span class="line"></span><br><span class="line"><span class="comment">// wtf ?!</span></span><br><span class="line">time.Sleep(<span class="number">1000</span> * time.Millisecond) ✅ </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>看看上面这个简单的例子：</p>
+<ul>
+<li>第一个错误很容易理解： 整型不能和 <code>time.Duration</code> 相乘</li>
+<li>第二个例子修正了这一问题，符合预期</li>
+<li>第三个例子带来了疑问，为什么 <code>1000 * time.Millisecond</code> 却没有问题？明明 <code>1000</code> 也是个整型？编译器戴了有色眼镜？</li>
+</ul>
+<p>别慌，仔细看看 <code>rand.Intn(10) * 1000</code> 和 <code>1000</code> 的区别在于：前者是变量，类型已经确定了，通不过编译是情理之中；而后者是常量，类型并不是 <code>int</code> ，属于 <code>untyped constants</code> ，编译器会尝试将它转换成 <code>time.Duration</code> 。</p>
+<p>这就勾起了我的好奇心，那如果我写个一个 <code>float</code> 常量会怎样呢？</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// (untyped float constant) truncated to int64</span></span><br><span class="line">time.Sleep(<span class="number">1000.1</span> * time.Millisecond) ❌</span><br></pre></td></tr></table></figure>
+
+<p>果然是不行的。那么究竟这个无类型常量的类型转换是依照什么规则进行的呢？</p>
+<p>首先每一种常量的<strong>写法</strong>都会对应着一种默认类型：</p>
+<p><img src="/../images/%F0%9F%A4%94%20WTF%20Go%20Constants/Untitled.png"></p>
+<p>然后，看看 <code>time.Duration</code> 的定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Duration <span class="type">int64</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Nanosecond  Duration = <span class="number">1</span></span><br><span class="line">    Microsecond          = <span class="number">1000</span> * Nanosecond</span><br><span class="line">    Millisecond          = <span class="number">1000</span> * Microsecond</span><br><span class="line">    Second               = <span class="number">1000</span> * Millisecond</span><br><span class="line">    Minute               = <span class="number">60</span> * Second</span><br><span class="line">    Hour                 = <span class="number">60</span> * Minute</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>也就是说 <code>1000</code> 的写法默认类型为 <code>int</code> ，编译器会尝试做一次类型转换 <code>int</code> → <code>time.Duration</code> ，而 <code>int64</code> 和 <code>int</code> 又能做到完全兼容，所以编译通过。</p>
+<p>WTF，Go…</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://go.dev/blog/constants">https://go.dev/blog/constants</a> （本文主要搬运来源）</li>
+<li><a target="_blank" rel="noopener" href="https://blog.learngoprogramming.com/learn-golang-typed-untyped-constants-70b4df443b61">https://blog.learngoprogramming.com/learn-golang-typed-untyped-constants-70b4df443b61</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/wtf-go-constants.html">https://emergencyexit.xyz/wtf-go-constants.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/note/"># note</a>
+                    
+                        <a href="/tags/golang/"># golang</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/upgrade-blog.html">🚧 从 奇思乱想 到 妙想天开</a>
+            
+            
+            <a class="next" rel="next" href="/software-engineering-at-google-impression.html">📖 Google 软件工程 读后感 Part I</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

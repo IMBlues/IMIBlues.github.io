@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🦾 观测利器：让天下没有难懂的 Trace | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🦾 观测利器：让天下没有难懂的 Trace</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 4, 2023&nbsp;&nbsp;14:29:32</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="什么是-Traces"><a href="#什么是-Traces" class="headerlink" title="什么是 Traces ?"></a>什么是 Traces ?</h1><p>这两年可观测领域受到了比较多的关注，其中以 Traces 尤为突出。那么什么是 Traces 呢？它又能做什么呢？我们来看看官方给予的定义：</p>
+<blockquote>
+<p><strong>Traces</strong> give us the big <strong>picture</strong> of what happens when a request is made to an application</p>
+</blockquote>
+<p>简单来说：<em>Traces 能 <strong>描绘</strong> 一个请求在应用中究竟做了什么。</em></p>
+<h2 id="描绘？"><a href="#描绘？" class="headerlink" title="描绘？"></a>描绘？</h2><p>对于原始的 Traces 数据而言，与其说是“描绘”，不如说是“描述”：应用做的事情被拆解成一个个小的单元（Span），多个有着父子关系的 Span 组成一个完整的 Trace。尽管它的数据详尽——包括属性（attributes）、事件（Events）、上下文（Context）等内容，但是最大问题也很明显：<strong>不够直观，有效信息获取效率低。</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hello-greetings&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;context&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;trace_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0x5b8aa5a2d2c872e8321cf37308d69df2&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;span_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0x5fb397be34d26b51&quot;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;parent_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0x051581bf3cb55c13&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;start_time&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2022-04-29T18:52:58.114304Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;end_time&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2022-04-29T22:52:58.114561Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;attributes&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;http.route&quot;</span><span class="punctuation">:</span> <span class="string">&quot;some_route1&quot;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">		<span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hey there!&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;timestamp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2022-04-29T18:52:58.114561Z&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;attributes&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;event_attributes&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>所以更多维、更直观的图表就显得尤为必要了。</strong></p>
+<h1 id="各种变换形态"><a href="#各种变换形态" class="headerlink" title="各种变换形态"></a>各种变换形态</h1><p>首先，我们需要将 Traces 数据抽象成一棵多叉树。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled.png"></p>
+<p>一个简单的 Trace 多叉树</p>
+<p>在这棵多叉树的各个节点信息中，藏着 Trace 的多个维度信息：</p>
+<ul>
+<li>Span 之间的调用关系：<code>parent_id</code> 指向调用它的父级节点</li>
+<li>Span 调用的时序关系： <code>start_time</code> &amp; <code>end_time</code> 表明了 Span 的开始结束时间点</li>
+<li>Span 耗时： <code>elapsed_time</code> 代表该 Span 的耗时</li>
+</ul>
+<h2 id="Timeline-时间线图"><a href="#Timeline-时间线图" class="headerlink" title="Timeline 时间线图"></a>Timeline 时间线图</h2><p>首先，我们通过「Timeline 图」（a.k.a 瀑布图）纵览所有 Span 之间的父子关系、时序、耗时。<br><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%201.png"></p>
+<p>在时间线图中，你可以掌握单个 Trace 的全部信息：</p>
+<ul>
+<li>查看所有的 Span 概况，按照服务进行颜色区分，同时展示所有的父子关系。</li>
+<li>通过时间轴和线条的长度判断出 Span 具体耗时。</li>
+<li>点击 Span 可以查看其详细信息，包括标签和进程等所有上报信息。</li>
+</ul>
+<p>虽然它全能，但在一些具体维度上仍旧不够直观，所以我们要在这棵多叉树上进行精加工：</p>
+<ul>
+<li>Span 之间的父子关系 → 拓扑图</li>
+<li>以接口、服务等维度汇聚统计信息 → 表格统计</li>
+<li>Span 调用的时序 → 时序图</li>
+<li>Span 耗时分布 → 火焰图</li>
+</ul>
+<p>下面就来分享一下相关图表的展示逻辑细节。</p>
+<h2 id="拓扑图"><a href="#拓扑图" class="headerlink" title="拓扑图"></a>拓扑图</h2><p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%202.png"></p>
+<p>对于拓扑图而言，它将主要的重点放在了 Span 之间的关系上，你可以很清晰地获取到 Trace 的调用关系、层级等信息，但同时它也刻意忽略了时序信息，下面会有较多场景会提到这一点。</p>
+<h2 id="表格统计"><a href="#表格统计" class="headerlink" title="表格统计"></a>表格统计</h2><p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%203.png"></p>
+<p>表格统计的重点是，将 Trace 中的汇聚信息平铺展示出来。这里有两个需要额外解释的概念：接口&amp;服务。</p>
+<h3 id="接口和服务"><a href="#接口和服务" class="headerlink" title="接口和服务"></a>接口和服务</h3><p>【接口】的内容实际上就是 <code>span_name</code> —— 操作名称的别名。而【服务】则是来自于 <code>resource.service_name</code> ，表明该 Span 所属的服务，以简单的名字字符串作为 Trace 维度的唯一标识。</p>
+<h2 id="时序图"><a href="#时序图" class="headerlink" title="时序图"></a>时序图</h2><p>时序图，顾名思义，主要是想突出 Trace 的时序特性。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%204.png"></p>
+<p>时序图示意图</p>
+<p>这是一种 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%97%B6%E5%BA%8F%E5%9B%BE">UML</a> 行为图，我们将它原本的几种元素结合 Trace 场景做了一个概念转换：</p>
+<ul>
+<li>物件（Object）和生命线（Lifeline）用一个 <em>方框+垂直线条</em> 来共同表示 <strong>接口或服务在 Trace 流程中的生命周期。</strong></li>
+<li>讯息（Message）用一条 <em>水平带箭头的连线</em> 表示 <strong>接口或服务之间的调用，也就是 Span 的主要体现形式</strong>。</li>
+<li>活化（Activation）：用一个 <em>垂直方向的矩形</em>  表示 <strong>接口或服务的耗时区间，它并不精确，但能表达出不同 Span 的耗时前后时序关系。</strong></li>
+</ul>
+<p>此外，时序图有一些额外封装和添加的概念，下面我们会一一展开解释。</p>
+<h3 id="服务接口聚合"><a href="#服务接口聚合" class="headerlink" title="服务接口聚合"></a>服务接口聚合</h3><p>首先是对服务聚合的概念阐释，和时间线图类似，我们会从 <code>resource.service_name</code> 字段中抽取所有 Span 共有的服务概念。额外地，我们从 <code>attributes</code> 字段中的信息尝试判断当前 Span 的形态，将不同的场景做一个简单区分。如图所示， <code>service_foo</code> 服务中会区分出 <code>api/*</code> 和 <code>mysql</code> 两种接口，它可以让你更好地了解不同组件之间的调用关系。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%205.png"></p>
+<h3 id="相对时序"><a href="#相对时序" class="headerlink" title="相对时序"></a>相对时序</h3><p>与时间线图不同的是，时序图为了表达服务与服务之间的调用关系，默认采用了“相对时序”，而非严格按照 <code>start_time</code> 排序的“绝对时序”。</p>
+<ul>
+<li>绝对时序：所有线条都按照 span 的绝对发生时间绘制，淡化父子关系</li>
+<li>相对时序：父子的关系优先于绝对时间，同一个父节点下的 span 有绝对的先后顺序，不同父节点下的 span 不保证其绘制的先后顺序</li>
+</ul>
+<p>我们举一个更容易理解的例子：假设某一个 Trace 有5个 Span，s1 → s5。s2 是 s3 的父节点，s4 是 s5 的父节点。先按照“绝对时序”画出时序图：</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%206.png"></p>
+<p>虽然它严格遵循了“时序”，但是原本的父子关系被淡化了，仅从图中基本没法判断出 <code>s2 &amp; s3</code> \ <code>s4 &amp; s5</code> 之间有什么联系（图中的 t 是为了展示额外添加的，真实数据中不存在）。</p>
+<p>我们再按照“相对时序”来绘制：<br><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%207.png"><br>可以看到，虽然我们稍微“牺牲”了一些时序上的绝对性，但是调用之间的关系更清晰了，用户更容易在庞大的图表中找到调用关系。</p>
+<h3 id="虚拟的开始节点"><a href="#虚拟的开始节点" class="headerlink" title="虚拟的开始节点"></a>虚拟的开始节点</h3><p>在图中有两个内容是“虚拟”出来的：开始节点和返回虚线。</p>
+<p>**当时序上的第一个 Span（通常是根 Span）的类型是被调或异步被调时，**为了表示该特性我们会在图的最左侧补充上一个虚拟的 <code>Start</code> ，它没有其他实际意义，只是表达整个追踪的“开始”节点。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%208.png"></p>
+<h3 id="调用返回"><a href="#调用返回" class="headerlink" title="调用返回"></a>调用返回</h3><p>第二个添加的虚拟内容就是<strong>返回虚线。</strong></p>
+<p>为了更加准确地表达 Span 在时序上的<strong>流入流出状态</strong>，我们会根据 Span 中的 <code>end_time</code> 生成的一个虚拟调用返回，同时开启一个时序图的 Activation ，用来做 Span 耗时的示意。需要注意的是：<strong>它并不是在所有的请求中都会开启，当且仅当 Span 的调用类型是主调。</strong></p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%209.png"></p>
+<p>当 Span 是异步类型时，我们会使用特殊箭头 → ，且不会增加虚拟返回</p>
+<h3 id="主调被调合并"><a href="#主调被调合并" class="headerlink" title="主调被调合并"></a>主调被调合并</h3><p>当<strong>父 Span 是主调，子 Span 是被调</strong>时，我们会把两个 Span 的信息合并到同一个 Message 中。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2010.png"></p>
+<p>合并后</p>
+<h2 id="火焰图"><a href="#火焰图" class="headerlink" title="火焰图"></a>火焰图</h2><p>火焰图最早是用在 CPU 性能分析领域，最大的特点是形似火焰，CPU 耗时越大在图中展示的元素越宽，开发者可以通过寻找“平顶山”来确定性能瓶颈。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2011.png"></p>
+<p>原始火焰图，X轴按照字母序排列</p>
+<h3 id="原始的局限"><a href="#原始的局限" class="headerlink" title="原始的局限"></a>原始的局限</h3><p>火焰图最大的局限在于无法精准地展示 Trace 中的 Span “并行”的概念，<a target="_blank" rel="noopener" href="https://github.com/kubeshop/tracetest/issues/1417#issuecomment-1327874188">即使已经有无数“前者”在尝试了</a>。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2012.png"></p>
+<p>观测云的做法，看起来貌似可行</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2013%201.png"></p>
+<p>当复杂场景发生时，必须要舍弃一些信息的精准性</p>
+<p>原始火焰图更多用在 Profiling 场景下，此时对于程序函数调用栈关系的可视度有着更高的要求——即对于 Y 轴信息的准确程度。但是对于 Trace 而言，Span 的执行时间长度、顺序在展示上的优先级更高。所以，在 Trace 领域我们采用了一种火焰图的变体—— <code>FlameChart</code>。它最早来自 Google Chrome 的 Web Inspector：</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2014.png"></p>
+<p>最大的区别是它的 X 轴变成了时间轴，它会准确的表达 Span 的开始和结束时间，而 Y 轴的栈调用信息从绝对值变成相对值。但它一开始的场景更多是在 <code>single-threaded</code> 的 JavaScript 分析，也不能妥善地处理好“多线程”的状况。</p>
+<p>经过一番搜索，受到一个 <a target="_blank" rel="noopener" href="https://github.com/gaogaotiantian/viztracer">Python Profiling 可视化工具</a>的启发：</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2015.png"></p>
+<p>类似地，我们在变体 <code>FlameChart</code> 上做了进一步的变形，增加了 <code>thread line</code> ——一个用水平虚线单独格出来的行——额外展示“并行”信息。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2016.png"></p>
+<p>在图中我们可以看到相较于最原始的火焰图有两个明显的变化：</p>
+<ul>
+<li>X 轴增加了时间纬度，按照 Span 的开始时间&amp;结束时间，保证长短比例，严格分布在 X 轴上</li>
+<li>Y 轴在相对情况下保持调用的父子关系，但不绝对表示栈的调用深度。</li>
+</ul>
+<p>X 轴相对容易理解，Y轴的变化稍微展开阐述。这里有一个关键的概念——“并行”，当火焰图中有“并行”元素存在时，会单独在原来的火焰图下方另起一“虚线行”展示这个“并行”信息。</p>
+<p>没有并行，和普通 flamechart 无异：</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2017.png"></p>
+<p>当存在并行内容时，将会有一条**“连接线”<strong>将所有 Span 的头部都连接到一起，表示他们的“并行”性，此时 Y 轴仅在同一 <code>thread line</code>中保持相对的调用深度，不同<code>thread line</code>之间的调用深度需要通过</strong>“连接线”**来辅助判断。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2018.png"></p>
+<h1 id="细节优化"><a href="#细节优化" class="headerlink" title="细节优化"></a>细节优化</h1><h2 id="折叠"><a href="#折叠" class="headerlink" title="折叠"></a>折叠</h2><p>由于是多叉树，节点宽度过大往往是控制展示的痛点。在很多场景下，同一次请求中存在大量的<strong>重复调用</strong>，它们代表的意义近似、耗时量级相同，却占据了画幅中的大量面积，所以我们针对这个场景进行了展示优化：<strong>将相似的兄弟节点进行分组折叠</strong>。判断节点是否相似取决于以下几个因素：</p>
+<ul>
+<li>Span Name 是否相同？</li>
+<li>Service Name 是否相同？</li>
+<li>是否在时序上相邻？</li>
+<li>是否存在错误？</li>
+</ul>
+<p>不同的展示图表有不同的特性，选取的判断策略也有所不同：</p>
+<ul>
+<li><p>瀑布图、时序图重点展示了时序，所以必须相邻才能被折叠到一起。</p>
+<p>  <img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2019.png"></p>
+</li>
+<li><p>拓扑图淡化了时序信息，所以即使时序不接壤，也会被折叠到一起。</p>
+<p>  <img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2020.png"></p>
+</li>
+</ul>
+<p>同时，由于拓扑图的折叠只会保留一棵抽象的树，当存在两棵子树完全相同时也会被折叠到一起。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2021.png"></p>
+<p>四棵一模一样的树</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2022.png"></p>
+<p>聚合到一起，原本子树中已有的分组也会被同时累加聚合</p>
+<h2 id="并行-并发推测"><a href="#并行-并发推测" class="headerlink" title="并行&#x2F;并发推测"></a><strong>并行&#x2F;并发推测</strong></h2><p>兄弟 Span 之间很多时候会存在并行或者并发的情况，因为没有直接的字段指示，所以我们在多叉树的处理过程中增加了一个“并行&#x2F;并发推测”的步骤。当存在以下任意两种场景时，我们会认为这些 Span 之间存在“并行或并发”的情况：</p>
+<ul>
+<li>兄弟 Span 之间的执行时间存在重叠，侧重于同一时间段内同时运行，即并「行」。</li>
+<li>兄弟 Span 的开始时间极为接近（当前默认探测时长为 <code>500μs</code> ），侧重于近乎在同一个时间点发起，即并「发」。</li>
+</ul>
+<p>这里我们可以回顾上文提到的时序图，里面就包含了一个并发的展示样例：</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2023.png"></p>
+<p>需要注意的是，这里我们提到的“并行”，是一个逻辑概念，是我们根据数据状态进行的一种“推测”，而非坚定的”判断“，被”推测“为并行的元素间<strong>可能不存在”真实“的物理并发行为</strong>，而同样存在一些“真实”的物理并发没有被并行”推测”所标记。</p>
+<h1 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h1><p>我们常常需要对比不同时间段内**相似的 Trace，<strong>它可以帮助我们在更长的时间维度上对程序行为进行观测</strong>。**正如上文提到每一个 Trace 都是一颗多叉树，相似 Trace 的对比其实就是多叉树对比的策略，但和普通多叉树不同的是，兄弟节点之间是时序相关的。</p>
+<h2 id="对比策略"><a href="#对比策略" class="headerlink" title="对比策略"></a>对比策略</h2><p>在 Trace 场景中我们采用了通过相对时序的方案对两棵多叉树进行对比。<br><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2024.png"><br>相对时序的意思是，我们会根据节点所在兄弟之间的位置来确定其是否在对比树中存在。对于 baseline 的某个节点而言，查找可能会产生四种结果：</p>
+<ul>
+<li><code>UNCHANGED</code>，未发生变化，相对位置、Span 关键信息、耗时均未发生改变</li>
+<li><code>CHANGED</code> ，发生变化，相对位置、Span 关键信息已找到，但是耗时有了增减</li>
+<li><code>REMOVED</code> ，在 baseline 树中不存在，但是存在于对比树，认为是对比树新增的节点</li>
+<li><code>ADDED</code> ，未在对比树中找到对应 Span，判断该节点已经被删除</li>
+</ul>
+<h2 id="可比性评估"><a href="#可比性评估" class="headerlink" title="可比性评估"></a>可比性评估</h2><p>有时候两棵 Trace 树的差异非常大，进行对比展示的意义不大，我们采取了一种 <em><strong>吻合度按层级递减</strong></em> 的策略对两棵树的可比性进行了一个评估。采取这个思路的原因是：<em>越靠近根的节点对于树的相似性有更多的影响。</em></p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2025.png"></p>
+<p>在这里我们按照层级，从上到下进行评估可比性。当任意层级评估不可比，即判定两棵树不可比。</p>
+<p>依照刚才提到的整体思路，越是靠近根节点的层级，应该有更高的相似性：<strong>从左侧 baseline 树的角度出发，计算出节点在对比树中存在的比例是否满足该层级的最低吻合度</strong></p>
+<p>我们定义了一个变量：吻合度层级递减比例 <code>X</code> ，对于层级而言，最低吻合度就是 <code>(100 - level * X)</code> 。这里的 <code>X</code> 的取值会决定两棵树是否可比，如图所示：</p>
+<ul>
+<li>当 <code>X=25</code> 时， <code>level=3</code> 层级的吻合度 <code>1/6=16.7%</code> 是小于 <code>100 - 3*25=25%</code> ，所以判定这两棵树是不可比的。</li>
+<li>当 <code>X=30</code> 时， <code>level=3</code> 层级的吻合度 <code>1/6=16.7%</code> 是大于 <code>100 - 3*30=10%</code> ，所以判定这两棵树是可比的。</li>
+</ul>
+<p>（<em>对于具体 <code>X</code> 的调控，我们暂时采用了一个静态值，更灵活的调整策略还在根据实际场景进行摸索。）</em></p>
+<h3 id="忽略小差异"><a href="#忽略小差异" class="headerlink" title="忽略小差异"></a>忽略小差异</h3><p>当然存在一些非常小的 Trace 树不太适用吻合度递减的评估策略。</p>
+<p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2026.png"></p>
+<p>足够小的树，需要 X 值较大才能保证对比性</p>
+<p>我们设定了一个阈值 <code>Y</code>，当层级节点数小于 <code>Y</code> 时我们不予进行对比评估。</p>
+<h1 id="Fin"><a href="#Fin" class="headerlink" title="Fin"></a>Fin</h1><p><img src="/../images/%F0%9F%A6%BE%20%E8%A7%82%E6%B5%8B%E5%88%A9%E5%99%A8%EF%BC%9A%E8%AE%A9%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E9%9A%BE%E6%87%82%E7%9A%84%20Trace/Untitled%2027.png"></p>
+<p>基于当前的生产管线，后续可以对更多可视化图表，让天下没有难懂的 Trace 😎</p>
+<p>(以上内容均已<a target="_blank" rel="noopener" href="https://github.com/TencentBlueKing/bk-monitor/tree/master/bkmonitor/packages/apm_web/trace">开源</a> 👾）</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/trace-diagrams.html">https://emergencyexit.xyz/trace-diagrams.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/best-practice/"># best-practice</a>
+                    
+                        <a href="/tags/observability/"># observability</a>
+                    
+                        <a href="/tags/diagram/"># diagram</a>
+                    
+                        <a href="/tags/trace/"># trace</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/sre-surfing-2.html">🏄 SRE 冲浪记 - 2</a>
+            
+            
+            <a class="next" rel="next" href="/sre-surfing-1.html">🌊 SRE 冲浪记 - 1</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

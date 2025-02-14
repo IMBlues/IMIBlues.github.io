@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>📖 Google 软件工程 读后感 Part I | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">📖 Google 软件工程 读后感 Part I</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 20, 2022&nbsp;&nbsp;14:44:55</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>总的来说，这本书值得所有软件开发从业者阅读。一些观点可能不至于奉之圭臬，但也可以提供另一种处理问题的视角。</p>
+<p>它将很多<strong>存在于意识而尚未落成语言的软件工程共识</strong>，用简单易读的方式总结表达了出来，相信对于大多数软件工程师都会有帮助。</p>
+<p>分享书中一些有趣的说法，如果你也觉得有意思，那么就买来读一读吧。</p>
+<p>（如果你的「洋文🤓」够好，也可以直接<strong>免费</strong>阅读 <a target="_blank" rel="noopener" href="https://abseil.io/resources/swe-book/html/toc.html">英文原版</a>）</p>
+<h2 id="海勒姆定律（Hyrum’s-Law）"><a href="#海勒姆定律（Hyrum’s-Law）" class="headerlink" title="海勒姆定律（Hyrum’s Law）"></a>海勒姆定律（Hyrum’s Law）</h2><blockquote>
+<p>当一个 API 有足够多的用户时，在约定中你所承诺的已不重要：所有在你系统里面被观察到的行为都会被一些用户所依赖。</p>
+</blockquote>
+<p>我从中读出来的关键点：拒绝侥幸心理。当用户体量足够大时，任何改动都需要通过测试来收尾，侥幸心理自认为某些逻辑人畜无害，一两次可能可以省事儿，但总有一天会翻船。</p>
+<h2 id="巴士系数（Truck-Factor）"><a href="#巴士系数（Truck-Factor）" class="headerlink" title="巴士系数（Truck Factor）"></a>巴士系数（<strong>Truck Factor</strong>）</h2><blockquote>
+<p>指多少关键开发者被巴士撞了会让项目停摆。</p>
+</blockquote>
+<p>开发者被巴士撞了虽然有点残忍，但确实是一个很形象的表述——当成员突然不参与工作或失去通讯能力。可能在很多团队中，开发者的<strong>突然离职</strong>是更贴近这种场景的情况。想要尽量避免因为关键人物的离开而导致项目停摆，书中也列举了基础的预防措施：备份或者结对编程，“每一个人在工作时都需要第二双眼睛的监督”，最重要的是 “拒绝隐藏”。</p>
+<p>就我个人的经验而言，在项目开发过程中保持良好的文档记录习惯是一种“美德”，在一些更有追求的团队，更应该是“义务”。良好的文档可以一定程度上保持当“巴士”袭来时，团队能够依靠文档维持相当程度的稳定。</p>
+<p>当然以上都是从 <strong>“团队最优”</strong> 的角度来说，并不是所有公司都有 Google 的优秀风气，我还在别的团队听过”教会徒弟，饿死师傅“的说法。</p>
+<p>这其中孰对孰错，是分享还是私藏，很难在这篇读后感中用几百字讨论清楚。</p>
+<p>我们需要保持清醒：互联网从业有它的特殊性——知识获取门槛极低，任何领域都可以通过网络资源轻松入门，但同时也有其他行业相似的普遍性——在资本逐利的背景下，行业失去高增长，更低成本的人力总是会更有竞争力。</p>
+<h2 id="左移思想（Left-Shift）"><a href="#左移思想（Left-Shift）" class="headerlink" title="左移思想（Left Shift）"></a>左移思想（Left Shift）</h2><blockquote>
+<p>在开发人员工作流的早期发现问题通常会降低成本。</p>
+</blockquote>
+<p><img src="/../images/%F0%9F%93%96%20Google%20%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%20%E8%AF%BB%E5%90%8E%E6%84%9F%20Part%20I/Untitled.png"></p>
+<p>配合此图，还是非常容易理解的。从开发人员的角度来看，可能存在的问题在越前端解决付出的成本肯定是越小的。举个小例子，陶文在 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/357411780">《不要以 DRY 之名，发明低代码 DSL 去残害你的同事》</a>提到过，缺乏与上游（比如产品、策划）的沟通，只是在开发侧 “一厢情愿” 的抽象可能是一个误区：“先要把需求的源头给按住了。而不是在需求的下游，用可复用抽象代码来兜底”。</p>
+<p>类似地，在敏捷开发和 <a target="_blank" rel="noopener" href="https://devops.com/devops-shift-left-avoid-failure/">DevOps 开发理论中也提到过</a> ，同时还有一个 “<a target="_blank" rel="noopener" href="https://devops.com/shift-right-testing-the-emergence-of-testops/">测试右移</a>” 的概念，在测试或者是性能检查时，尽量从贴近用户端出发来保证整个产品流程的质量。</p>
+<h2 id="经理人炎症（Manageritis）"><a href="#经理人炎症（Manageritis）" class="headerlink" title="经理人炎症（Manageritis）"></a>经理人炎症（Manageritis）</h2><blockquote>
+<p>对于处于进步边缘的有抱负的或者那些刚刚晋升的领导者，存在一种高度危险的自我炎症，称为“管理炎”。</p>
+</blockquote>
+<p>更简单说法是 “刻意管理”，这种症状多数出现在从个人贡献者 → 管理者身份转变期。很大的原因是，作为技术开发者，我们已经很习惯于在专业技能上投资，并有着合适的回报预期：比如定期在某个领域深入学习，你就能立马获得该领域的技能提升。但是转变到“经理”时，这个回报周期变得不一样了（通常会更长），带领团队向上提升，个体的技能成长反而不容易被感知，会导致做出更高频次的“投资”动作，更加”努力管理”，更容易显得刻意。</p>
+<p>还有一个方面的原因，从个人贡献者到管理者后，将会面临很多抉择的场景：<em>自己动手，快速解决问题</em> vs <em>交给他人，更慢更困难地解决问题</em>，及时从更长尺度上来看，后者收益会更高，但在这个抉择面前，没有经验的管理者还是会显得非常犹豫。</p>
+<h2 id="碧昂丝规则（Beyonce-Rule）"><a href="#碧昂丝规则（Beyonce-Rule）" class="headerlink" title="碧昂丝规则（Beyoncé Rule）"></a>碧昂丝规则（Beyoncé Rule）</h2><blockquote>
+<p>“如果你喜欢它，你就应该测试它”。</p>
+</blockquote>
+<p>原型是：”If you liked it then you shoulda put a ring on it”，来自于碧昂斯 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=4m1EFMoRFvY">Single Lady(Put a Ring on It)</a> 歌词（我感觉关联性不大，我猜是碧昂斯粉丝的私货 🤣）。</p>
+<p>意思是“所有不想被破坏的东西”都应该被测试。当你的项目依赖于某些外部系统时，如果想确保一些特性能够符合预期，那么唯一的办法就是在自己的项目编写测试。</p>
+<p>这一点容易被泛化到外部系统的所有特性，我的理解是需要妥善处理依赖的外部系统<strong>常见的重点场景</strong>出现异常的情况，而不是全部，也不应该关注全部。</p>
+<p>在 Google 内部常有一种说法：“如果一个产品由于基础设施的变更出现中断或其它问题，但是在我们的持续集成(CI)系统中的自动化测试用例并没有发现这个问题，那么就不应该由负责基础设施的团队承担责任。”</p>
+<p>在我们日常的工作场景中，大家普遍是没有这个意识的，如果基础设施出问题，无论我们是否有预料，黑锅都可以毫无负担的甩下去，也造成基础设施部门普遍承受了过多压力 xD。</p>
+<h2 id="Fin"><a href="#Fin" class="headerlink" title="Fin"></a>Fin</h2><p>书中还有一些更大值得讨论的话题，以后或许有机会可以结合自己的项目经历写出来聊聊<em><del>（典型的挖坑不埋）</del></em>。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/software-engineering-at-google-impression.html">https://emergencyexit.xyz/software-engineering-at-google-impression.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/google/"># google</a>
+                    
+                        <a href="/tags/reading/"># reading</a>
+                    
+                        <a href="/tags/software-engineering/"># software-engineering</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/wtf-go-constants.html">🤔 WTF Go Constants</a>
+            
+            
+            <a class="next" rel="next" href="/django-orm-best-practice-II.html">👼 Django ORM：天使与魔鬼 II</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

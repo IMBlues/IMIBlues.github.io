@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🌊 SRE 冲浪记 - 1 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🌊 SRE 冲浪记 - 1</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 24, 2023&nbsp;&nbsp;14:36:03</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><img src="/../images/%F0%9F%8C%8A%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%201/IMG_20230805_193254.png"><br>循礼门夜市，狭长走道，深蓝色天空</p>
+<h1 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h1><h2 id="Go-for-range-的坑"><a href="#Go-for-range-的坑" class="headerlink" title="Go for range 的坑"></a>Go <code>for range</code> 的坑</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/641611712">Go 团队将修改 for 循环变量的语义，Go1.21 新版本即可体验！</a></p>
+<h2 id="Discord-为什么用-Rust-代替-Go"><a href="#Discord-为什么用-Rust-代替-Go" class="headerlink" title="Discord 为什么用 Rust 代替 Go"></a>Discord 为什么用 Rust 代替 Go</h2><p><a target="_blank" rel="noopener" href="https://medium.com/discord-engineering/why-discord-is-switching-from-go-to-rust-a190bbca2b1f">Why Discord is switching from Go to Rust</a></p>
+<h3 id="延展阅读：像-Rust-一样写-Python"><a href="#延展阅读：像-Rust-一样写-Python" class="headerlink" title="延展阅读：像 Rust 一样写 Python"></a>延展阅读：像 Rust 一样写 Python</h3><p><a target="_blank" rel="noopener" href="https://kobzol.github.io/rust/python/2023/05/20/writing-python-like-its-rust.html">Writing Python like it’s Rust</a></p>
+<p>作者从 Rust 编写习惯出发，重新审视了 Python 的“静态”写法。我作为不写 Rust 老 Pythonista，文章里面绝大多数的提议已经是习以为常了，但重新从 Rust 视角过一遍还是很有意思的。</p>
+<h2 id="Python-vs-Rust-异步网络框架性能对比"><a href="#Python-vs-Rust-异步网络框架性能对比" class="headerlink" title="Python vs Rust: 异步网络框架性能对比"></a>Python vs Rust: 异步网络框架性能对比</h2><p><a target="_blank" rel="noopener" href="https://codesolid.com/benchmarking-python-and-rust-async-web-server-performance/">Benchmarking Python and Rust Async Web Server Performance</a></p>
+<p>文章里对比的异步框架有限，但是也提供了一个视角，仅在异步场景下，Python 和 Rust 的差距没有那么大。</p>
+<h2 id="Threads-还是用的-Python-Django"><a href="#Threads-还是用的-Python-Django" class="headerlink" title="Threads 还是用的 Python + Django"></a>Threads 还是用的 Python + Django</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/Rxy_nWzivLZyT7TjXiy_BQ">Twitter劲敌Threads注册量已破三千万，后端基于CPython深度“魔改”</a></p>
+<h3 id="延展阅读：Instagram-如何将-Python2-升级到-3"><a href="#延展阅读：Instagram-如何将-Python2-升级到-3" class="headerlink" title="延展阅读：Instagram 如何将 Python2 升级到 3"></a>延展阅读：Instagram 如何将 Python2 升级到 3</h3><p><a target="_blank" rel="noopener" href="https://www.piglei.com/articles/instagram-pycon-2017/">Instagram 在 PyCon 2017 的演讲摘要  | Piglei</a></p>
+<h3 id="延展思考：我们应该改用-Cinder-吗-No"><a href="#延展思考：我们应该改用-Cinder-吗-No" class="headerlink" title="延展思考：我们应该改用 Cinder 吗? No."></a>延展思考：我们应该改用 <a target="_blank" rel="noopener" href="https://github.com/facebookincubator/cinder">Cinder</a> 吗? No.</h3><h2 id="为什么我讨厌-Asyncio"><a href="#为什么我讨厌-Asyncio" class="headerlink" title="为什么我讨厌 Asyncio ?"></a>为什么我讨厌 Asyncio ?</h2><p><a target="_blank" rel="noopener" href="https://charlesleifer.com/blog/asyncio/">charles leifer | AsyncIO</a></p>
+<h2 id="有人在上云，有人在下云"><a href="#有人在上云，有人在下云" class="headerlink" title="有人在上云，有人在下云"></a>有人在上云，有人在下云</h2><p><a target="_blank" rel="noopener" href="https://world.hey.com/dhh/we-have-left-the-cloud-251760fb">We have left the cloud</a></p>
+<h1 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h1><h2 id="如何组织超级大的-Python-单体应用"><a href="#如何组织超级大的-Python-单体应用" class="headerlink" title="如何组织超级大的 Python 单体应用"></a>如何组织超级大的 Python 单体应用</h2><p><a target="_blank" rel="noopener" href="https://blog.europython.eu/kraken-technologies-how-we-organize-our-very-large-pythonmonolith/">Kraken Technologies: How we organise our very large Python monolith</a></p>
+<h3 id="延伸关注：Import-Linter"><a href="#延伸关注：Import-Linter" class="headerlink" title="延伸关注：Import Linter"></a>延伸关注：<a target="_blank" rel="noopener" href="https://github.com/seddonym/import-linter">Import Linter</a></h3><h2 id="使用随即排序的-QuerySet-来减少测试的不稳定性"><a href="#使用随即排序的-QuerySet-来减少测试的不稳定性" class="headerlink" title="使用随即排序的 QuerySet 来减少测试的不稳定性"></a>使用随即排序的 QuerySet 来减少测试的不稳定性</h2><p><a target="_blank" rel="noopener" href="https://adamj.eu/tech/2023/07/04/django-test-random-order-querysets/">Django: Flush out test flakiness by randomly ordering QuerySets - Adam Johnson</a></p>
+<h2 id="在-Python-中增加尾调用优化"><a href="#在-Python-中增加尾调用优化" class="headerlink" title="在 Python 中增加尾调用优化"></a>在 Python 中增加尾调用优化</h2><p><a target="_blank" rel="noopener" href="https://blog.jonas.foo/posts/python-tail-call-optimization/">Adding tail call optimization to Python</a></p>
+<h2 id="技术文章和技术分享的一些经验"><a href="#技术文章和技术分享的一些经验" class="headerlink" title="技术文章和技术分享的一些经验"></a>技术文章和技术分享的一些经验</h2><p><a target="_blank" rel="noopener" href="https://coolshell.cn/articles/21589.html">如何做一个有质量的技术分享 | 酷 壳 - CoolShell</a></p>
+<h1 id="小憩"><a href="#小憩" class="headerlink" title="小憩"></a>小憩</h1><h2 id="Go-proposal-使用-ʕ◔ϖ◔ʔ-作为-Go-文件的后缀名"><a href="#Go-proposal-使用-ʕ◔ϖ◔ʔ-作为-Go-文件的后缀名" class="headerlink" title="Go proposal: 使用 .ʕ◔ϖ◔ʔ 作为 Go 文件的后缀名"></a>Go proposal: <a target="_blank" rel="noopener" href="https://github.com/golang/go/issues/59968">使用 <strong><code>.ʕ◔ϖ◔ʔ</code> 作为 Go 文件的后缀名</strong></a></h2><p>受到 <a target="_blank" rel="noopener" href="https://www.modular.com/mojo">Mojo</a> 语言以 <code>.🔥</code> 作为后缀名的启发，有人提议 Go 也不要落后，可以用 <code>.ʕ◔ϖ◔ʔ</code> 替代 <code>.go</code> 。  虽然是一个以搞笑为主旨的提议，但也让人脑洞打开，如果以 Unicode Emoji 作为文件扩展名，到底会有哪些意想不到的影响，比如 Windows 是否支持？要不要把命令行的 <code>go run</code> 也改成 <code>.ʕ◔ϖ◔ʔ run</code> ？当然，也有网友选择直接“报警”：</p>
+<p><img src="/../images/%F0%9F%8C%8A%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%201/Untitled%201.png"></p>
+<h2 id="行为艺术：此地无银三百两"><a href="#行为艺术：此地无银三百两" class="headerlink" title="行为艺术：此地无银三百两"></a>行为艺术：<a target="_blank" rel="noopener" href="https://github.com/danielmiessler/SecLists/pull/155">此地无银三百两</a></h2><p><img src="/../images/%F0%9F%8C%8A%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%201/Untitled.png"></p>
+<h2 id="K8SGPT-用简单的英语扫描-Kubernetes-集群、诊断和分类问题的工具"><a href="#K8SGPT-用简单的英语扫描-Kubernetes-集群、诊断和分类问题的工具" class="headerlink" title="K8SGPT - 用简单的英语扫描 Kubernetes 集群、诊断和分类问题的工具"></a><a target="_blank" rel="noopener" href="https://github.com/k8sgpt-ai/k8sgpt">K8SGPT</a> - 用简单的英语扫描 Kubernetes 集群、诊断和分类问题的工具</h2><p>没错，GPT 开始进入 SRE 领域了。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/sre-surfing-1.html">https://emergencyexit.xyz/sre-surfing-1.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/surfing/"># surfing</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/trace-diagrams.html">🦾 观测利器：让天下没有难懂的 Trace</a>
+            
+            
+            <a class="next" rel="next" href="/continuous-profiling.html">🃏 Continuous Profiling 持续分析漫谈</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

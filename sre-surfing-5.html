@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🔚 SRE 冲浪记 - 5 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🔚 SRE 冲浪记 - 5</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 15, 2024&nbsp;&nbsp;14:44:23</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><img src="/../images/%F0%9F%94%9A%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%205/1000003273.jpg"><br>一只守在汉堡店周围的鸟，随时等待食客投喂汉堡</p>
+<p>（放在草稿箱俩月了，想着与其吃灰，不如发出来，也许是冲浪记的最后一篇）</p>
+<h2 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h2><h3 id="核心业务逻辑，还是自己写吧"><a href="#核心业务逻辑，还是自己写吧" class="headerlink" title="核心业务逻辑，还是自己写吧"></a>核心业务逻辑，还是自己写吧</h3><blockquote>
+<p><strong>If it’s a core business function — do it yourself, no matter what.</strong></p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.joelonsoftware.com/2001/10/14/in-defense-of-not-invented-here-syndrome/">In Defense of Not-Invented-Here Syndrome</a></p>
+<h3 id="远程工作就像是玩一款能给你工资的电子游戏"><a href="#远程工作就像是玩一款能给你工资的电子游戏" class="headerlink" title="远程工作就像是玩一款能给你工资的电子游戏"></a>远程工作就像是玩一款能给你工资的电子游戏</h3><p><a target="_blank" rel="noopener" href="https://dtransposed.github.io/blog/2023/11/02/Remote-SWE/">A Video Game that Pays: Lessons Learned from Working Remotely</a></p>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><h3 id="CSS-2023年都加了啥？"><a href="#CSS-2023年都加了啥？" class="headerlink" title="CSS 2023年都加了啥？"></a>CSS 2023年都加了啥？</h3><p><a target="_blank" rel="noopener" href="https://developer.chrome.com/blog/css-wrapped-2023?hl=zh-cn">CSS 封装：2023 年！  |  Blog  |  Chrome for Developers</a></p>
+<h3 id="如何构建一个在线合作文档"><a href="#如何构建一个在线合作文档" class="headerlink" title="如何构建一个在线合作文档"></a>如何构建一个在线合作文档</h3><p><a target="_blank" rel="noopener" href="https://www.aadhav.me/posts/collaborative-editor">Building a collaborative text editor in Go</a></p>
+<h2 id="小憩"><a href="#小憩" class="headerlink" title="小憩"></a>小憩</h2><h3 id="一个-Rust-编写的静态站点生成器"><a href="#一个-Rust-编写的静态站点生成器" class="headerlink" title="一个 Rust 编写的静态站点生成器"></a>一个 Rust 编写的静态站点生成器</h3><p><a target="_blank" rel="noopener" href="https://rspress.dev/zh/">Rspress</a></p>
+<h3 id="半夜刷手机，最低亮度还是觉得太亮？可以这么做"><a href="#半夜刷手机，最低亮度还是觉得太亮？可以这么做" class="headerlink" title="半夜刷手机，最低亮度还是觉得太亮？可以这么做"></a>半夜刷手机，最低亮度还是觉得太亮？可以这么做</h3><p><a target="_blank" rel="noopener" href="https://practicalbetterments.com/create-a-shortcut-for-even-lower-phone-brightness/">Create a shortcut for even lower phone brightness</a></p>
+<h3 id="适用于播客的音频剪辑软件"><a href="#适用于播客的音频剪辑软件" class="headerlink" title="适用于播客的音频剪辑软件"></a>适用于播客的音频剪辑软件</h3><p><a target="_blank" rel="noopener" href="https://audiocut.app/">Auto Cut Audio</a></p>
+<h3 id="免费的高清动植物3D模型"><a href="#免费的高清动植物3D模型" class="headerlink" title="免费的高清动植物3D模型"></a>免费的高清动植物3D模型</h3><p><a target="_blank" rel="noopener" href="https://sketchfab.com/ffishAsia-and-floraZia">ffish.asia &#x2F; floraZia.com (@ffishAsia-and-floraZia)</a></p>
+<h3 id="拜登：“一切非-Rust-项目均为非法”"><a href="#拜登：“一切非-Rust-项目均为非法”" class="headerlink" title="拜登：“一切非 Rust 项目均为非法”"></a>拜登：“一切非 Rust 项目均为非法”</h3><p>在该报告中，拜登政府希望软件开发人员尽量使用 Rust 这样的内存安全编程语言，并放弃 C 和 C++ 等安全性薄弱的语言。另外，参议院还强调会努力为内存安全立法。</p>
+<p><img src="/../images/%F0%9F%94%9A%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%205/Untitled.png"></p>
+<h3 id="计算机魔法-Shader-赏析"><a href="#计算机魔法-Shader-赏析" class="headerlink" title="计算机魔法 Shader 赏析"></a>计算机魔法 Shader 赏析</h3><p>纯 Shader + 数学实现一个风景视频 </p>
+<p><a target="_blank" rel="noopener" href="https://www.shadertoy.com/view/4ttSWf">Shadertoy</a></p>
+<p>204 行一首现代水纹诗</p>
+<p><a target="_blank" rel="noopener" href="https://www.shadertoy.com/view/Ms2SD1">Shadertoy</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/sre-surfing-5.html">https://emergencyexit.xyz/sre-surfing-5.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/surfing/"># surfing</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/sre-surfing-4.html">🏄‍♂️ SRE 冲浪记 - 4</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

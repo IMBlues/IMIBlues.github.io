@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>👋 再见 Helm，你好 CUE | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">👋 再见 Helm，你好 CUE</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 22, 2021&nbsp;&nbsp;15:25:09</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="什么是-CUE"><a href="#什么是-CUE" class="headerlink" title="什么是 CUE"></a>什么是 CUE</h2><blockquote>
+<p>CUE 是一种开源数据验证语言和推理引擎，其根源在于逻辑编程</p>
+</blockquote>
+<p>说实话，我一开始也没看懂这句描述。我们先来看个小例子：</p>
+<p>Data</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">moscow<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  name<span class="punctuation">:</span>    <span class="string">&quot;Moscow&quot;</span></span><br><span class="line">  pop<span class="punctuation">:</span>     <span class="number">11.92</span>M</span><br><span class="line">  capital<span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Schema</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">municipality<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  name<span class="punctuation">:</span>    string</span><br><span class="line">  pop<span class="punctuation">:</span>     int</span><br><span class="line">  capital<span class="punctuation">:</span> bool</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>CUE</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">largeCapital<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  name<span class="punctuation">:</span>    string</span><br><span class="line">  pop<span class="punctuation">:</span>     &gt;<span class="number">5</span>M</span><br><span class="line">  capital<span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>在定义 JSON 数据时，我们通常会将 Data 和 Schema 分开处理。而 CUE 则将二者结合在一起，既可以指定数据字段类型，也可以直接填写具体值，也就是 CUE 并不会特意地区分 “类型” 和 “值”， <code>string</code> 和 <code>&quot;Moscow&quot;</code> 都会被当作值 ，但是二者之间有包含的先后顺序，在这里 <code>&quot;Moscow&quot;</code> 可以背归纳于 <code>string</code> 的一种，那么 <code>string</code> 在格(lattice)中会优先于 <code>&quot;Moscow&quot;</code> 。</p>
+<p>更多关于 CUE 的介绍，可以通过 <a target="_blank" rel="noopener" href="https://cuelang.org/docs/">官方文档</a> 和 <a target="_blank" rel="noopener" href="https://github.com/cuelang/cue/blob/master/doc/ref/spec.md">定义</a> 了解过多，这里就不展开了。</p>
+<h2 id="使用-CUE-做模版渲染"><a href="#使用-CUE-做模版渲染" class="headerlink" title="使用 CUE 做模版渲染"></a>使用 CUE 做模版渲染</h2><p>CUE 有<a target="_blank" rel="noopener" href="https://cuelang.org/docs/usecases/">很多很酷的使用场景</a>，而先让我们关注其中的配置文件渲染能力。</p>
+<p>我们在这里借用 <code>KubeVela</code> <a target="_blank" rel="noopener" href="https://kubevela.io/docs/platform-engineers/cue/trait#using-cue-as-trait-schematic">文档中的例子</a></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">template:</span> <span class="string">|</span></span><br><span class="line"><span class="string">  parameter: &#123;</span></span><br><span class="line"><span class="string">      domain: string</span></span><br><span class="line"><span class="string">      http: [string]: int</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">  <span class="string">//</span> <span class="string">trait</span> <span class="string">template</span> <span class="string">can</span> <span class="string">have</span> <span class="string">multiple</span> <span class="string">outputs</span> <span class="string">in</span> <span class="string">one</span> <span class="string">trait</span></span><br><span class="line">  <span class="attr">outputs: service:</span> &#123;</span><br><span class="line">      <span class="attr">apiVersion:</span> <span class="string">&quot;v1&quot;</span></span><br><span class="line">      <span class="attr">kind:</span>       <span class="string">&quot;Service&quot;</span></span><br><span class="line">      <span class="attr">spec:</span> &#123;</span><br><span class="line">          <span class="attr">selector:</span></span><br><span class="line">              <span class="attr">app:</span> <span class="string">context.name</span></span><br><span class="line">          <span class="attr">ports:</span> [</span><br><span class="line">              <span class="string">for</span> <span class="string">k</span>, <span class="string">v</span> <span class="string">in</span> <span class="string">parameter.http</span> &#123;</span><br><span class="line">                  <span class="attr">port:</span>       <span class="string">v</span></span><br><span class="line">                  <span class="attr">targetPort:</span> <span class="string">v</span></span><br><span class="line">              &#125;,</span><br><span class="line">          ]</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="attr">outputs: ingress:</span> &#123;</span><br><span class="line">      <span class="attr">apiVersion:</span> <span class="string">&quot;networking.k8s.io/v1beta1&quot;</span></span><br><span class="line">      <span class="attr">kind:</span>       <span class="string">&quot;Ingress&quot;</span></span><br><span class="line">      <span class="attr">metadata:</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">context.name</span></span><br><span class="line">      <span class="attr">spec:</span> &#123;</span><br><span class="line">          <span class="attr">rules:</span> [&#123;</span><br><span class="line">              <span class="attr">host:</span> <span class="string">parameter.domain</span></span><br><span class="line">              <span class="attr">http:</span> &#123;</span><br><span class="line">                  <span class="attr">paths:</span> [</span><br><span class="line">                      <span class="string">for</span> <span class="string">k</span>, <span class="string">v</span> <span class="string">in</span> <span class="string">parameter.http</span> &#123;</span><br><span class="line">                          <span class="attr">path:</span> <span class="string">k</span></span><br><span class="line">                          <span class="attr">backend:</span> &#123;</span><br><span class="line">                              <span class="attr">serviceName:</span> <span class="string">context.name</span></span><br><span class="line">                              <span class="attr">servicePort:</span> <span class="string">v</span></span><br><span class="line">                          &#125;</span><br><span class="line">                      &#125;,</span><br><span class="line">                  ]</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;]</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，只需要传入 <code>parameter</code> ，就可以得到包含 <code>Service</code> 和 <code>Ingress</code> 的 <code>output</code> 。</p>
+<p>这样的写法立刻让我们想到了一个类似的工具—— <a target="_blank" rel="noopener" href="https://github.com/helm/helm">Helm</a>，作为较早的 CNCF 毕业项目，Helm 已经慢慢演进成在 k8s 配置定义领域的事实意义上的工业标准。那么相较于 Helm，用 CUE 来写配置文件渲染，又有什么异同呢？</p>
+<h2 id="CUE-vs-Helm"><a href="#CUE-vs-Helm" class="headerlink" title="CUE vs Helm"></a>CUE vs Helm</h2><p>最直观的感受就是，在模版编写上 CUE 比 Helm 流畅太多了。主要的原因二者在最初的设计思路差异，Helm <a target="_blank" rel="noopener" href="https://helm.sh/docs/chart_template_guide/functions_and_pipelines/">借助的是 Go 和 Spring 的<strong>纯文本渲染能力</strong></a>，而对于 CUE，JSON 才是一等公民。所以在 K8S 这类 yaml（JSON 超集） 文件渲染上，CUE（也是 JSON 超集） 拥有天然的优势。</p>
+<blockquote>
+<p>Talk is cheap， show me the code.</p>
+</blockquote>
+<p>我们一起来看几个常用的场景。</p>
+<h3 id="Named-Templates"><a href="#Named-Templates" class="headerlink" title="Named Templates"></a>Named Templates</h3><p><strong>Helm</strong></p>
+<p><strong>CUE</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># values.yaml</span></span><br><span class="line"><span class="attr">app_name:</span> <span class="string">&quot;example_code&quot;</span></span><br><span class="line"><span class="attr">other_attr1:</span> <span class="string">&quot;foo&quot;</span></span><br><span class="line"><span class="attr">other_attr2:</span> <span class="string">&quot;bar&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># labels.tpl</span></span><br><span class="line">&#123;&#123;<span class="bullet">-</span> <span class="string">define</span> <span class="string">&quot;foo.labels&quot;</span> <span class="string">-</span>&#125;&#125;</span><br><span class="line"><span class="attr">label1:</span> &#123;&#123; <span class="string">.Values.app_name</span> <span class="string">|</span> <span class="string">required</span> <span class="string">&quot;app_name is required&quot;</span> &#125;&#125; </span><br><span class="line"><span class="attr">label2:</span> &#123;&#123; <span class="string">.Values.other_attr2</span> &#125;&#125;</span><br><span class="line">&#123;&#123; <span class="string">include</span> <span class="string">&quot;foo.selectorLabels&quot;</span> <span class="string">.</span> &#125;&#125;</span><br><span class="line">&#123;&#123;<span class="bullet">-</span> <span class="string">end</span> &#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;&#123;<span class="bullet">-</span> <span class="string">define</span> <span class="string">&quot;foo.selectorLabels&quot;</span> <span class="string">-</span>&#125;&#125;</span><br><span class="line"><span class="attr">label3:</span> &#123;&#123; <span class="string">printf</span> <span class="string">&quot;%s-%s&quot;</span> <span class="string">.Values.app_name</span> <span class="string">.Values.other_attr1</span> &#125;&#125;</span><br><span class="line">&#123;&#123;<span class="bullet">-</span> <span class="string">end</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># labels.cue</span></span><br><span class="line"><span class="attr">app_name:</span> <span class="string">*&quot;example_code&quot;</span> <span class="string">｜</span> <span class="string">string</span></span><br><span class="line"><span class="attr">other_attr1:</span> <span class="string">&quot;foo&quot;</span></span><br><span class="line"><span class="attr">other_attr2:</span> <span class="string">&quot;bar&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">selector_labels:</span> &#123;</span><br><span class="line">	<span class="attr">label3:</span> <span class="string">&quot;\( app_name )-\( other_attr2 )&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attr">labels:</span> &#123;</span><br><span class="line">	<span class="attr">label1:</span> <span class="string">app_name</span></span><br><span class="line">  <span class="attr">label2:</span> <span class="string">other_attr2</span></span><br><span class="line">	<span class="string">selector_labels</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Helm 可以在 <code>.tpl</code> 文件中定义可复用的模版，并支持其他模版引用它，同时，也只有定义了的模版才能被复用，在复杂的 Chart 项目里你<a target="_blank" rel="noopener" href="https://github.com/bitnami/charts/tree/master/bitnami/common/templates">需要额外定义非常多的基础模版</a>。</li>
+<li>相对于 Helm 繁琐的写法， 在 CUE 中所有内容均为 JSON 对象，不需要额外的语法去指定模版，任意 JSON 对象都可以互相引用。</li>
+</ul>
+<h3 id="空行和缩进"><a href="#空行和缩进" class="headerlink" title="空行和缩进"></a>空行和缩进</h3><p><strong>Helm</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> &#123;&#123; <span class="string">include</span> <span class="string">&quot;foo.deploymentName&quot;</span> <span class="string">.</span> &#125;&#125;</span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    &#123;&#123;<span class="bullet">-</span> <span class="string">include</span> <span class="string">&quot;foo.labels&quot;</span> <span class="string">.</span> <span class="string">|</span> <span class="string">nindent</span> <span class="number">4</span> &#125;&#125;</span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> &#123;&#123; <span class="string">.Values.replicaCount</span> &#125;&#125;</span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      &#123;&#123;<span class="bullet">-</span> <span class="string">include</span> <span class="string">&quot;foo.selectorLabels&quot;</span> <span class="string">.</span> <span class="string">|</span> <span class="string">nindent</span> <span class="number">6</span> &#125;&#125;</span><br><span class="line">  <span class="attr">strategy:</span></span><br><span class="line">    &#123;&#123;<span class="bullet">-</span> <span class="string">include</span> <span class="string">&quot;foo.updateStrategy&quot;</span> <span class="string">.</span> <span class="string">|</span> <span class="string">nindent</span> <span class="number">4</span> &#125;&#125;</span><br><span class="line">  <span class="attr">revisionHistoryLimit:</span> &#123;&#123; <span class="string">.Values.revisionHistoryLimit</span> &#125;&#125;</span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">    &#123;&#123;<span class="bullet">-</span> <span class="string">with</span> <span class="string">.Values.podAnnotations</span> &#125;&#125;</span><br><span class="line">      <span class="attr">annotations:</span></span><br><span class="line">        &#123;&#123;<span class="bullet">-</span> <span class="string">toYaml</span> <span class="string">.</span> <span class="string">|</span> <span class="string">nindent</span> <span class="number">8</span> &#125;&#125;</span><br><span class="line">    &#123;&#123;<span class="bullet">-</span> <span class="string">end</span> &#125;&#125;</span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        &#123;&#123;<span class="bullet">-</span> <span class="string">include</span> <span class="string">&quot;foo.labels&quot;</span> <span class="string">.</span> <span class="string">|</span> <span class="string">nindent</span> <span class="number">8</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>CUE</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deployment:</span> &#123;</span><br><span class="line">	<span class="attr">apiVersion:</span> <span class="string">&quot;apps/v1&quot;</span></span><br><span class="line">	<span class="attr">kind:</span>       <span class="string">&quot;Deployment&quot;</span></span><br><span class="line">	<span class="attr">metadata:</span> &#123;</span><br><span class="line">		<span class="attr">name:</span>   <span class="string">deployment_name</span></span><br><span class="line">		<span class="attr">labels:</span> <span class="string">labels</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="attr">spec:</span> &#123;</span><br><span class="line">		<span class="attr">replicas:</span> <span class="string">runtime.replicas</span></span><br><span class="line">		<span class="attr">selector: matchLabels:</span> <span class="string">selector_labels</span></span><br><span class="line">		<span class="attr">strategy:</span>             <span class="string">update_strategy</span></span><br><span class="line">		<span class="attr">revisionHistoryLimit:</span> <span class="string">revision_history_limit</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Helm 中有大量的 <code>&#123;&#123;- include &#125;&#125;</code> 和 <code>nindent</code> 等和实际逻辑无关的标记字符，需要在每一次引用的地方计算空格和缩进。</li>
+<li>而在 CUE 中无用编码更少，不需要过多的 <code>&#123;&#123; * &#125;&#125;</code> 来标记代码块，信息密度更高，而且在缩进和空格方面得到了完全的解放。</li>
+</ul>
+<h3 id="values-yaml-自引用"><a href="#values-yaml-自引用" class="headerlink" title="values.yaml 自引用"></a>values.yaml 自引用</h3><p>在 Helm 中，一个长久以来的头疼问题就是，无法优雅地实现 <code>values.yaml</code> 引用问题。</p>
+<p>我们看下面的例子：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">rootDomain:</span> <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们期待的是通过引用 rootDomain 拼接，例如：&quot;foo.&#123;&#123; .Values.rootDomain &#125;&#125;&quot;</span></span><br><span class="line"><span class="attr">productDomain:</span> <span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>通常的情况下，Chart 的使用者需要针对这两个变量分别填写内容，增加了出错的可能。</p>
+<p>虽然我们可以通过定义模版来实现：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># values.yaml</span></span><br><span class="line"><span class="attr">rootDomain:</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="attr">productDomain:</span> <span class="string">&quot;foo.<span class="template-variable">&#123;&#123; .Values.rootDomain &#125;&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># helpers.tpl</span></span><br><span class="line">&#123;&#123;<span class="bullet">-</span> <span class="string">define</span> <span class="string">&quot;foo.productDomain&quot;</span> <span class="string">-</span>&#125;&#125;</span><br><span class="line">&#123;&#123; <span class="string">tpl</span> <span class="string">.Values.productDomain</span> <span class="string">$</span> &#125;&#125;</span><br><span class="line">&#123;&#123;<span class="bullet">-</span> <span class="string">end</span> &#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ingress.yaml</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">host:</span> &#123;&#123; <span class="string">include</span> <span class="string">&quot;foo.productDomain&quot;</span> <span class="string">.</span> <span class="string">|</span> <span class="string">quote</span> &#125;&#125;</span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<p>但在实际使用中，所有引用的地方都需要额外 <code>include</code> ，同时定义的维护也非常耗费心力（要时刻保证空行、缩进不出错）。</p>
+<p>而在 CUE 中，相互引用显得自然而舒服。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rootDomain<span class="punctuation">:</span> string</span><br><span class="line">productDomain<span class="punctuation">:</span> *<span class="string">&quot;foo.\( rootDomain )&quot;</span> | string</span><br></pre></td></tr></table></figure>
+
+<h3 id="导入-Kubernetes-包"><a href="#导入-Kubernetes-包" class="headerlink" title="导入 Kubernetes 包"></a>导入 Kubernetes 包</h3><p>CUE 的另一大杀器，可以针对原生 Kubernetes 源码生成描述 cue 文件，所有 k8s 资源相关的配置文件，都可以天然地拥有 schema 校验。具体教程可以查看 <a target="_blank" rel="noopener" href="https://cue.googlesource.com/cue/+/HEAD/doc/tutorial/kubernetes/README.md">Kubernetes tutorial</a>。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">package</span> <span class="string">templates</span></span><br><span class="line"></span><br><span class="line"><span class="string">import</span> <span class="string">(</span></span><br><span class="line">	<span class="string">apps</span> <span class="string">&quot;k8s.io/api/apps/v1&quot;</span></span><br><span class="line"><span class="string">)</span></span><br><span class="line"></span><br><span class="line"><span class="attr">deployment:</span> <span class="string">apps.#Deployment</span></span><br><span class="line"></span><br><span class="line"><span class="attr">deployment:</span> &#123;</span><br><span class="line">	<span class="attr">apiVersion:</span> <span class="string">&quot;apps/v1&quot;</span></span><br><span class="line">	<span class="attr">kind:</span>       <span class="string">&quot;Deployment&quot;</span></span><br><span class="line">	<span class="attr">metadata:</span> &#123;</span><br><span class="line">		<span class="attr">name:</span>   <span class="string">deployment_name</span></span><br><span class="line">		<span class="attr">labels:</span> <span class="string">_labels</span></span><br><span class="line">	&#125;</span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<p>类似这个例子中，我们定义的 <code>deployment</code> 将会通过 <code>apps.#Deployment</code> 校验，轻松检测出不合法的字段。理论上，你可以针对多个不同版本的 k8s 资源都生成 cue 文件，并且都作为 <code>deployment</code> 的模型定义，这样可以实现资源定义的多版本兼容能力。</p>
+<h2 id="说了这么多好处，现在就把所有-Helm-Chart-都替换成-CUE？"><a href="#说了这么多好处，现在就把所有-Helm-Chart-都替换成-CUE？" class="headerlink" title="说了这么多好处，现在就把所有 Helm Chart 都替换成 CUE？"></a>说了这么多好处，现在就把所有 Helm Chart 都替换成 CUE？</h2><p>且慢，还没到时候。</p>
+<p>因为 Helm 作为 <code>Package Manager</code> ，除了 Chart 渲染，本身还具备一定的应用管理功能，例如 <code>Helm install</code> 、 <code>Helm rollback</code> 等，而 CUE 仅仅是模版。所以在某些我们只使用了 Helm 的模版功能的情况下，可以考虑迁移到 CUE，其他情况，还是用 Helm 吧。</p>
+<h3 id="脑洞"><a href="#脑洞" class="headerlink" title="脑洞"></a>脑洞</h3><p>做一个开源的 CLI，支持将多个文件聚合为一个应用统一管理：</p>
+<ul>
+<li>类似 Helm 的能力，支持安装、更新、回滚</li>
+<li>针对配置，支持裸配置和 CUE 文件</li>
+</ul>
+<p>好了，先说这么多，我去尝试写一写，下篇文章见 👋 ～</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/cue-vs-helm.html">https://emergencyexit.xyz/cue-vs-helm.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/cue/"># cue</a>
+                    
+                        <a href="/tags/helm/"># helm</a>
+                    
+                        <a href="/tags/k8s/"># k8s</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/helm-pratices.html">💩 一些 Helm 最(tòng)佳(kǔ)实践</a>
+            
+            
+            <a class="next" rel="next" href="/filebeat-hangs-problem.html">🧟‍♂️ FileBeat 启动假死问题</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

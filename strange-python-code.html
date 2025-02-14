@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>❓ 你看不懂的 Python 写法 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">❓ 你看不懂的 Python 写法</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 10, 2021&nbsp;&nbsp;20:17:10</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>近来在网上冲浪时看到了一个奇怪的 Python 语句：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>[<span class="number">0xf</span><span class="keyword">or</span> x <span class="keyword">in</span> (<span class="number">15</span>, <span class="number">10</span>, <span class="number">5</span>)]</span><br><span class="line">[<span class="number">15</span>]</span><br></pre></td></tr></table></figure>
+
+<p>有那么一瞬间，对自己多年的 Python 语法产生了怀疑， <code>0xfor</code> 是一个什么新的循环关键字？</p>
+<p>经过一番探究，发现一个奇怪的 Python 语法世界。</p>
+<p>上面这一句，实际上是 <code>[0xf or x in (15, 10, 5)]</code></p>
+<p>首先， <code>0xf</code> 代表了 十六进制整型 <code>15</code> ，同理还可以用二进制、八进制</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>[<span class="number">0b010</span><span class="keyword">or</span> x <span class="keyword">in</span> (<span class="number">15</span>, <span class="number">10</span>, <span class="number">5</span>)]</span><br><span class="line">[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>[<span class="number">0o0</span><span class="keyword">or</span> x <span class="keyword">in</span> (<span class="number">15</span>, <span class="number">10</span>, <span class="number">5</span>)]</span><br><span class="line">[<span class="number">8</span>]</span><br></pre></td></tr></table></figure>
+
+<p>还有一个特殊数字表示—— <code>j</code> ，代表 <a target="_blank" rel="noopener" href="https://docs.python.org/2/library/stdtypes.html#numeric-types-int-float-long-complex">complex（复数）类型</a>， <code>j</code> 在这里表示虚数 <code>i</code> （<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/24812444/why-are-complex-numbers-in-python-denoted-with-j-instead-of-i">不用 <code>i</code> 的原因</a>），也可以有很奇怪的写法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0j</span><span class="keyword">or</span><span class="number">.0j</span></span><br><span class="line"><span class="number">0j</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0j</span><span class="keyword">is</span><span class="number">.0j</span></span><br><span class="line"><span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<p>其次，在 Python  中操作符(Operator)左右的<a target="_blank" rel="noopener" href="https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens">空格并不全是必须的</a></p>
+<blockquote>
+<p>“ Whitespace is needed between two tokens only if their concatenation could otherwise be interpreted as a different token”</p>
+</blockquote>
+<p>所以理论上你可以写出类似这样的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0xf</span><span class="keyword">in</span>[<span class="number">15</span>]</span><br><span class="line"><span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0o7</span><span class="keyword">is</span>[<span class="number">0xf</span>]</span><br><span class="line"><span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0o7</span>&amp;<span class="number">0xf</span></span><br><span class="line"><span class="number">7</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>~<span class="number">0o0</span>**<span class="number">0o0</span></span><br><span class="line">-<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>最后，由于 <code>or</code> 操作符遵循<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Short-circuit_evaluation">最短求值</a>原则，只要左侧表达式为真，右侧表达式是不会执行的，所以任何奇怪的表达都可以正常运行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0xdeadbeef</span><span class="keyword">or</span> whysoserious</span><br><span class="line"><span class="number">3735928559</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0xdeadbeef</span><span class="keyword">or</span> whysoserious</span><br><span class="line"><span class="number">3735928559</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0o0</span><span class="keyword">and</span> whysoserious</span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>所以综上，我们来一个终极“乱码”：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">0b010</span>&amp;<span class="number">0o0</span>&amp;<span class="number">0b0</span><span class="keyword">is</span>(<span class="number">0j</span>)<span class="keyword">in</span>[<span class="number">0xdeadbeef</span><span class="keyword">or</span>[<span class="string">&quot;是不是很奇怪这样也能运行&quot;</span>]]</span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
+
+<p>现在再看一眼开头， <code>[0xfor x in (15, 10, 5)]</code> 是不是一眼就能能把 <code>[15]</code> 给看出来了呢？🥴</p>
+<p>参考：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/67083039/why-does-python-return-15-for-0xfor-x-in-1-2-3%EF%BC%89">https://stackoverflow.com/questions/67083039/why-does-python-return-15-for-0xfor-x-in-1-2-3</a></li>
+<li><a target="_blank" rel="noopener" href="https://twitter.com/nedbat/status/1382027078816653319">https://twitter.com/nedbat/status/1382027078816653319</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/24812444/why-are-complex-numbers-in-python-denoted-with-j-instead-of-i">https://stackoverflow.com/questions/24812444/why-are-complex-numbers-in-python-denoted-with-j-instead-of-i</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8370637/complex-numbers-in-python">https://stackoverflow.com/questions/8370637/complex-numbers-in-python</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/3/reference/expressions.html#operator-precedence">https://docs.python.org/3/reference/expressions.html#operator-precedence</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens">https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens</a></li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/strange-python-code.html">https://emergencyexit.xyz/strange-python-code.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/fun/"># fun</a>
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/make-serializer-as-dependency-injector.html">👴 让 DRF Views 支持依赖注入</a>
+            
+            
+            <a class="next" rel="next" href="/use-pytest-fixture-factory.html">善用 pytest fixture factory 构建结构优秀的单元测试</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

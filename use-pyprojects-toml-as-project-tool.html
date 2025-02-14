@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>使用 pyproject.toml 管理你的 Python 项目 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">使用 pyproject.toml 管理你的 Python 项目</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 30, 2020&nbsp;&nbsp;14:10:23</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>Simple better than complex</p>
+</blockquote>
+<h1 id="Why-pyproject-toml"><a href="#Why-pyproject-toml" class="headerlink" title="Why pyproject.toml ?"></a>Why <code>pyproject.toml</code> ?</h1><p>如果你还没有听说过 <code>pyproject.toml</code> ，那么请看一眼最近主力开发的 Python 项目根目录，我想它大概是长这样的</p>
+<p><img src="/../images/%E4%BD%BF%E7%94%A8%20pyproject%20toml%20%E7%AE%A1%E7%90%86%E4%BD%A0%E7%9A%84%20Python%20%E9%A1%B9%E7%9B%AE/Untitled.png"></p>
+<p>一眼看上去全是配置文件就一个感觉 —— 杂乱。</p>
+<p>杂乱带来的最大坏处：管理困难 —— 各种配置的文件类型、配置语法并不统一，对任何刚接入项目的人都有较高学习成本。</p>
+<p>所以，类似 NodeJS 的 <code>package.json</code> ，Python 世界的统一项目配置文件 —— <code>pyproject.toml</code> 就显得异常重要了。</p>
+<h1 id="Why-toml"><a href="#Why-toml" class="headerlink" title="Why toml ?"></a>Why toml ?</h1><p>一个比较大的疑问，为什么要选择用 <code>toml</code> 这种使用面并不算广泛的文件格式？</p>
+<p>由于长期浸淫在 k8s 里，我第一反应觉得是 <code>yaml</code> 更合适，毕竟表达能力更强。但待我仔细阅读了 <a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0518/#yaml">PEP</a> 里的相关比较，发现 <code>toml</code> 的选型反而是正确的。</p>
+<p>首先，要搞清楚 <code>pyproject.toml</code> 的使用场景，它是配置的集合，而不是业务逻辑对象，过于复杂的配置反而不利于其发展，毕竟工具配置都是开发的“边角料时间”处理的，不能有太复杂的理解门槛。</p>
+<p>PEP 里阐述的 <code>yaml</code> 作为项目配置文件的缺点：</p>
+<ul>
+<li>过于复杂灵活，可能会导致不同解析器不能互相解析</li>
+<li>本身不够安全，而能解决该问题的 PyYAML 依赖过重</li>
+</ul>
+<h1 id="主流工具支持"><a href="#主流工具支持" class="headerlink" title="主流工具支持"></a>主流工具支持</h1><h2 id="好孩子"><a href="#好孩子" class="headerlink" title="好孩子"></a>好孩子</h2><p>详见：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/carlosperate/awesome-pyproject">carlosperate&#x2F;awesome-pyproject</a></p>
+<h2 id="坏孩子"><a href="#坏孩子" class="headerlink" title="坏孩子"></a>坏孩子</h2><h3 id="flake8"><a href="#flake8" class="headerlink" title="flake8"></a>flake8</h3><p>作者<a target="_blank" rel="noopener" href="https://gitlab.com/pycqa/flake8/-/issues/428">不愿意支持</a>，看起来是强迫症不够强烈</p>
+<p><img src="/../images/%E4%BD%BF%E7%94%A8%20pyproject%20toml%20%E7%AE%A1%E7%90%86%E4%BD%A0%E7%9A%84%20Python%20%E9%A1%B9%E7%9B%AE/Untitled%201.png"></p>
+<p>好在，还是有其他强迫着患者存在，外挂实现了 <a target="_blank" rel="noopener" href="https://gitlab.com/retnikt/flake9"><code>flake9</code></a> ，专门支持了 <code>pyproject.toml</code>。</p>
+<h3 id="mypy"><a href="#mypy" class="headerlink" title="mypy"></a>mypy</h3><p><img src="/../images/%E4%BD%BF%E7%94%A8%20pyproject%20toml%20%E7%AE%A1%E7%90%86%E4%BD%A0%E7%9A%84%20Python%20%E9%A1%B9%E7%9B%AE/Untitled%202.png"></p>
+<p>”仁慈的独裁者“并不支持，所以目前只能留着 <code>mypy.ini</code> 这一根独苗了。</p>
+<p><img src="/../images/%E4%BD%BF%E7%94%A8%20pyproject%20toml%20%E7%AE%A1%E7%90%86%E4%BD%A0%E7%9A%84%20Python%20%E9%A1%B9%E7%9B%AE/Untitled%203.png"><br>一枝独秀</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/use-pyprojects-toml-as-project-tool.html">https://emergencyexit.xyz/use-pyprojects-toml-as-project-tool.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/pep/"># pep</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/elk-back-pressure-study.html">🚰 ELK背压浅探</a>
+            
+            
+            <a class="next" rel="next" href="/use-notion-as-blog.html">👎 使用 Notion 搭建个人静态 Blog</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

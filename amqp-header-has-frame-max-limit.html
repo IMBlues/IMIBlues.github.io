@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🚨 不要往 AMQP 的 Header 乱塞东西 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🚨 不要往 AMQP 的 Header 乱塞东西</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 17, 2021&nbsp;&nbsp;20:24:32</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>一直以来，我们在 Python 项目中的后台任务都是使用 celery 搭配 Redis(作为 broker)来完成，同时针对短任务轮询场景我们也<a target="_blank" rel="noopener" href="https://github.com/TencentBlueKing/bkpaas-python-sdk/tree/master/sdks/blue-krill/blue_krill/async_utils">做了一些封装</a>。在项目运行的三~四年间，这套方案完美地承载了我们核心功能。</p>
+<p>然而，就在不久前的一周，出现一些比较诡异的问题，总是有些后台任务发生阻塞，我们使用的多种异常观测手段（<a target="_blank" rel="noopener" href="https://sentry.io/">Sentry</a>、日志等）都无法准确定位到具体问题（这或许是另一个故事），于是死马当活马医，我们决定将 Redis 更换为 RabbitMQ，这样能够更为准确地观测到任务具体执行的消息情况（例如是否及时Ack）。</p>
+<h2 id="案发现场"><a href="#案发现场" class="headerlink" title="案发现场"></a>案发现场</h2><p>更换完 broker 之后，却发现了另一个奇怪的问题（没错，这才是本文的主角）。我们在某一些特殊资源的场景下，celery 任务会直接报错：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ConnectionResetError: [Errno <span class="number">104</span>] Connection reset by peer</span><br><span class="line">  File <span class="string">&quot;kombu/connection.py&quot;</span>, line <span class="number">414</span>, <span class="keyword">in</span> _reraise_as_library_errors</span><br><span class="line">    <span class="keyword">yield</span></span><br><span class="line">  File <span class="string">&quot;kombu/connection.py&quot;</span>, line <span class="number">494</span>, <span class="keyword">in</span> _ensured</span><br><span class="line">    <span class="keyword">return</span> fun(*args, **kwargs)</span><br><span class="line">  File <span class="string">&quot;kombu/messaging.py&quot;</span>, line <span class="number">203</span>, <span class="keyword">in</span> _publish</span><br><span class="line">    mandatory=mandatory, immediate=immediate,</span><br><span class="line">  File <span class="string">&quot;amqp/channel.py&quot;</span>, line <span class="number">1766</span>, <span class="keyword">in</span> _basic_publish</span><br><span class="line">    (<span class="number">0</span>, exchange, routing_key, mandatory, immediate), msg</span><br><span class="line">  File <span class="string">&quot;amqp/abstract_channel.py&quot;</span>, line <span class="number">59</span>, <span class="keyword">in</span> send_method</span><br><span class="line">    conn.frame_writer(<span class="number">1</span>, <span class="variable language_">self</span>.channel_id, sig, args, content)</span><br><span class="line">  File <span class="string">&quot;amqp/method_framing.py&quot;</span>, line <span class="number">154</span>, <span class="keyword">in</span> write_frame</span><br><span class="line">    <span class="number">2</span>, channel, framelen, frame, <span class="number">0xce</span>))</span><br><span class="line">  File <span class="string">&quot;amqp/transport.py&quot;</span>, line <span class="number">305</span>, <span class="keyword">in</span> write</span><br><span class="line">    <span class="variable language_">self</span>._write(s)</span><br></pre></td></tr></table></figure>
+
+<p>由于我们使用了一层 <a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/clb">CLB</a> 作为高可用代理，而之前的使用经验中，CLB 可能会有一些长时间无数据断连的情况，所以我们暂时认为可能是某些长时间的阻塞任务会导致 CLB 主动断开，为了排除干扰，我们甩开了 CLB，直接采用 MQ 的多个节点作为地址直连。</p>
+<p>然而，问题依旧，一时间又没了头绪，我开始漫无目的重新浏览 Sentry 中的错误堆栈以及相关变量。</p>
+<h2 id="蛛丝马迹"><a href="#蛛丝马迹" class="headerlink" title="蛛丝马迹"></a>蛛丝马迹</h2><p>无意间，发现在代码中，我们尝试向队列中存储一大段 pickle 过的对象数据，而这些变量在 Sentry 中已经长到无法完整显示而被省略了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">any_task.apply_async(headers=something_big)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>这个问题立马引起了我们的注意🤔，很有可能是这个数据过大而引起写入异常。</p>
+<h2 id="破案"><a href="#破案" class="headerlink" title="破案"></a>破案</h2><p>照此思路，经过一番网络冲浪，发现了类似的问题：</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/30716002/is-there-a-size-limit-on-a-rabbitmq-message-header"></a></p>
+<p>这时候，再去反查 RabbitMQ 的日志，果然有对应内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2021-11-16 19:49:32.098 [error] &lt;0.3894.1636&gt; Error on AMQP connection &lt;0.3894.1636&gt; (x.x.x.x:59823 -&gt; x.x.x.x:5672, vhost: &#x27;foo&#x27;, user: &#x27;foo&#x27;, state: running), channel 1:</span><br><span class="line"> operation none caused a connection exception frame_error: &quot;type 2, all octets = &lt;&lt;&gt;&gt;: &#123;frame_too_large,245629,131064&#125;&quot;</span><br><span class="line"></span><br><span class="line">2021-11-16 19:49:35.099 [error] &lt;0.3894.1636&gt; closing AMQP connection &lt;0.3894.1636&gt; (x.x.x.x:59823 -&gt; x.x.x.x:5672):</span><br><span class="line">fatal_frame_error</span><br></pre></td></tr></table></figure>
+
+<p>这里非常明确地指出了，由于我们传递的 frame 大小(245629 bytes) 大于默认的 131064 + 8(frame header) bytes (128KB)，所以 RabbitMQ 关闭了连接。</p>
+<p>于是我们立即着手，精简了向 <code>headers</code> 传送的数据，重新发布后，终于一切归于正常。</p>
+<h2 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h2><p>虽然问题已经得到了解决，但是仍旧需要补齐一下相关知识的短板。</p>
+<p>首先，让我们再来简单看看 <strong>AMQP</strong>  <a target="_blank" rel="noopener" href="https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf">0.9.1 版本</a> <strong>协议有关这部分的内容</strong>。</p>
+<h3 id="AMQP-协议"><a href="#AMQP-协议" class="headerlink" title="AMQP 协议"></a>AMQP 协议</h3><p>这是协议中所有 TCP&#x2F;IP 帧组成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0      1         3         7                 size+7 size+8</span><br><span class="line">+------+---------+---------+ +-------------+ +-----------+</span><br><span class="line">| type | channel |   size  | |   payload   | | frame-end |</span><br><span class="line">+------+---------+---------+ +-------------+ +-----------+</span><br><span class="line"> octet    short      long      &#x27;size&#x27; octets     octet</span><br></pre></td></tr></table></figure>
+
+<p>其中有这么几个关键信息：</p>
+<ul>
+<li>0-7 bytes 确定了帧的类型和具体的 channel，确定了类型后将会处理 payload</li>
+<li>payload 的大小在协议中并没有规定，而是说的是可以通过客户端和服务端的”协商“确定(page 22)</li>
+<li>不同类型帧有着不同的 payload 构成</li>
+</ul>
+<p>当前问题主要是传递应用数据的场景下，所以我们来看具体承载的 Content 帧</p>
+<p>简单点来说，Content 帧就是一系列的 properties 加上二进制的数据部分。这些 properties 将会组成 “content header frame”，它大概是这样的组成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0          2        4           12               14</span><br><span class="line">+----------+--------+-----------+----------------+------------- - -</span><br><span class="line">| class-id | weight | body size | property flags | property list...</span><br><span class="line">+----------+--------+-----------+----------------+------------- - -</span><br><span class="line">    short    short    long long        short        remainder...</span><br></pre></td></tr></table></figure>
+
+<p>也就是在我们的 celery 代码中， <code>headers=(...)</code> 传递的内容将会被塞入 property list 中，在协议中并没有明确具体的大小限制，同时没有表明会做的分块(content body 部分是会的)，所以当前产生的问题限制，主要受制于 RabbitMQ 的具体实现。</p>
+<p><img src="/../images/%F0%9F%9A%A8%20%E4%B8%8D%E8%A6%81%E5%BE%80%20AMQP%20%E7%9A%84%20Header%20%E4%B9%B1%E5%A1%9E%E4%B8%9C%E8%A5%BF/file-20250207202819086.png"><br><a target="_blank" rel="noopener" href="https://blog.rabbitmq.com/posts/2012/11/breaking-things-with-rabbitmq-3-0/">https://blog.rabbitmq.com/posts/2012/11/breaking-things-with-rabbitmq-3-0/</a></p>
+<h2 id="三点感悟"><a href="#三点感悟" class="headerlink" title="三点感悟"></a>三点感悟</h2><ul>
+<li><strong>错误监测非常重要</strong>。如果没有 Sentry，问题的定位可能会更加困难，多耗几天精力也未可知。</li>
+<li><strong>要善于利用不同组件的优势</strong>。之所以一开始使用 Redis 而不是 RabbitMQ，更多是从运营维护的角度出发，在公司内部 Redis 有更完善的基建基础，而 RabbitMQ 的运维更加复杂。但是遇到像这样幽灵般的问题时，RabbitMQ 反而更有优势，完善的流程更容易暴露问题。</li>
+<li><strong>要适当地了解重点依赖的技术细节</strong>。大多数场景下，简单地使用协议就足够了，而在一些边缘场景中，则更看重技术人员对细节的把控。这类属于重要不紧急的事情，应该定时拿出来有意识去做，虽无近用，却有远益。</li>
+</ul>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf">https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf</a></li>
+<li><a target="_blank" rel="noopener" href="https://john.eckersberg.com/debugging-rabbitmq-frame_too_large-error.html">https://john.eckersberg.com/debugging-rabbitmq-frame_too_large-error.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/30716002/is-there-a-size-limit-on-a-rabbitmq-message-header">https://stackoverflow.com/questions/30716002/is-there-a-size-limit-on-a-rabbitmq-message-header</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_11">https://www.rabbitmq.com/amqp-0-9-1-errata.html#section_11</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/amqp-header-has-frame-max-limit.html">https://emergencyexit.xyz/amqp-header-has-frame-max-limit.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/amqp/"># amqp</a>
+                    
+                        <a href="/tags/celery/"># celery</a>
+                    
+                        <a href="/tags/tcp/"># tcp</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/use-graphql-with-django.html">用 GraphQL 查询你的 Django 应用</a>
+            
+            
+            <a class="next" rel="next" href="/helm-pratices.html">💩 一些 Helm 最(tòng)佳(kǔ)实践</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

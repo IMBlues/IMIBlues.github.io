@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🤌 几分钟搞清 Django 静态文件处理 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🤌 几分钟搞清 Django 静态文件处理</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 13, 2023&nbsp;&nbsp;14:08:25</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Django 处理静态文件有一套 Static 机制，它是简单的，但有时又是烦人的。</p>
+<p>首先，啥是静态文件？<strong>不需要服务端计算，直接页面上请求拉取的文件：图片、视频、html、JS、CSS 等等。<strong>理论上来说，既然不需要计算，那实际上和 Python 也没啥必然联系了，所以 Django 在这里的职责就是</strong>“帮忙托管一下”。</strong></p>
+<p>说是帮忙，是因为托管静态文件这件事本来就有更专业的组件负责，比如 Nginx、CDN 等等。</p>
+<h3 id="DEBUG-一时爽"><a href="#DEBUG-一时爽" class="headerlink" title="DEBUG 一时爽"></a>DEBUG 一时爽</h3><p>如果你还在本地开发阶段，可能觉得下面的内容都挺奇怪，明明不用额外配置就能访问所有静态文件。是的，当 <code>DEBUG=True</code> 的时候，Django 基本都帮你包办了，托管给 WhiteNoise 也会自动刷新静态文件。但如果放到生产，Django 就不再帮忙了，WhiteNoise 也只在程序启动时加载时，以下的内容就需要你自己梳理清楚了。</p>
+<h2 id="Django-怎么代管"><a href="#Django-怎么代管" class="headerlink" title="Django 怎么代管"></a>Django 怎么代管</h2><p>所谓的帮忙代管，总结起来就是三个步骤：</p>
+<ol>
+<li>你要告诉 Django：来自各个不同来源的静态文件分别放在什么位置，比如 Django 模版、前后端分离时的前端独立工程、项目外的视频图片等等。（对应 Django 配置 <code>STATICFILES_DIRS</code> ）</li>
+<li>你要告诉 Django：最终你想把这些静态文件放到什么位置，这个位置可以就是<strong>专业组件</strong>能找到的位置。（对应 Django 配置 <code>STATIC_ROOT</code> ）</li>
+<li>执行 Django 命令： <code>python manage.py collectstatic</code> ，Django 会忠实地按照你提供的信息把分散的静态文件收集放到同一个位置。</li>
+</ol>
+<p>这三步搞定，Django 静态文件就处理完了，<strong>这些文件怎么被访问到，那就是专业组件的事情了</strong>。好奇宝宝们肯定有很多问题想问 Django：</p>
+<ul>
+<li>静态文件来源五花八门，怎么处理？<ul>
+<li><code>STATICFILES_FINDERS</code> 实现自定义<code>FINDER</code> 逻辑</li>
+</ul>
+</li>
+<li>静态文件怎么直接放云上 CDN 里去？或者远端 Nginx ？<ul>
+<li><code>STATICFILES_STORAGE</code> 实现自定义 <code>STORAGE</code> 逻辑</li>
+</ul>
+</li>
+</ul>
+<p>回答完这些问题，<em>Django 双手一摊：“静态文件没我的事了吧”</em> 🤷‍♂️。</p>
+<p><strong>等等，你这个机灵鬼，我还没说完呢。</strong></p>
+<h2 id="让-Django-多管点“闲事”"><a href="#让-Django-多管点“闲事”" class="headerlink" title="让 Django 多管点“闲事”"></a>让 Django 多管点“闲事”</h2><p>对于请求量大、地域来源广的服务，将站点的静态文件放到<strong>专业组件</strong>托管肯定是更好的选择。但有时候我们也需要部署一些体量不大应用——例如一些在公司内部服务的中型 SaaS，这时候把静态文件分离管理反而会增加流程和架构的复杂性（除非有非常完善的基建支持），仅仅是负责静态文件的分发是远远不够的，<strong>所以使用 Django 代理静态文件的请求也是很多生产环境的选择。</strong></p>
+<p>那么谁来做这部份工作呢？<strong>专业组件</strong>的工作 Django 看了直摆手，这时，【<a target="_blank" rel="noopener" href="https://github.com/evansd/whitenoise">白噪声</a>同志】应声而来。</p>
+<p>在安装 WhiteNoise 之后，它将在你的服务内部帮忙 <code>serve</code> 静态文件，代理这些文件的请求以及相关的事务处理（压缩、缓存等等）。相关配置直接看<a target="_blank" rel="noopener" href="https://whitenoise.readthedocs.io/en/stable/">官方文档</a>就好，这里就不赘述了。</p>
+<p>这么看起来，问题好像就直接解决了？<strong>等等，烦人的东西才刚来。</strong></p>
+<h2 id="烦人的子路径问题"><a href="#烦人的子路径问题" class="headerlink" title="烦人的子路径问题"></a>烦人的子路径问题</h2><p>刚才通过 WhiteNoise 模块，已经将静态文件的访问入口收归到 Django 服务中了，理想状态下，直接访问 <code>https://amazing-fake-app/static/</code> （通过 Django <code>STATIC_URL</code> 确定访问路径）就能寻找到收集好的静态文件了。</p>
+<p>但是很多时候我们的服务并不是直接暴露在域名下的，往往会有“访问路径”作为前缀，例如服务本身访问：<code>https://amazing-fake-app/foo/</code> ，这时如果保持原来的 <code>STATIC_URL=&#39;/static&#39;</code> <strong>很有可能就有问题</strong>。看起来这应该是 Django 应该处理的东西，为什么会有问题呢？</p>
+<p>首先， <code>/foo/</code> 通常是由外部接入层（例如 Nginx ）转发提供的，Django 理论上是可以感知到它的存在：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_script_name</span>(<span class="params">environ</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Return the equivalent of the HTTP request&#x27;s SCRIPT_NAME environment</span></span><br><span class="line"><span class="string">    variable. If Apache mod_rewrite is used, return what would have been</span></span><br><span class="line"><span class="string">    the script name prior to any rewriting (so it&#x27;s the script name as seen</span></span><br><span class="line"><span class="string">    from the client&#x27;s perspective), unless the FORCE_SCRIPT_NAME setting is</span></span><br><span class="line"><span class="string">    set (to anything).</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> settings.FORCE_SCRIPT_NAME <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> settings.FORCE_SCRIPT_NAME</span><br><span class="line"></span><br><span class="line">    <span class="comment"># If Apache&#x27;s mod_rewrite had a whack at the URL, Apache set either</span></span><br><span class="line">    <span class="comment"># SCRIPT_URL or REDIRECT_URL to the full resource URL before applying any</span></span><br><span class="line">    <span class="comment"># rewrites. Unfortunately not every Web server (lighttpd!) passes this</span></span><br><span class="line">    <span class="comment"># information through all the time, so FORCE_SCRIPT_NAME, above, is still</span></span><br><span class="line">    <span class="comment"># needed.</span></span><br><span class="line">    script_url = get_bytes_from_wsgi(environ, <span class="string">&#x27;SCRIPT_URL&#x27;</span>, <span class="string">&#x27;&#x27;</span>) <span class="keyword">or</span> get_bytes_from_wsgi(environ, <span class="string">&#x27;REDIRECT_URL&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> script_url:</span><br><span class="line">        <span class="keyword">if</span> <span class="string">b&#x27;//&#x27;</span> <span class="keyword">in</span> script_url:</span><br><span class="line">            <span class="comment"># mod_wsgi squashes multiple successive slashes in PATH_INFO,</span></span><br><span class="line">            <span class="comment"># do the same with script_url before manipulating paths (#17133).</span></span><br><span class="line">            script_url = _slashes_re.sub(<span class="string">b&#x27;/&#x27;</span>, script_url)</span><br><span class="line">        path_info = get_bytes_from_wsgi(environ, <span class="string">&#x27;PATH_INFO&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        script_name = script_url[:-<span class="built_in">len</span>(path_info)] <span class="keyword">if</span> path_info <span class="keyword">else</span> script_url</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        script_name = get_bytes_from_wsgi(environ, <span class="string">&#x27;SCRIPT_NAME&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> script_name.decode()</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 Django 一共可以在三个地方感知到子路径的存在：</p>
+<ul>
+<li>用户直接通过 <code>FORCE_SCRIPT_NAME</code> 手动设置</li>
+<li>从 wsgi 信息中获取 <code>SCRIPT_URL</code> 或 <code>REDIRECT_URL</code> ，再转换成 <code>SCRIPT_NAME</code></li>
+<li>从 wsgi 信息中获取 <code>SCRIPT_NAME</code></li>
+</ul>
+<p>第一个手动设置的我们先不讨论；第二个在代码和注释中说的很清楚了：特定的接入层（例如 Apache ）会稳定提供，但不一定能保证；第三个看起来是缺省的获取方法，理论上它应该能覆盖大部份场景才对。</p>
+<p>然而，假如你的接入层是广泛使用的 Nginx，缺省方法就有问题了：<a target="_blank" rel="noopener" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#underscores_in_headers">默认地，Nginx 并不支持在 HTTP Header 中使用包含下划线的变量</a>，也就说 <code>SCRIPT_NAME</code> 默认不合法。</p>
+<ul>
+<li>如果你可以修改接入层的配置：可以手动调整 <code>underscores_in_headers</code> 的配置，但不幸的是，Nginx 还有个默认的行为，给 Header 添加 <code>HTTP_</code> ，也就是只能通过变量 <code>HTTP_SCRIPT_NAME</code> 获取，Django 再次 Miss。你可以进一步地修改 Nginx 配置，直接手动添加<code>SCRIPT_NAME</code> ：&#96;&#96;uwsgi_param SCRIPT_NAME $http_script_name;&#96;</li>
+<li>如果你不能手动修改接入层的配置：刚才略过的手动设置 <code>FORCE_SCRIPT_NAME</code> 就派上用场了，手动添加上 <code>FORCE_SCRIPT_NAME=/foo/</code></li>
+</ul>
+<p>当然你可以在 Django wsgi 加载时做一个动态的配置，确保接入层的变更能及时更新到配置中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DynamicScriptNameWSGIHandler</span>(<span class="title class_ inherited__">WSGIHandler</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, environ, start_response</span>):</span><br><span class="line">        <span class="comment"># HTTP_X_SCRIPT_NAME(from Nginx) -&gt; SCRIPT_NAME(Django wsgi)</span></span><br><span class="line">        script_name = environ.get(<span class="string">&#x27;HTTP_X_SCRIPT_NAME&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> script_name <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            environ[<span class="string">&#x27;SCRIPT_NAME&#x27;</span>] = script_name</span><br><span class="line">            settings.FORCE_SCRIPT_NAME = settings.SITE_URL = <span class="string">&#x27;%s/&#x27;</span> % script_name</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>().__call__(environ, start_response)</span><br></pre></td></tr></table></figure>
+
+<p>至此，静态文件处理的流程就很清楚了，挺简单的一件事，就几分钟搞定，打完收工。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/django-static-quick-glance.html">https://emergencyexit.xyz/django-static-quick-glance.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/django/"># django</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/sre-surfing-4.html">🏄‍♂️ SRE 冲浪记 - 4</a>
+            
+            
+            <a class="next" rel="next" href="/sre-surfing-3.html">🏄‍♀️ SRE 冲浪记 - 3</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

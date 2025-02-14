@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>👹 Django ORM：天使与魔鬼 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">👹 Django ORM：天使与魔鬼</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 27, 2020&nbsp;&nbsp;20:10:48</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>作为一只以 Django 作为主力开发框架的 CRUD Boy ，时常和它的 ORM 缠绵悱恻、纠缠不清，特此记录一下这些笑与泪的记忆。</p>
+</blockquote>
+<h1 id="魔鬼的陷阱"><a href="#魔鬼的陷阱" class="headerlink" title="魔鬼的陷阱"></a>魔鬼的陷阱</h1><h2 id="QuerySet-的类型"><a href="#QuerySet-的类型" class="headerlink" title="QuerySet 的类型"></a><code>QuerySet</code> 的类型</h2><h3 id="有时候希望它简单一点"><a href="#有时候希望它简单一点" class="headerlink" title="有时候希望它简单一点"></a>有时候希望它简单一点</h3><p> <code>objects.values()</code> 返回的并不是简单类型的数据，而是 <code>QuerySet</code>。一般直接用来做 <code>Response</code> 没有问题，但是要知道 <code>QuerySet</code> 是不能被 <code>pickle</code> 的，如果使用到 <code>Django Cache</code> 之类功能，直接用 <code>values()</code> 当作返回会死得很惨。</p>
+<h3 id="有时候希望它坚持自我"><a href="#有时候希望它坚持自我" class="headerlink" title="有时候希望它坚持自我"></a>有时候希望它坚持自我</h3><p>很多时候我们需要限制 <code>QuerySet</code> 返回的字段以加快 DB 查询的速度（比如一些没索引的长字段)，这时候可能的两个方法： <code>only()</code> &amp; <code>values()</code> 。</p>
+<p>但实际情况是，使用 <code>values()</code> 会改变 <code>queryset._iterable_class</code> ，如果后面还有更多的级联查询，会导致最后的结果为 <code>Dict</code> 而不是 <code>QuerySet</code>。</p>
+<h2 id="多对多和-values"><a href="#多对多和-values" class="headerlink" title="多对多和 values()"></a>多对多和 <code>values()</code></h2><p>存在一个模型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>(models.Model):</span><br><span class="line">    name = models.CharField(**some_params)</span><br><span class="line">    bars = models.ManyToManyField(**some_params)</span><br></pre></td></tr></table></figure>
+
+<p>存在一条记录</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">foo:</span><br><span class="line">  name: tom</span><br><span class="line">  bars:</span><br><span class="line">    - a</span><br><span class="line">    - b </span><br></pre></td></tr></table></figure>
+
+<p> <code>values()</code> 预期返回</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tom&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;bars&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;a&quot;</span><span class="punctuation">,</span> <span class="string">&quot;b&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>实际返回</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tom&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;bars&quot;</span><span class="punctuation">:</span> <span class="string">&quot;a&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tom&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;bars&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>没有什么太好的调整办法，只能注意 + 规避，详见: </p>
+<p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/#values">QuerySet API reference | Django documentation | Django</a></p>
+<p><img src="/../images/%F0%9F%91%B9%20Django%20ORM%EF%BC%9A%E5%A4%A9%E4%BD%BF%E4%B8%8E%E9%AD%94%E9%AC%BC/Untitled%201.png"></p>
+<h2 id="ORM-终究只是-ORM"><a href="#ORM-终究只是-ORM" class="headerlink" title="ORM 终究只是 ORM"></a>ORM 终究只是 ORM</h2><p>我们要时刻记住, <code>orm</code> 只是做一个映射，有时候拿到的对象和我们预想并不能完全一致。</p>
+<h3 id="隐式转换"><a href="#隐式转换" class="headerlink" title="隐式转换"></a>隐式转换</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>(models.Model):</span><br><span class="line">    created = models.DateTimeField()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里先忽略 timezone 问题</span></span><br><span class="line">f1 = Foo(created=<span class="string">&#x27;2020-09-18 09:46:23.544799&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 字符串会被存储，Django 做了隐式转换</span></span><br><span class="line">f1.save()</span><br><span class="line"></span><br><span class="line"><span class="comment"># str</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(f1.created))</span><br><span class="line"></span><br><span class="line">f2 = Foo.objects.get(pk=f1.pk)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Datetime 对象！</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(f2.created))</span><br></pre></td></tr></table></figure>
+
+<p>通过以上的例子就能知道，我们自己创建的内存对象 <code>f1</code> 和通过 <code>orm</code> 拿出来的内存对象 <code>f2</code> 完全不是同一个东西，虽然他们都可以操作同一条数据库记录，但如果在内存对象里做比较就会有很多问题，比如下面的例子</p>
+<h3 id="Mysql-低版本时间精度问题"><a href="#Mysql-低版本时间精度问题" class="headerlink" title="Mysql 低版本时间精度问题"></a>Mysql 低版本时间精度问题</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span>(models.Model):</span><br><span class="line">    created = models.DateTimeField(auto_now_add=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 假定 Foo 表中已经存在了比较多的记录</span></span><br><span class="line">f = Foo.objects.create()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们预期是获取按照时间来排序，f 的前一条记录</span></span><br><span class="line">o = Foo.objects.<span class="built_in">filter</span>(created_lt=f.created).latest(<span class="string">&#x27;created&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">assert</span> o.pk == f.pk</span><br><span class="line"><span class="comment"># mysql 版本大于 5.6.4 时 -&gt; False</span></span><br><span class="line"><span class="comment"># mysql 版本小于 5.6.4 时 -&gt; True</span></span><br></pre></td></tr></table></figure>
+
+<p>原因很简单，当 <code>mysql</code> 版本小于 <code>5.6.4</code> 时是不支持 <code>microseconds</code> 的，由于我们的 <code>f</code> 是内存对象，拿到的 <code>created</code> 又是有 <code>microseconds</code> 的，相当于我们在用 <code>2020-09-18 09:24:38.260779</code> 和 <code>2020-09-18 09:24:38.000000</code> 做比较， <code>o</code> 一直拿到的就是 <code>f</code> 对应的记录…</p>
+<p><img src="/../images/%F0%9F%91%B9%20Django%20ORM%EF%BC%9A%E5%A4%A9%E4%BD%BF%E4%B8%8E%E9%AD%94%E9%AC%BC/Untitled%201%201.png"></p>
+<h2 id="虚假的-query"><a href="#虚假的-query" class="headerlink" title="虚假的 .query"></a>虚假的 <code>.query</code></h2><p>我们常常用 <code>queryset.query</code> 去检查复杂的查询语句，但实际上 <code>query</code> 属性并不能真实反应提交到 DB 中的 <code>sql</code> ，可以参考如下链接：</p>
+<p><a target="_blank" rel="noopener" href="https://code.djangoproject.com/ticket/17741">QuerySet.query.<strong>str</strong>() does not generate valid MySQL query with dates</a></p>
+<p>那么如何调试提交到 DB 中的具体语句呢？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> connection</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在语句提交之后，立即打印</span></span><br><span class="line"><span class="comment"># 同时需要记得开启 DEBUG = True</span></span><br><span class="line"><span class="built_in">print</span>(connection.queries)</span><br></pre></td></tr></table></figure>
+
+<p>再或者，直接<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/650238/how-to-show-the-last-queries-executed-on-mysql">在 DB 中开启 general_log</a> 。</p>
+<h1 id="天使的眼泪"><a href="#天使的眼泪" class="headerlink" title="天使的眼泪"></a>天使的眼泪</h1><h2 id="巧用-extra"><a href="#巧用-extra" class="headerlink" title="巧用 extra"></a>巧用 extra</h2><p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/#extra">QuerySet API reference | Django documentation | Django</a></p>
+<p><code>extra()</code> 可以利用 <code>sql</code> 在数据库中做数据处理，而不用放到内存中，在数据量较大时有比较好的效果，比如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">queryset = queryset.extra(select=&#123;<span class="string">&#x27;username&#x27;</span>: <span class="string">&quot;CONCAT(username, &#x27;@&#x27;, domain)&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在模糊查询时，匹配最短结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyModel.objects.extra(select=&#123;<span class="string">&#x27;myfield_length&#x27;</span>:<span class="string">&#x27;Length(myfield)&#x27;</span>&#125;).order_by(<span class="string">&#x27;myfield_length&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>但在同时需要格外小心， <code>extra()</code> 在参数上存在注入风险，所有可能的用户输入的 SQL 拼接，都应该交给 Django 处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 有注入风险, username 不会被转义，可以直接注入</span></span><br><span class="line">Entry.objects.extra(where=[<span class="string">f&quot;headline=&#x27;<span class="subst">&#123;username&#125;</span>&#x27;&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安全，Django 会将 username 内容转义</span></span><br><span class="line">Entry.objects.extra(where=[<span class="string">&#x27;headline=%s&#x27;</span>], params=[username])</span><br></pre></td></tr></table></figure>
+
+<h2 id="JsonField-的福音——-JSON-SEARCH"><a href="#JsonField-的福音——-JSON-SEARCH" class="headerlink" title="JsonField 的福音—— JSON_SEARCH"></a><code>JsonField</code> 的福音—— <code>JSON_SEARCH</code></h2><p>有时候我们需要使用动态字段，并且保证动态字段的值全表唯一。动态字段我们使用 <code>LONGTEXT</code> 存储，格式为 <code>JSON</code> 。如果手动处理，需要将整个表的字段放到内存，并做唯一校验，非常麻烦且耗时。</p>
+<p>所以还是一个道理，把这个逻辑交给 DB</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> profiles_profile <span class="keyword">where</span> JSON_SEARCH(extras, &quot;one&quot;, &quot;aaa&quot;) <span class="keyword">is</span> <span class="keyword">not null</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="行锁的支持"><a href="#行锁的支持" class="headerlink" title="行锁的支持"></a>行锁的支持</h2><p>多个操作互斥的情况下，可以使用 <code>select_for_update</code> 行锁保证正确性。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> transaction.atomic():</span><br><span class="line">    <span class="comment"># 仅在 transaction 内生效</span></span><br><span class="line">    Entry.objects.select_for_update().<span class="built_in">filter</span>(name=<span class="string">&quot;Hello&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>但是同时需要注意，上锁的顺序，避免产生死锁。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/django-orm-best-practice.html">https://emergencyexit.xyz/django-orm-best-practice.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/best-practice/"># best-practice</a>
+                    
+                        <a href="/tags/web/"># web</a>
+                    
+                        <a href="/tags/django/"># django</a>
+                    
+                        <a href="/tags/orm/"># orm</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/use-notion-as-blog.html">👎 使用 Notion 搭建个人静态 Blog</a>
+            
+            
+            <a class="next" rel="next" href="/python-type-hint.html">🐍 让你的 Python 静态起来</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

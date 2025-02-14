@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>😈 ReDoS：正则也许会让你的系统更脆弱 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">😈 ReDoS：正则也许会让你的系统更脆弱</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 1, 2022&nbsp;&nbsp;20:03:29</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="引"><a href="#引" class="headerlink" title="引"></a>引</h2><p>这里有一段看起来稀松平常、人畜无害的 Python 代码，你可以试着执行一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">value = <span class="string">&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaabs&quot;</span></span><br><span class="line">strange_regex = re.<span class="built_in">compile</span>(<span class="string">&quot;(a+)+s&quot;</span>)</span><br><span class="line"></span><br><span class="line">start = time.time()</span><br><span class="line">re.<span class="keyword">match</span>(strange_regex, value)</span><br><span class="line">end = time.time()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(end - start)</span><br></pre></td></tr></table></figure>
+
+<p>不知道大家执行了多久，在我开发机上使用 Python 3.6+（包括 3.10.x）<strong>需要耗费20秒以上</strong>，即使 CPU ——Apple M1 Pro 的性能已经相当强悍了。</p>
+<p>可以试想一下，如果在生产环境服务的关键请求链路中存在这样正则匹配，加上不可控的用户输入，很容易落入“性能陷阱”，轻则拖慢系统，重则直接让服务暴露在 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/ReDoS">ReDoS</a> (Regual Expression Denial-of-Service) 的风险之下。</p>
+<p>随手一搜，已经有不少相关的案例发生：<a target="_blank" rel="noopener" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-23343">CVE-2021-23343</a> 、<a target="_blank" rel="noopener" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-41817">CVE-2021-41817</a>。所以，它值得我们格外重视。</p>
+<h2 id="Evil-Regex-大敌当前"><a href="#Evil-Regex-大敌当前" class="headerlink" title="Evil Regex 大敌当前"></a>Evil Regex 大敌当前</h2><p>先来看一些和上面例子类似的、典型的邪恶正则：</p>
+<ul>
+<li><code>(a+)+</code></li>
+<li><code>([a-zA-Z]+)*</code></li>
+<li><code>(a|aa)+</code></li>
+<li><code>(a|a?)+</code></li>
+<li><code>(a|a)+$</code></li>
+<li><code>(.*a)&#123;x&#125; for x \&gt; 10</code></li>
+</ul>
+<p>它们都有共同的一些特点：</p>
+<ul>
+<li>存在子表达重复——形如 <code>()+</code> 、 <code>()*</code></li>
+<li>在重复的子表达中：<ul>
+<li>存在重复项—— <code>(a+)+</code></li>
+<li>存在交替重复—— <code>(a|aa)+</code></li>
+</ul>
+</li>
+<li>在重复的子表达的末尾，存在一个子表达式无法匹配的内容，例如 <code>(a|a)+$</code></li>
+</ul>
+<p>那么为什么这些重复会导致匹配速度如此之慢呢？我们要看看正则的具体实现思路。</p>
+<h2 id="知己知彼，百战不殆"><a href="#知己知彼，百战不殆" class="headerlink" title="知己知彼，百战不殆"></a>知己知彼，百战不殆</h2><p>当前主流语言的正则实现机制都是构建<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton">**非确定有限状态自动机(NFA)</a>** ，相较于<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Deterministic_finite_automaton"><strong>确定有限状态自动机(DFA)</strong></a>，前者会使用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Backtracking">回溯法(backtracking)</a>，这也是导致邪恶正则存在的根因。</p>
+<h3 id="NFA-vs-DFA"><a href="#NFA-vs-DFA" class="headerlink" title="NFA vs DFA"></a>NFA vs DFA</h3><p>（该章节中的图例均来自<a target="_blank" rel="noopener" href="https://swtch.com/~rsc/regexp/regexp1.html">这篇文章</a>，我在这里做了内容简化，建议有兴趣的同学阅读英文原文）</p>
+<p>FA 有限自动机，又称 FSM 有限状态机，在当前的语境下，我们统一都是用 FA 来描述。这种计算模型比较常见，所以我们就着重关注 NFA 和 DFA 的对比。</p>
+<p>首先，来看一个简单的正则表达式—— <code>a(bb)+a</code> ，它可以转换成以下两种表达：</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled.png"></p>
+<p>DFA</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%201.png"></p>
+<p>NFA</p>
+<p>上面两张图能够很清晰地表现出二者的不同：</p>
+<ul>
+<li>DFA 中，每一个状态在接收到输入时，下一个状态都是确定的。</li>
+<li>NFA 中，存在某些状态在接收到输入时，无法确定下一个状态：例如图中的 S2 接收到字符 b，S1 和 S3 都是可能的下一个状态。所以系统在分支选择时，需要进行猜测。</li>
+</ul>
+<p>理论上，每一条正则表达式都可以等同转换成一个 NFA 状态机，那么如果使用 NFA 进行匹配，如何处理猜测分支就很重要了。下面我们来看一个简单遍历猜测的例子。</p>
+<p>根据正则 <code>abab|abbb</code> 我们可以建立如下的 NFA：</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%202.png"></p>
+<p>模拟计算机匹配输入 <code>abbb</code>，可以有如下两种路径：</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%203.png"></p>
+<p>以 Step 0 开始的路径，在匹配到第三个字符时出错，此时不得不采用回溯，再次从一开始进行匹配，即 Step 4 → Step 8。</p>
+<p>通过这个回溯方法，我们来思考正则表达式 $a?^{n}a^{n}$ 与字符串 $a^{n}$ 匹配：</p>
+<p>如果每一次判断 $a$ 是否存在时，都会尝试匹配“存在”的情况，再匹配不存在的情况，而整个字符串长度为 $n$，也就是时间复杂度为  $O(2^{n})$。</p>
+<p>当前主流的语言（Perl, PCRE, Python, Ruby等）采用了<strong>递归</strong>来实现深度优先回溯，相较于 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Thompson%27s_construction">Thompson NFA</a>，最终实现的效果都是惊人的糟糕。</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%204.png"></p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%205.png"></p>
+<h3 id="Thompson-NFA-构造-vs-DFA"><a href="#Thompson-NFA-构造-vs-DFA" class="headerlink" title="Thompson NFA 构造 vs DFA"></a>Thompson NFA 构造 vs DFA</h3><p>为什么使用了 Thompson NFA 构造出的正则匹配会快这么多呢？主要的原因是：通过划分多个子表达式，合并相同的内容，从而减少了回溯次数。</p>
+<p>$(ε|a*b)$ 可以转换成 Thompson 构造，图示：</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%206.png"></p>
+<p>稍微做一些解释：</p>
+<ul>
+<li>q 是开始，f 是结束，白圈是状态，连线是流转</li>
+<li>ε 代表着无输入</li>
+</ul>
+<p>通过以上的结构，Thompson NFA 匹配的时间复杂度为  $O(n)$，空间复杂度为$O(n^{2})$。</p>
+<p>而 DFA 更容易理解，因为它是典型的空间换时间。</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%207.png"></p>
+<p>NFA</p>
+<p><img src="/../images/%F0%9F%98%88%20ReDoS%EF%BC%9A%E6%AD%A3%E5%88%99%E4%B9%9F%E8%AE%B8%E4%BC%9A%E8%AE%A9%E4%BD%A0%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%9B%B4%E8%84%86%E5%BC%B1/Untitled%208.png"></p>
+<p>DFA</p>
+<p>可以看到每一个 DFA 的状态都等同于某一时刻 NFA 状态列表，所以 DFA 在最坏情况下，空间复杂度 $O(2^{n})$，也会在构建阶段消耗更多时间。同时没有了回溯，整个匹配时间就是字符串长度，复杂度为 $O(n)$。为了保证 DFA 的空间消耗，一般都会额外对构建出的 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/DFA_minimization">DFA 做简化</a>，减少图的大小。</p>
+<h3 id="为什么主流编程语言这么慢？"><a href="#为什么主流编程语言这么慢？" class="headerlink" title="为什么主流编程语言这么慢？"></a>为什么主流编程语言这么慢？</h3><p>说来有趣，Thompson NFA 构造法应该是编译原理的基础概念，DFA 方法从概念上也是比较简单，为什么当前的主流语言没有采用，反而采用了一个带有回溯的、效果远逊的版本？</p>
+<p>经过一番冲浪搜索，简单概括我找到的结论：<strong>历史的局限</strong>。</p>
+<blockquote>
+<p><em>While writing the text editor sam [6] in the early 1980s, Rob Pike wrote a new regular expression implementation, which Dave Presotto extracted into a library that appeared in the Eighth Edition. Pike’s implementation incorporated submatch tracking into an efficient NFA simulation but, like the rest of the Eighth Edition source, was not widely distributed. Pike himself did not realize that his technique was anything new. Henry Spencer reimplemented the Eighth Edition library interface from scratch, but using backtracking, and released his implementation into the public domain. It became very widely used, eventually serving as the basis for the slow regular expression implementations mentioned earlier: Perl, PCRE, Python, and so on.</em></p>
+</blockquote>
+<p>可以从上文得知，正则匹配的实现首先需要兼容原来的使用方式，而当时开发者并未了解 NFA 模拟方法，而是自己从零实现了一个回溯方法，并且被广泛地传播开了。即使这个实现很慢，但是由于已经被大规模采用，且能满足大多数的使用场景，各个主流语言也没有替换它。</p>
+<h2 id="正面对抗-Evil-Regex"><a href="#正面对抗-Evil-Regex" class="headerlink" title="正面对抗 Evil Regex"></a>正面对抗 Evil Regex</h2><p>既然当前主流语言的实现肯定会存在性能陷阱，我们是否有办法检测邪恶正则呢？答案是肯定的。</p>
+<p>在社区里有不少相关项目，例如：<a target="_blank" rel="noopener" href="https://github.com/doyensec/regexploit">regexploit</a> 、<a target="_blank" rel="noopener" href="https://github.com/olivo/redos-detector">redos-detector</a> 、<a target="_blank" rel="noopener" href="https://github.com/davisjam/vuln-regex-detector">vuln-regex-detector</a> 等，它们都可以扫描出有风险的正则，就像这样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;(a+)+s&quot;</span> | regexploit</span><br><span class="line">Pattern: (a+)+s</span><br><span class="line">---</span><br><span class="line">Redos(starriness=11, prefix_sequence=SEQ&#123;  &#125;, redos_sequence=SEQ&#123; [a]&#123;1+&#125;&#123;1+&#125; [s] &#125;, repeated_character=[a], killer=None)</span><br><span class="line">Worst-<span class="keyword">case</span> complexity: 11 ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ (exponential)</span><br><span class="line">Repeated character: [a]</span><br><span class="line">Example: <span class="string">&#x27;a&#x27;</span> * 3456</span><br></pre></td></tr></table></figure>
+
+<p>但是它们局限于静态的正则扫描，对于我们开发者而言，静态防御并不能完全清除风险。更好的思路是直接替换语言的默认实现。以 Python 举例，我们也找到了一些替换库：</p>
+<h3 id="pyre2"><a href="#pyre2" class="headerlink" title="pyre2"></a>pyre2</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyre2</span><br></pre></td></tr></table></figure>
+
+<p>来自 <a target="_blank" rel="noopener" href="https://github.com/google/re2/">Google re2</a> 模块的 Python 封装 <a target="_blank" rel="noopener" href="https://github.com/facebook/pyre2">pyre2</a>，使用了 DFA 的构造方式。可以替换原生 <code>re</code> 模块，大多数场景都可以得到速度的稳步提升，不存在性能陷阱。</p>
+<p>但对于 DFA 模拟来说，都是自古华山一条道，比如 <code>(?P=&lt;name&gt;)</code> 这样的属于 <code>backreference</code> 的捕获组语法就无法支持了。</p>
+<h3 id="regex"><a href="#regex" class="headerlink" title="regex"></a>regex</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install regex</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/mrabarnett/mrab-regex">regex</a> 模块<a target="_blank" rel="noopener" href="https://github.com/mrabarnett/mrab-regex/issues/136">并未使用 DFA 构造</a>，在完全兼容 <code>re</code> 模块的同时，支持了一些<a target="_blank" rel="noopener" href="https://github.com/mrabarnett/mrab-regex#old-vs-new-behaviour">新特性</a>。由于实现方案的不同，也没有很明确的文档阐述，尚不清楚它具体的算法（<em>有待进一步从代码层面解读</em>），但是从效果上，它的性能要<a target="_blank" rel="noopener" href="https://github.com/mrabarnett/mrab-regex/issues/320">略好于原生模块</a>，仅从文中里例子测试看来，也规避了性能陷阱，可以谨慎采用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>和很多其他场景一样，程序需要时刻警惕用户的输入，任何不经过校验的内容都可能将程序拖垮。</li>
+<li>理论和实际存在各种各样的鸿沟，在面临现实场景时，理想的想法落地总是困难的。</li>
+<li>原生不代表就是最优秀的。有特殊需求时可以使用社区方案进行替换。</li>
+</ul>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://swtch.com/~rsc/regexp/regexp1.html">https://swtch.com/~rsc&#x2F;regexp&#x2F;regexp1.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS">https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS</a></li>
+<li><a target="_blank" rel="noopener" href="https://shivankaul.com/blog/nfa-dfa-and-regexes">https://shivankaul.com/blog/nfa-dfa-and-regexes</a></li>
+<li><a target="_blank" rel="noopener" href="https://arstechnica.com/civis/viewtopic.php?f=20&t=1195549">https://arstechnica.com/civis/viewtopic.php?f=20&amp;t=1195549</a></li>
+<li><a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=466957">https://news.ycombinator.com/item?id=466957</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/swlh/visualizing-thompsons-construction-algorithm-for-nfas-step-by-step-f92ef378581b">https://medium.com/swlh/visualizing-thompsons-construction-algorithm-for-nfas-step-by-step-f92ef378581b</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/redos-and-why.html">https://emergencyexit.xyz/redos-and-why.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/dfa/"># dfa</a>
+                    
+                        <a href="/tags/nfa/"># nfa</a>
+                    
+                        <a href="/tags/regex/"># regex</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/django-orm-best-practice-II.html">👼 Django ORM：天使与魔鬼 II</a>
+            
+            
+            <a class="next" rel="next" href="/update-dns-in-python.html">🐚 旧代码拾遗：如何在 Python 代码中修改 DNS 解析</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

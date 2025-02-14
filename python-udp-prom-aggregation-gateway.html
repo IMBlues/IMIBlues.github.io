@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🖋️ 开发散文：使用 Python 以 UDP 协议发送 Prometheus 指标数据 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🖋️ 开发散文：使用 Python 以 UDP 协议发送 Prometheus 指标数据</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 11, 2022&nbsp;&nbsp;20:33:39</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>开发散文：以开发为主题的散文。基本完整复现了从遇到问题、分析问题、找到解决思路、编码实现思路的全流程，顺带着记录一些浅薄的知识点。</p>
+</blockquote>
+<p>先简述一下需求背景：为了实现可观测性，产品中的一些指标数据需要推送到 <a target="_blank" rel="noopener" href="https://github.com/weaveworks/prom-aggregation-gateway">Prometheus 聚合网关</a>，出于不想对主体服务有更多干扰的原则，项目选择使用 UDP 协议发送数据（也对聚合网关做了简单的 UDP 数据接收改造）。但是在运行过程中，<strong>发现上报数据量偏少</strong>，经过日志排查，在数据发送端瞧出了点端倪：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error: [Errno 90] Message too long</span><br></pre></td></tr></table></figure>
+
+<p>问题非常简单明晰：<strong>单次请求发送的数据包大小超过了网络数据包的上限</strong>。</p>
+<p>那么就有了第一个问题：<strong>UDP 协议规定的包大小究竟是多少呢？</strong></p>
+<h2 id="UDP-包是多大？"><a href="#UDP-包是多大？" class="headerlink" title="UDP 包是多大？"></a>UDP 包是多大？</h2><p>先来看一下 <a target="_blank" rel="noopener" href="https://www.ietf.org/rfc/rfc768.txt">UDP 协议</a> 的包长什么样子：</p>
+<p><img src="/../images/%F0%9F%96%8B%EF%B8%8F%20%E5%BC%80%E5%8F%91%E6%95%A3%E6%96%87%EF%BC%9A%E4%BD%BF%E7%94%A8%20Python%20%E4%BB%A5%20UDP%20%E5%8D%8F%E8%AE%AE%E5%8F%91%E9%80%81%20Prometheus%20%E6%8C%87%E6%A0%87%E6%95%B0%E6%8D%AE/Untitled.png"><br><em><strong>The UDP protocol header consists of 8 bytes of Protocol Control Information (PCI)</strong></em></p>
+<p>如图所见，UDP 可能算是最简洁的传输层协议之一了，包的组成非常简单易懂：</p>
+<ul>
+<li>**Source Port：**包来源端口信息。</li>
+<li>**Destination Port：**包目的端口信息。</li>
+<li>**UDP Length：**UDP 头信息+ Payload 的总长度。</li>
+<li>**UDP Checksum：**包的校验和，避免在数据在传输中被污染。</li>
+</ul>
+<p>以上四个部分称之为协议控制信息 PCI，又称协议头，每个部分 2 bytes，一共占 8 bytes。</p>
+<p>同时由于网络层的 IP 头也需要占据一部分空间，所以在计算 Payload 大小时需要先来看看 IP 层的情况。首先来看 IPv4：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># IPv4</span><br><span class="line">**0xffff - (sizeof(IP Header) + sizeof(UDP Header)) = 65535-(20+8) = 65507**</span><br></pre></td></tr></table></figure>
+
+<p>总的来说符合预期，在算上 IP 头的情况下，IPv4 UDP 包 Payload 最大不能超过 <strong>65507 bytes。</strong></p>
+<p>但是在 IPv6 的情况有了一点点复杂：由于 <a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc2675">Jumbogram</a>（超大包） 的存在，超过 65535 bytes 的包是可以在调整过 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Maximum_transmission_unit">MTU</a> 的节点中传输的，所以理论上的最大体积为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># IPv6</span><br><span class="line">**0xffff - sizeof(UDP Header) = 65535-8 = 65527**</span><br></pre></td></tr></table></figure>
+
+<p>也就是在你的基建完全支持 IPv6 并且能够设置超大 MTU 时，IPv6 UDP 包 Payload 包最大不能超过 <strong>65527 bytes。</strong></p>
+<aside>
+⚠️ 注意：不同操作系统限值也可能会不同，例如 macOS 下最大包默认值为 9216 bytes。本文仅从协议角度讨论。
+
+</aside>
+
+<p>以上分析的都是理论最大值，而在真实传输中，如果想尽可能保证 UDP 包的安全，不得不考虑 MTU 在其中的影响：当数据包大小比 MTU 值大的越多，传输时被切分的段数就越多，由于 UDP 本身协议的不可靠性，数据包的安全性就越低。</p>
+<p>而 MTU 的最小值为 576 bytes，在 IPv4 的情况下，减去上面提到的 IP Header 和 UDP Header ，还剩下 <strong>548 bytes</strong> 。这也是为什么很多公网服务都会限制 UDP 包的最大不能超过 512 bytes （例如 DNS）。同时在 IP Options 存在的情况，IP Header 可能会占据 60 bytes。所以，如果你的 UDP 包想要<em><strong>穿越复杂的公网</strong></em>，最安全的最大值是 <strong>508 bytes</strong>。</p>
+<p>考虑当前面对的网络环境——接发双方都处于同一个容器集群内，属于没有太多干扰的私有网络——<strong>可以酌情适当加大限制，只要小于 65507 bytes 即可</strong>。</p>
+<p>搞清楚了最大能发送多少数据，自然会想**将超限的数据进行切片处理，**那么迎来了第二个问题：<strong>如何在 Python 计算数据大小？</strong></p>
+<h2 id="如何在-Python-计算数据大小？"><a href="#如何在-Python-计算数据大小？" class="headerlink" title="如何在 Python 计算数据大小？"></a>如何在 Python 计算数据大小？</h2><p>我的第一反应是使用 <code>getsizeof</code> ，虽然稍有经验的 Python 程序员会想到，它对于<a target="_blank" rel="noopener" href="https://code.activestate.com/recipes/577504/">容器类的对象是没法精准统计的</a>，好在当前场景里只是用来统计 bytes，并没有这个困扰。</p>
+<p>但简单测试了一下，却发现了新的疑惑。</p>
+<h3 id="getsizeof-的疑惑"><a href="#getsizeof-的疑惑" class="headerlink" title="getsizeof 的疑惑"></a><code>getsizeof</code> 的疑惑</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sys <span class="keyword">import</span> getsizeof</span><br><span class="line"></span><br><span class="line">getsizeof(<span class="string">b&quot;&quot;</span>)        👉 <span class="number">33</span></span><br><span class="line">getsizeof(<span class="string">b&quot;abcd&quot;</span>)    👉 <span class="number">37</span></span><br></pre></td></tr></table></figure>
+
+<p>有意思的是，就算空 bytes，为什么也有 33 bytes 的空间占用？稍有经验的程序员就能立马反应过来，这就是对象本身的大小，一窥 Python 内置数据类型的大小（64-bit Python 3.6）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Empty</span><br><span class="line">Bytes  <span class="built_in">type</span>        scaling notes</span><br><span class="line"><span class="number">28</span>     <span class="built_in">int</span>         +<span class="number">4</span> <span class="built_in">bytes</span> about every <span class="number">30</span> powers of <span class="number">2</span></span><br><span class="line"><span class="number">37</span>     <span class="built_in">bytes</span>       +<span class="number">1</span> byte per additional byte</span><br><span class="line"><span class="number">49</span>     <span class="built_in">str</span>         +<span class="number">1</span>-<span class="number">4</span> per additional character (depending on <span class="built_in">max</span> width)</span><br><span class="line"><span class="number">48</span>     <span class="built_in">tuple</span>       +<span class="number">8</span> per additional item</span><br><span class="line"><span class="number">64</span>     <span class="built_in">list</span>        +<span class="number">8</span> <span class="keyword">for</span> each additional</span><br><span class="line"><span class="number">224</span>    <span class="built_in">set</span>         5th increases to <span class="number">736</span>; 21nd, <span class="number">2272</span>; 85th, <span class="number">8416</span>; <span class="number">341</span>, <span class="number">32992</span></span><br><span class="line"><span class="number">240</span>    <span class="built_in">dict</span>        6th increases to <span class="number">368</span>; 22nd, <span class="number">1184</span>; 43rd, <span class="number">2280</span>; 86th, <span class="number">4704</span>; 171st, <span class="number">9320</span></span><br><span class="line"><span class="number">136</span>    func <span class="keyword">def</span>    <span class="title function_">does</span> <span class="keyword">not</span> include default args <span class="keyword">and</span> other attrs</span><br><span class="line"><span class="number">1056</span>   <span class="keyword">class</span> <span class="title class_">def</span>   no slots </span><br><span class="line"><span class="number">56</span>     <span class="keyword">class</span> <span class="title class_">inst</span>  has a __dict__ attr, same scaling <span class="keyword">as</span> <span class="built_in">dict</span> above</span><br><span class="line"><span class="number">888</span>    <span class="keyword">class</span> <span class="title class_">def</span>   <span class="keyword">with</span> slots</span><br><span class="line"><span class="number">16</span>     __slots__   seems to store <span class="keyword">in</span> mutable <span class="built_in">tuple</span>-like structure</span><br><span class="line">                   first slot grows to <span class="number">48</span>, <span class="keyword">and</span> so on.</span><br></pre></td></tr></table></figure>
+
+<p>虽然我们在代码中传入的是对象，但实际上传输的数据需要刨除语言附加的存储空间，所以不能通过 <code>getsizeof</code> 拿到的数据本身的大小，这算是一条走错的思路 xD。</p>
+<h3 id="简单点，-len"><a href="#简单点，-len" class="headerlink" title="简单点， len()"></a>简单点， <code>len()</code></h3><p>让我们回到问题本身，对于 bytes 数据，最简单统计大小的方式就是直接使用 <code>len()</code> 。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">big_bytes: <span class="built_in">bytes</span></span><br><span class="line">size = <span class="built_in">len</span>(big_bytes)</span><br></pre></td></tr></table></figure>
+
+<p>确定了如何计算数据大小，下一步的思路就是：<strong>如何对 Prometheus 指标数据切片？</strong></p>
+<h2 id="如何对-Prometheus-指标数据切片？"><a href="#如何对-Prometheus-指标数据切片？" class="headerlink" title="如何对 Prometheus 指标数据切片？"></a>如何对 Prometheus 指标数据切片？</h2><p>正如标题提到的， UDP 传输的是 Prometheus 的指标数据，它是由一个有字面值的字符串转换而来的二进制，它还是字符串的时候一般长这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># HELP sample_metric_foo_count 示例解释</span><br><span class="line"># TYPE sample_metric_foo_count gauge</span><br><span class="line">sample_metric_foo_count&#123;foo=&quot;aa&quot;,bar=&quot;bb&quot;&#125; 14.0</span><br><span class="line">sample_metric_foo_count&#123;foo=&quot;cc&quot;,bar=&quot;dd&quot;&#125; 27.0</span><br><span class="line">sample_metric_foo_count&#123;foo=&quot;ee&quot;,bar=&quot;ff&quot;&#125; 12.0</span><br><span class="line"></span><br><span class="line"># HELP sample_metric_bar_count 示例解释</span><br><span class="line"># TYPE sample_metric_bar_count gauge</span><br><span class="line">sample_metric_bar_count&#123;baz=&quot;gg&quot;&#125; 660.0</span><br><span class="line">sample_metric_bar_count&#123;baz=&quot;hh&quot;&#125; 660.0</span><br></pre></td></tr></table></figure>
+
+<p>它本身需要符合一定的<a target="_blank" rel="noopener" href="https://prometheus.io/docs/concepts/data_model/">格式</a>， <code>#</code> 开头的两行作为指标信息的元信息，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HELP sample_metric_foo_count 示例解释</span></span><br><span class="line"><span class="comment"># TYPE sample_metric_foo_count gauge</span></span><br></pre></td></tr></table></figure>
+
+<p>可以先看看 Prometheus 是<a target="_blank" rel="noopener" href="https://github.com/prometheus/common/blob/8c9cb3fa6d01832ea16937b20ea561eed81abd2f/expfmt/text_parse.go#L142">如何解析它的</a>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以下为摘抄内容</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *TextParser)</span></span> startOfLine() stateFn &#123;</span><br><span class="line">  ...</span><br><span class="line">	<span class="keyword">switch</span> p.currentByte &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;#&#x27;</span>:</span><br><span class="line">		<span class="keyword">return</span> p.startComment</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;\n&#x27;</span>:</span><br><span class="line">		<span class="keyword">return</span> p.startOfLine <span class="comment">// Empty line, start the next one.</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> p.readingMetricName</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *TextParser)</span></span> startComment() stateFn &#123;</span><br><span class="line">  ...</span><br><span class="line">	keyword := p.currentToken.String()</span><br><span class="line">	<span class="keyword">if</span> keyword != <span class="string">&quot;HELP&quot;</span> &amp;&amp; keyword != <span class="string">&quot;TYPE&quot;</span> &#123;</span><br><span class="line">		<span class="comment">// Generic comment, ignore by fast forwarding to end of line.</span></span><br><span class="line">		<span class="keyword">for</span> p.currentByte != <span class="string">&#x27;\n&#x27;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> p.currentByte, p.err = p.buf.ReadByte(); p.err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span> <span class="comment">// Unexpected end of input.</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> p.startOfLine</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">switch</span> keyword &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&quot;HELP&quot;</span>:</span><br><span class="line">		<span class="keyword">return</span> p.readingHelp</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&quot;TYPE&quot;</span>:</span><br><span class="line">		<span class="keyword">return</span> p.readingType</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">panic</span>(fmt.Sprintf(<span class="string">&quot;code error: unexpected keyword %q&quot;</span>, keyword))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到：如果直接粗暴地切分会导致接收端无法解析从而丢弃整个请求数据。所以需要针对数据的开头和结尾特征值来决定具体的切分点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">**------ # HELP 作为开头，尽量作为数据包的开头 ------**</span><br><span class="line">**# HELP** sample_metric_foo_count 示例解释</span><br><span class="line"># TYPE sample_metric_foo_count gauge</span><br><span class="line">sample_metric_foo_count&#123;foo=&quot;aa&quot;,bar=&quot;bb&quot;&#125; 14.0</span><br><span class="line">sample_metric_foo_count&#123;foo=&quot;cc&quot;,bar=&quot;dd&quot;&#125; 27.0</span><br><span class="line">sample_metric_foo_count&#123;foo=&quot;ee&quot;,bar=&quot;ff&quot;&#125; 12.0</span><br><span class="line"></span><br><span class="line"># HELP sample_metric_bar_count 示例解释</span><br><span class="line"># TYPE sample_metric_bar_count gauge</span><br><span class="line">sample_metric_bar_count&#123;baz=&quot;gg&quot;&#125; 660.0**\n**</span><br><span class="line">**------ \n 作为单行数据结尾，能够保证包数据被正常解析，最差情况作为数据包的结尾 ------**</span><br><span class="line">sample_metric_bar_count&#123;baz=&quot;hh&quot;&#125; 660.0  **由于缺少 HELP/TYPE 元信息，将无法被聚合处理**</span><br></pre></td></tr></table></figure>
+
+<h2 id="开码！"><a href="#开码！" class="headerlink" title="开码！"></a>开码！</h2><p>既然准备好了思路，那么就开始正式编码吧。</p>
+<h3 id="首先定义模型"><a href="#首先定义模型" class="headerlink" title="首先定义模型"></a>首先定义模型</h3><p>好的模型能够清楚地展示编码思路，为了更方便切分定义了如下模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SlicedIndex</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;数据切分索引&quot;&quot;&quot;</span></span><br><span class="line">    start: <span class="built_in">int</span></span><br><span class="line">    end: <span class="built_in">int</span></span><br><span class="line">    <span class="comment"># 如果不是以 # HELP 开头，会导致 metric 无法被识别合并</span></span><br><span class="line">    valid_start: <span class="built_in">bool</span> = <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 如果不是以 metric 内容完结，会让下一个分片包没有有效开头</span></span><br><span class="line">    valid_end: <span class="built_in">bool</span> = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">to_tuple</span>(<span class="params">self</span>) -&gt; <span class="built_in">tuple</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.start, <span class="variable language_">self</span>.end</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.end - <span class="variable language_">self</span>.start</span><br><span class="line"></span><br><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SlicedIndexList</span>:</span><br><span class="line">    indexes: <span class="type">List</span>[SlicedIndex] = field(default_factory=<span class="built_in">list</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">append</span>(<span class="params">self, start: <span class="built_in">int</span>, end: <span class="built_in">int</span>, valid_end: <span class="built_in">bool</span> = <span class="literal">True</span></span>):</span><br><span class="line">        valid_start = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.indexes <span class="keyword">and</span> <span class="keyword">not</span> <span class="variable language_">self</span>.indexes[-<span class="number">1</span>].valid_end:</span><br><span class="line">            valid_start = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.indexes.append(SlicedIndex(start, end, valid_start, valid_end))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">for</span> elem <span class="keyword">in</span> <span class="variable language_">self</span>.indexes:</span><br><span class="line">            <span class="keyword">yield</span> elem</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, ii</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Get a list item&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.indexes[ii]</span><br></pre></td></tr></table></figure>
+
+<p>由于网络环境较为良好，这里更倾向于单次尽可能提交足够多的数据而减少网络发送次数。所以尽量贴近最大限制做数据切分，由于每次查找逻辑类同，采用递归会更简单。</p>
+<h3 id="递归寻找切分点"><a href="#递归寻找切分点" class="headerlink" title="递归寻找切分点"></a>递归寻找切分点</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">find_sliced_indexes</span>(<span class="params">data: <span class="built_in">bytes</span>, start: <span class="built_in">int</span>, udp_package_max_size: <span class="built_in">int</span>, sliced_index_list: SlicedIndexList</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;递归找寻指标开头标志&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> start + udp_package_max_size &gt;= <span class="built_in">len</span>(data):</span><br><span class="line">        sliced_index_list.append(start, <span class="built_in">len</span>(data))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    valid_start_index = data.rfind(<span class="string">b&quot;# HELP&quot;</span>, start, start + udp_package_max_size)</span><br><span class="line">    <span class="keyword">if</span> valid_start_index == -<span class="number">1</span> <span class="keyword">or</span> valid_start_index == start:</span><br><span class="line">        <span class="comment"># 当某个 metrics 数据大小大于 UDP 协议最大包限制时，原则上我们无法通过 UDP 发送该数据</span></span><br><span class="line">        <span class="comment"># 但这里我们尝试以最大限制发送该数据，以一个超过最大限制的数据为例</span></span><br><span class="line">        <span class="comment"># +-----------------+ 协议最大长度</span></span><br><span class="line">        <span class="comment"># +-----------------+  +-------------------+  +-------------------+</span></span><br><span class="line">        <span class="comment"># 有效            有效  (缺失元信息部分丢弃) 有效  有效              有效</span></span><br><span class="line">        <span class="comment"># 可以看到中间段数据会被丢弃，因为没有有效的 metrics 开头，但是我们尽可能保证了后续的包是有效开头和有效结尾</span></span><br><span class="line">        <span class="comment"># 所以当前的做法更利于我们单 metrics 数据比 65535 稍大的场景，这样丢弃的内容少，保留的内容多</span></span><br><span class="line">        <span class="comment"># 反之，当单个 metrics 的数据比最大限制大的越多，丢弃的越多</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># sample 肯定会转行，只要有转行就能保证起码前一个包的内容格式有效</span></span><br><span class="line">        valid_end_index = data.rfind(<span class="string">b&quot;\n&quot;</span>, start, start + udp_package_max_size)</span><br><span class="line">        new_start = valid_end_index + <span class="number">1</span></span><br><span class="line">        sliced_index_list.append(start, new_start, valid_end=<span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        sliced_index_list.append(start, valid_start_index)</span><br><span class="line">        new_start = valid_start_index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 尝试继续向后查找</span></span><br><span class="line">    find_sliced_indexes(data, new_start, udp_package_max_size, sliced_index_list)</span><br><span class="line">    <span class="keyword">return</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="切！"><a href="#切！" class="headerlink" title="切！"></a>切！</h3><p>当拿到了想要切入点后，就可以对原数据进行切分了。这里可以使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/c-api/memoryview.html">memoryview</a>，节省一次大数据拷贝，切片的速度也会更快一点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">slice_metrics_udp_data</span>(<span class="params">data: <span class="built_in">bytes</span>, sliced_indexes: SlicedIndexList</span>) -&gt; Generator[<span class="built_in">memoryview</span>, <span class="literal">None</span>, <span class="literal">None</span>]:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;拆分 metrics UDP data&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># Q: 为什么不直接切分?</span></span><br><span class="line">    <span class="comment"># A: 直接按照大小切分会降 bytes 中的字面值切断，让服务端对于指标无法理解，所以要按照字面值的内容做切分</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># memoryview 无需额外拷贝</span></span><br><span class="line">    mview = <span class="built_in">memoryview</span>(data)</span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> sliced_indexes:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> index.valid_start:</span><br><span class="line">            logger.warning(<span class="string">&quot;data&lt;len:%s&gt; has no valid start, may not be parsed&quot;</span>, <span class="built_in">len</span>(index))</span><br><span class="line">        <span class="keyword">yield</span> mview[index.start : index.end]</span><br></pre></td></tr></table></figure>
+
+<h3 id="收尾"><a href="#收尾" class="headerlink" title="收尾"></a>收尾</h3><p>针对一些特殊场景做最后的善后处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">find_udp_data_sliced_indexes</span>(<span class="params">data: <span class="built_in">bytes</span>, udp_package_max_size: <span class="built_in">int</span> = <span class="number">65507</span>, mtu: <span class="built_in">int</span> = <span class="number">1500</span></span>) -&gt; SlicedIndexList:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;对 UDP 发送数据进行切片处理，保证每次发送成功</span></span><br><span class="line"><span class="string">    :param data: 预发送数据</span></span><br><span class="line"><span class="string">    :param udp_package_max_size: 当前系统支持的最大 UDP 发送包大小，以 bytes 计算，默认为 65535 (在 macOS 下默认为 9126)</span></span><br><span class="line"><span class="string">    :param mtu: Maximum Transmission Unit</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    udp_package_max_size = 0xffff - (sizeof(IP Header) + sizeof(UDP Header)) = 65535-(20+8) = 65507</span></span><br><span class="line"><span class="string">    ref to: https://en.wikipedia.org/wiki/User_Datagram_Protocol</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    length = <span class="built_in">len</span>(data)</span><br><span class="line">    <span class="keyword">if</span> length &gt; mtu:</span><br><span class="line">        <span class="comment"># <span class="doctag">TODO:</span> 当前我们暂不考虑处理 MTU 的问题，先解决 UDP 包过大的情况</span></span><br><span class="line">        logger.debug(<span class="string">&quot;UDP packages is larger than MTU, not safe for single push.&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> length &lt;= udp_package_max_size:</span><br><span class="line">        <span class="keyword">return</span> SlicedIndexList(indexes=[SlicedIndex(<span class="number">0</span>, length)])</span><br><span class="line"></span><br><span class="line">    sliced_index_list = SlicedIndexList()</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        find_sliced_indexes(data, <span class="number">0</span>, udp_package_max_size, sliced_index_list)</span><br><span class="line">    <span class="keyword">except</span> RecursionError:</span><br><span class="line">        logger.warning(<span class="string">&quot;data has no valid format, drop it...&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sliced_index_list</span><br></pre></td></tr></table></figure>
+
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 原来的 UDP 直接发送</span></span><br><span class="line"><span class="comment"># 将抛出 error: [Errno 90] Message too long</span></span><br><span class="line">udp_socket.sendto(data, (address, port))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 循环调用 UDP 请求</span></span><br><span class="line"><span class="keyword">for</span> sliced_data <span class="keyword">in</span> slice_metrics_udp_data(data, find_udp_data_sliced_indexes(data)):</span><br><span class="line">	  <span class="comment"># 所有 UDP 包都可以发送出去</span></span><br><span class="line">    <span class="comment"># 同时取决于数据特性，**绝大多数**的 UDP 数据都能在服务端得到解析</span></span><br><span class="line">    udp_socket.sendto(sliced_data, (address, port))</span><br></pre></td></tr></table></figure>
+
+<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><h3 id="进一步优化？"><a href="#进一步优化？" class="headerlink" title="进一步优化？"></a>进一步优化？</h3><p>正如我们上面实现的逻辑，仍旧无法保证所有数据都能被解析成功，主要的原因就是我们没有对缺失元信息的指标进行处理，而我们在解析其中内容的时候是可以通过 <code>bytes.index()</code> 找到元信息位置的，可以将元信息暂存起来，在 <code>valid_start</code> 时直接补充上去，这样就能保证所有数据都有合适的格式。</p>
+<p>Prometheus UDP 数据切分是一个在开发中普通的不能再普通的小问题。在这里写这么多并不是为了展现该问题本身的解决方案，而是用来描述一种完备的开发思路。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.ietf.org/rfc/rfc768.txt">https://www.ietf.org/rfc/rfc768.txt</a></li>
+<li><a target="_blank" rel="noopener" href="https://erg.abdn.ac.uk/users/gorry/course/inet-pages/udp.html">https://erg.abdn.ac.uk/users/gorry/course/inet-pages/udp.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc2675.html">https://www.rfc-editor.org/rfc/rfc2675.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/1098897/what-is-the-largest-safe-udp-packet-size-on-the-internet">https://stackoverflow.com/questions/1098897/what-is-the-largest-safe-udp-packet-size-on-the-internet</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python">https://stackoverflow.com/questions/449560/how-do-i-determine-the-size-of-an-object-in-python</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/c-api/memoryview.html">https://docs.python.org/zh-cn/3/c-api/memoryview.html</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/python-udp-prom-aggregation-gateway.html">https://emergencyexit.xyz/python-udp-prom-aggregation-gateway.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/prometheus/"># prometheus</a>
+                    
+                        <a href="/tags/udp/"># udp</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/continuous-profiling.html">🃏 Continuous Profiling 持续分析漫谈</a>
+            
+            
+            <a class="next" rel="next" href="/upgrade-blog.html">🚧 从 奇思乱想 到 妙想天开</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

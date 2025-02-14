@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🏄‍♀️ SRE 冲浪记 - 3 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🏄‍♀️ SRE 冲浪记 - 3</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 20, 2023&nbsp;&nbsp;14:44:10</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><img src="/../images/%F0%9F%8F%84%E2%80%8D%E2%99%80%EF%B8%8F%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%203/2421697684938_.pic_hd.jpg"></p>
+<p>新疆喀纳斯</p>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><h3 id="Python-3-12-更新了点酷内容"><a href="#Python-3-12-更新了点酷内容" class="headerlink" title="Python 3.12 更新了点酷内容"></a>Python 3.12 更新了点酷内容</h3><p>最让我觉得酷的内容是—— <code>f-string</code> 终于支持在 <code>&#123;&#125;</code> 中复用引号了 🤭</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>version = &#123;<span class="string">&quot;major&quot;</span>: <span class="number">3</span>, <span class="string">&quot;minor&quot;</span>: <span class="number">12</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">f&quot;Python <span class="subst">&#123;version[<span class="string">&quot;major&quot;</span>]&#125;</span>.<span class="subst">&#123;version[<span class="string">&quot;minor&quot;</span>]&#125;</span>&quot;</span></span><br><span class="line"><span class="string">&#x27;Python 3.12&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://realpython.com/python312-new-features/">Python 3.12: Cool New Features for You to Try – Real Python</a></p>
+<h3 id="Java-Profiler-的-“安全点偏见问题”"><a href="#Java-Profiler-的-“安全点偏见问题”" class="headerlink" title="Java Profiler 的 “安全点偏见问题”"></a>Java Profiler 的 “安全点偏见问题”</h3><p><a target="_blank" rel="noopener" href="https://hackernoon.com/profiling-java-applications-with-async-profiler-049s2790">Profiling Java Applications with Async Profiler | HackerNoon</a></p>
+<h3 id="如何做代码-Review"><a href="#如何做代码-Review" class="headerlink" title="如何做代码 Review"></a>如何做代码 Review</h3><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/HoFSNCd1U3eoUqYaQiEgwQ">腾讯 13 年，我所总结的Code Review终极大法</a></p>
+<h3 id="字节开源的-Go-JSON-库-sonic"><a href="#字节开源的-Go-JSON-库-sonic" class="headerlink" title="字节开源的 Go JSON 库 sonic"></a>字节开源的 Go JSON 库 <a target="_blank" rel="noopener" href="https://github.com/bytedance/sonic">sonic</a></h3><p><a target="_blank" rel="noopener" href="https://xie.infoq.cn/article/d144592e5aec0179cafc5cf1b">sonic：基于 JIT 技术的开源全场景高性能 JSON 库_原生云_火山引擎开发者社区_InfoQ写作社区</a></p>
+<p>延伸阅读：<a target="_blank" rel="noopener" href="https://github.com/golang/go/discussions/63397">Go 社区讨论官方 <code>encoding/json</code> 的 v2 版本</a></p>
+<h3 id="Go-defer-不只是延迟函数"><a href="#Go-defer-不只是延迟函数" class="headerlink" title="Go defer 不只是延迟函数"></a>Go defer 不只是延迟函数</h3><p><code>defer</code> 关键字在资源回收清理上被用的非常多，但是关于它的一些细节并不被完全熟知，这篇文章简单讨论了一点。</p>
+<p><a target="_blank" rel="noopener" href="https://www.codingexplorations.com/blog/defer-in-go-more-than-just-delayed-execution"><code>defer</code> in Go: More Than Just Delayed Execution — Coding Explorations</a></p>
+<h2 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h2><h3 id="因为类型体操而放弃-TypeScript"><a href="#因为类型体操而放弃-TypeScript" class="headerlink" title="因为类型体操而放弃 TypeScript"></a>因为类型体操而放弃 TypeScript</h3><p>DHH 放弃了 TypeScript，“复杂的类型体操夺走了编程的快乐”</p>
+<p><a target="_blank" rel="noopener" href="https://world.hey.com/dhh/turbo-8-is-dropping-typescript-70165c01">Turbo 8 is dropping TypeScript</a></p>
+<p>引申阅读：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/181696903">手把手教你在项目业务中实战类型体操</a></p>
+<h3 id="Go-还是-Rust-？"><a href="#Go-还是-Rust-？" class="headerlink" title="Go 还是 Rust ？"></a>Go 还是 Rust ？</h3><p>“Sometimes, I feel that Rust is like the <em><strong>metaverse</strong></em>: a lot of people are talking about it, but not many spend their days in it.”</p>
+<p><a target="_blank" rel="noopener" href="https://kerkour.com/should-i-rust-or-should-i-go">Should I Rust or should I go?</a></p>
+<h3 id="Null-指针：十亿美元的错误"><a href="#Null-指针：十亿美元的错误" class="headerlink" title="Null 指针：十亿美元的错误"></a>Null 指针：十亿美元的错误</h3><p><a target="_blank" rel="noopener" href="https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/">Null References: The Billion Dollar Mistake</a></p>
+<p>不知道 Go 以后会不会出一个 <code>error 检查</code> 的姊妹篇。</p>
+<p>引申阅读：<a target="_blank" rel="noopener" href="https://www.v2ex.com/t/975214">Go 官方库中的 JSON 解析非指针字段会将 <code>null</code> 视为空值</a>。</p>
+<h3 id="一站式-LLM底层技术原理入门指南"><a href="#一站式-LLM底层技术原理入门指南" class="headerlink" title="一站式 LLM底层技术原理入门指南"></a>一站式 LLM底层技术原理入门指南</h3><p>虽然说的是给非科班出身的投资人看，但我感觉也挺适合不懂 AI 的普通工程师看 😂</p>
+<p><a target="_blank" rel="noopener" href="https://s3tlxskbq3.feishu.cn/docx/NyPqdCKraoXz9gxNVCfcIFdnnAc">传送门</a></p>
+<h2 id="小憩"><a href="#小憩" class="headerlink" title="小憩"></a>小憩</h2><h3 id="Emoji-厨房"><a href="#Emoji-厨房" class="headerlink" title="Emoji 厨房"></a>Emoji 厨房</h3><p>Google 推出的 Emoji 厨房，可以两两任意组装，扩充了 Emoji 的表达能力（比如本文的 Icon），非常有意思。</p>
+<p><img src="/../images/%F0%9F%8F%84%E2%80%8D%E2%99%80%EF%B8%8F%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%203/Untitled.png"></p>
+<p>我是奉命闭嘴的！</p>
+<h3 id="幻想世界地图生成器"><a href="#幻想世界地图生成器" class="headerlink" title="幻想世界地图生成器"></a>幻想世界地图生成器</h3><p>非常强大的幻想世界地图生成器，跑团、写小说福音～</p>
+<p><a target="_blank" rel="noopener" href="https://azgaar.github.io/Fantasy-Map-Generator/">Azgaar’s Fantasy Map Generator</a></p>
+<h3 id="探索-EXIF"><a href="#探索-EXIF" class="headerlink" title="探索 EXIF"></a>探索 EXIF</h3><p>探索 iOS 照片的 EXIF 信息</p>
+<p><a target="_blank" rel="noopener" href="https://hturan.com/writing/exploring-exif">Exploring EXIF – Harley Turan</a></p>
+<p>尝试将照片映射到地理信息的空间里</p>
+<p><img src="/../images/%F0%9F%8F%84%E2%80%8D%E2%99%80%EF%B8%8F%20SRE%20%E5%86%B2%E6%B5%AA%E8%AE%B0%20-%203/Untitled%201.png"></p>
+<h2 id="Fin"><a href="#Fin" class="headerlink" title="Fin"></a>Fin</h2><p>🇵🇸 <strong>支持巴勒斯坦人民恢复民族合法权利</strong>🇵🇸</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/sre-surfing-3.html">https://emergencyexit.xyz/sre-surfing-3.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/surfing/"># surfing</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/django-static-quick-glance.html">🤌 几分钟搞清 Django 静态文件处理</a>
+            
+            
+            <a class="next" rel="next" href="/sre-surfing-2.html">🏄 SRE 冲浪记 - 2</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

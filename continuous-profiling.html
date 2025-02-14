@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🃏 Continuous Profiling 持续分析漫谈 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🃏 Continuous Profiling 持续分析漫谈</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 12, 2023&nbsp;&nbsp;15:02:52</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/persona5.jpeg"></p>
+<h1 id="What"><a href="#What" class="headerlink" title="What ?"></a>What ?</h1><h2 id="Profiling-vs-Continuous-Profiling"><a href="#Profiling-vs-Continuous-Profiling" class="headerlink" title="Profiling vs Continuous Profiling"></a>Profiling vs Continuous Profiling</h2><p>相信各位开发老司机都给自己的程序“号过脉”，所以对于 Profiling 一定不陌生，在这里我还是搬一下 Profiling 的定义: </p>
+<blockquote>
+<p>Profiling 是一种性能分析工具，用于确定程序或系统中哪些部分消耗了最多的资源（例如 CPU、内存、磁盘和网络）。它可以帮助开发人员找到性能瓶颈并改进代码。</p>
+</blockquote>
+<p>而 Continuous Profiling 就是在这个基础上，增加一个“持续”，也就是在生产环境里定期跑 Profiling 并将数据上报。</p>
+<p>通常开发者手动跑 Profiling 往往是发现了线上代码性能瓶颈后，用工具<strong>尝试复现瓶颈</strong>，而 Continuous 最大的优势就是：持续意味着贯穿整个程序的完整生命周期，不会漏掉任何一个历史上产生过的异常，能直接从数据中找到“现场”，而不是尝试复现。</p>
+<p>用一个非常直观的比较就能迅速理解二者的差异：如果 Profiling 最有代表性展示方式是火焰图的话，那么 Continuous Profiling 的表现形式就是带有时序功能的火焰图，你可以在拖动展示、对比不同时刻的火焰图，找到代码在时间维度上的性能变迁。</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Untitled.png"></p>
+<p>一个典型的例子</p>
+<h2 id="来龙"><a href="#来龙" class="headerlink" title="来龙"></a>来龙</h2><p>Continuous Profiling 这个概念最早出自 Google 2010 年的研究文章： <a target="_blank" rel="noopener" href="https://research.google/pubs/pub36575/">Google-Wide Profiling</a> 。它虽然没有直接输出可用的工具，但是却给这个理念“打了样”：以较低的开销（～0.01% Overhead) 换取了大量对生产有用的代码状态数据，并且通过类 SQL 的方式查询以定位问题。</p>
+<h2 id="去脉"><a href="#去脉" class="headerlink" title="去脉"></a>去脉</h2><p>转眼到了十多年后，这期间有不少开源或商业软件涌现，但 <a target="_blank" rel="noopener" href="https://github.com/open-telemetry/oteps/issues/139">OpenTelemetry 的加入</a>给了 Continuous Profiling 领域一个确定的未来。</p>
+<blockquote>
+<p>“Four pillars”</p>
+</blockquote>
+<p>在 Monitoring, Logging, Tracing 三大支柱的工具链逐渐完善后，Profiling 将成为可观测领域新的支柱。</p>
+<h1 id="Why"><a href="#Why" class="headerlink" title="Why ?"></a>Why ?</h1><p>借用 <a target="_blank" rel="noopener" href="https://github.com/open-telemetry/oteps/blob/main/text/profiles/0212-profiling-vision.md#profiling-use-cases">OT Profiling Vision</a> 里列举的一些场景：</p>
+<ul>
+<li>跟踪应用程序的资源利用情况，以了解代码更改、硬件配置更改和临时环境问题如何影响性能</li>
+<li>理解哪些代码负责消耗资源（例如 CPU、内存、磁盘、网络）</li>
+<li>为在生产中运行的一组服务规划资源分配</li>
+<li>比较不同代码版本的配置文件，了解代码如何随时间改进或退化</li>
+<li>在生产中检测经常使用的和“死”代码</li>
+<li>将跟踪跨度分解为代码级粒度（例如函数调用和代码行），以了解该特定单元的性能</li>
+</ul>
+<p>简而言之，Continue Profiling 可以帮助开发者掌握代码的“持续生产状态”。对于 DevOps 团队而言，它应该是 CD 后进行持续分析的一部分。</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/ci_cd_cp.png"></p>
+<p>CI → CD → CP</p>
+<h1 id="开源方案"><a href="#开源方案" class="headerlink" title="开源方案"></a>开源方案</h1><h2 id="Pyroscope"><a href="#Pyroscope" class="headerlink" title="Pyroscope"></a>Pyroscope</h2><p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Untitled%201.png"></p>
+<p>架构图</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/grafana/pyroscope">Pyroscope</a> 项目算是这个领域中最热门的种子选手了。相较于其他几个项目有这么几个显著的优势：</p>
+<ul>
+<li>UI 清晰美观，功能齐全，可以从官方提供的 <a target="_blank" rel="noopener" href="https://demo.pyroscope.io/">demo</a> 窥见一二</li>
+<li>支持的语言广泛</li>
+<li>支持 <a target="_blank" rel="noopener" href="https://github.com/pyroscope-io/otel-profiling-go">Go\Java 的 Tracer 整合方案</a></li>
+<li>对存储有着额外的优化</li>
+</ul>
+<p>下面会针对一些有特点的优势展开说说：</p>
+<h3 id="语言支持"><a href="#语言支持" class="headerlink" title="语言支持"></a>语言支持</h3><p>上面有提到，Pyroscope 对于 pull 和 push 模型都有着完备的支持，最大的原因就是它针对各个语言的采集工具上都做了适配，并封装成了 SDK：</p>
+<ul>
+<li>Go: pprof</li>
+<li>ruby: rbspy</li>
+<li>python: py-spy</li>
+<li>Java: async-profiler</li>
+<li>php: phpspy</li>
+<li>.NET: dotnet trace</li>
+<li>Rust: pprof-rs</li>
+</ul>
+<p>即使部分语言的支持并不完美（例如 <a target="_blank" rel="noopener" href="https://github.com/grafana/pyroscope/issues/316">Python 不支持 Memory 数据上报</a>），但鉴于其他项目基本都只支持 Go + pprof，在面临多语言环境时，Pyroscope 基本是开源的唯一选择。</p>
+<h3 id="存储优化"><a href="#存储优化" class="headerlink" title="存储优化"></a><strong>存储优化</strong></h3><p>与其他几个项目还有一个很大的不同，pyroscope 在 profiling 数据的存储上做了额外的优化，开发者专门写了<a target="_blank" rel="noopener" href="https://pyroscope.io/docs/storage-design/">一篇 Blog 介绍了思路</a>。在这里做下简要的介绍并分析。</p>
+<p>首先是借助树和字典树，它针对 Profiling 的重复数据做了压缩。</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/storage.gif"></p>
+<p>其次，为了解决长时间跨度数据的查询延迟问题，利用线段树对数据进行了预合并。</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/segment.gif"></p>
+<p>虽然和其他项目一样，它的存储逻辑模型基本依照 <a target="_blank" rel="noopener" href="https://github.com/google/pprof/blob/main/proto/profile.proto">pprof 定义</a>，得益于这些优化，它在存储空间和读取延迟上都有更好的表现。但也带来了一些其他的问题：</p>
+<ul>
+<li>为了更容易实现这些优化，存储引擎选择了灵活的 K-V 结构内嵌引擎 BadgerDB，也因此失去了更好的水平扩展能力。</li>
+<li>在结构落库时需要消耗更多的 CPU 计算，压测时 CPU 更容易出现瓶颈。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Pyroscope 绝对是 Profiling 领域的开源种子选手，它的长板很长（语言支持、存储优化等），同时考虑到最近被 <a target="_blank" rel="noopener" href="https://grafana.com/blog/2023/03/15/pyroscope-grafana-phlare-join-for-oss-continuous-profiling/">Grafana Labs 收购</a>，原来的短板恰好是 Grafana 团队擅长处理的，相信等待一段时间的发展，Pyroscope 有潜力成为该领域的<strong>开源标准答案</strong>。</p>
+<h2 id="Parca"><a href="#Parca" class="headerlink" title="Parca"></a>Parca</h2><p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Parca_Overview.svg"></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/parca-dev/parca/">Parca</a> 项目是由原 Prometheus 团队的开发者开发，带有浓浓的 Prometheus 的味道。相较于其他项目，它也有几个显著的特点：</p>
+<ul>
+<li>Agent 完全采用了 ebpf  作为采集方案</li>
+<li>Profile Meta 和 Profile Sample 使用了两种不同的引擎存储，其中 Sample 存储采用了自研的内嵌列存 <a target="_blank" rel="noopener" href="https://github.com/polarsignals/frostdb">FrostDB</a></li>
+</ul>
+<h3 id="eBPF-Agent"><a href="#eBPF-Agent" class="headerlink" title="eBPF Agent"></a>eBPF Agent</h3><p>近几年 <a target="_blank" rel="noopener" href="https://ebpf.io/">eBPF</a> 在云原生、可观测领域讨论度很高，相信紧跟热点的各位读者也是早有耳闻，我在这里就不做多的赘述。Parca 最显著的一个特点就是在 Agent 上完全使用 eBPF 来解决问题。以下是一个简化的处理流程：</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230113174652.png"></p>
+<p>在 Profiling 领域，eBPF 的优劣我们会在后面的章节谈到，这里就一笔带过了。</p>
+<h3 id="Meta-Sample-分离存储"><a href="#Meta-Sample-分离存储" class="headerlink" title="Meta Sample 分离存储"></a>Meta Sample 分离存储</h3><p>Parca 和其他项目一样，存储的逻辑模型也是依照 pprof 的数据定义，而 pprof 逻辑模型中，按照其不同的特性，可以划分为两类数据：<strong>Meta 和 Sample</strong>。所谓的分离存储，实际上是讨论：<strong>这两类数据是否使用不同的存储引擎。</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型&#x2F;特性</th>
+<th>具体内容</th>
+<th>是否需要计算</th>
+<th>数据量级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Metadata</td>
+<td>Function&#x2F;Mapping&#x2F;Location 等</td>
+<td>很少</td>
+<td>较小</td>
+</tr>
+<tr>
+<td>Sample</td>
+<td>时序的 Stacktrace</td>
+<td>大量合并计算</td>
+<td>大</td>
+</tr>
+</tbody></table>
+<p>由于以上特性，二者的读写需求也不同，所以顺其自然的想法就是将其分成不同的引擎存储。</p>
+<table>
+<thead>
+<tr>
+<th>方式&#x2F;特性</th>
+<th>开发便捷性</th>
+<th>后期存储维护性</th>
+<th>存储引擎选择空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>统一存放</td>
+<td>高</td>
+<td>一般</td>
+<td>一般</td>
+</tr>
+<tr>
+<td>分离存放</td>
+<td>较低</td>
+<td>高</td>
+<td>高</td>
+</tr>
+</tbody></table>
+<p>相较于后期的维护性，开发便捷性的损失是一次性且短期的，且不分离的情况是不太方便针对二者特性做针对性优化的。所以 Meta &#x2F; Sample 分离存储，对于服务的“长治久安”有着更好的积极意义。<em>当然 Parca 目前在 Sample 存储上使用的 FrostDB 还未到可以直接生产的阶段，目前仅是 Parca 专用内嵌引擎。</em></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>Parca 项目在 Agent 选择和存储设计上有独到之处，虽然在语言支持上比较少（Go 和有限的 Java），但仍旧可以作为方案设计上的重要参考。</p>
+<h2 id="Phlare"><a href="#Phlare" class="headerlink" title="Phlare"></a>Phlare</h2><p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Untitled%202.png"></p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Untitled%203.png"></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/grafana/phlare">Phlare</a> 是 Grafana Labs 出品的 Profiling 产品，随着 Pyroscope 被收购，Phlare 项目很可能会被直接揉碎，合并到 Pyroscope 中去。即便如此，Phlare 项目仍旧有着不少有意思的亮点：</p>
+<ul>
+<li>支持 monolithic&#x2F;microservices 两种启动模式，既能满足快速验证，又能在大规模部署中轻易水平扩展</li>
+<li>数据存储分层，热数据存放在 ingster 的本地块存储中，冷数据发送到远端的对象存储中，总占有成本 TCO 较低（当然是存储空间的，没有考量到对象存储发送带来的带宽成本）</li>
+</ul>
+<h3 id="水平扩展"><a href="#水平扩展" class="headerlink" title="水平扩展"></a>水平扩展</h3><p>相较于 Parca 和 Pyroscope，Phlare 总算把工程的扩展能力当作重要考量了。要知道前面二者想要水平扩展，无论是想扩展读或者写的能力，都只能将整个进程跑起来，存储走 remote write 的方式，既笨拙又浪费资源，难称优雅。而 Phlare 具备以微服务部署的能力，qureier 和 distrubutor 可以较轻松地水平扩展。</p>
+<ul>
+<li>在存储上通过一致性哈希解决分片问题</li>
+<li>通过 Gossip 解决分布式选主问题</li>
+</ul>
+<p>为了更好地理解它是如何工作的，以四个 ingester 和一个位于0和9之间的令牌空间为例（<a target="_blank" rel="noopener" href="https://grafana.com/docs/phlare/latest/operators-guide/architecture/hash-ring/#a-practical-example">来源</a>）：</p>
+<ul>
+<li>ingester#1在令牌环中注册令牌<code>2</code></li>
+<li>ingester#2在令牌环中注册令牌<code>4</code></li>
+<li>ingester#3在令牌环中注册令牌<code>6</code></li>
+<li>ingester#4在令牌环中注册令牌<code>9</code></li>
+</ul>
+<p>当它接收到一个带有 label <code>&#123;**name**=&quot;process_cpu&quot;, instance=&quot;1.1.1.1&quot;&#125;</code> 的 Profile 数据时，它会将 label 内容进行哈希计算，假如这次计算后的结果是 <code>3</code> 。为了找到对应的 ingester，将会尝试寻找哈希环上 token 值上大于 <code>3</code> 最靠近的一个，即 ingester#2，并认为它将是这份 Profile 的权威数据拥有者。</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Untitled%204.png"></p>
+<p>此时， Ingester 的副本数设置如果是 3 个，在 ingester#2 被选主后，将继续向后寻找接下来的两个实例，即 ingester#3 &amp; ingester#4，并将数据复制分摊到他们的存储中，以保证数据能够均匀地被复制成多副本来保证高可用。</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Untitled%205.png"></p>
+<h3 id="分级存储"><a href="#分级存储" class="headerlink" title="分级存储"></a>分级存储</h3><p>phlare 的存储流程较为复杂，主要分成了三个部分：</p>
+<ul>
+<li>head block，ingester 模块获取到数据后不会立即写入到长期存储中，而是首先放在内存</li>
+<li>当 head block 大小超限或者超时，会将这些数据写到 ingester 本地磁盘</li>
+<li>内存和磁盘的数据都将会周期上报到 Long term storage</li>
+</ul>
+<p>这样做的好处显而易见：</p>
+<ul>
+<li>最热的数据将在内存中被访问，速度最快</li>
+<li>大量的冷数据放到了对象存储，成本更低</li>
+</ul>
+<p>但也有些问题，就像上面 <code>read path</code> 中表述的，对象存储中冷数据的读取问题会存在延迟问题，后面在对象存储和块存储的对比环节会稍微展开。</p>
+<h3 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h3><p>Phlare 相较于 Parca 和 Pyroscope 增加了更多工程上的探索，它比后两者都更容易在大集群中部署和扩展，但它只支持 pprof Http 端点数据拉取，仅有 Go 能够被较好的支持，这也成了它没法被大规模采用的最大障碍。在 Pyroscope 被收购后，Phlare 的这些工程特点也许会被整合到前者里去，就让我们继续关注接下来会发生什么吧。 </p>
+<h2 id="Pixie"><a href="#Pixie" class="headerlink" title="Pixie"></a>Pixie</h2><p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230106143708.png"></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/pixie-io/pixie">pixie</a> 实际上并不是一个 Profiling 专用软件，而是一个 K8S 应用的观测工具。除了 Profiling 以外，它还包括了Service 映射、集群资源、应用流量等能力。我们这里仅关注它的 Continuous Profiling 能力。</p>
+<p>相较于以上其他开源软件，它又有一些不同的特点：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.px.dev/reference/pxl/">PxL</a>，用于查询 SQL 不再是 PromQL like 而是 Python 风格</li>
+<li>与 K8S 集群绑定较强，不适合部署在物理机的服务</li>
+<li>底层使用 eBPF 采集数据，编译型语言支持更好</li>
+<li>仅限于 CPU Profiling</li>
+</ul>
+<p>由于它在 Profiling 领域着墨不多，功能也相对简单，这里就不做过多展开了。</p>
+<h1 id="商业软件"><a href="#商业软件" class="headerlink" title="商业软件"></a>商业软件</h1><h2 id="Datadog-Continuous-Profiler"><a href="#Datadog-Continuous-Profiler" class="headerlink" title="Datadog Continuous Profiler"></a>Datadog Continuous Profiler</h2><p>Datadog 作为可观测的商业 SaaS 产品巨头，推出的 Profiler 产品质量非常高，由于它的闭源性，我们很难分析它具体的技术架构，仅从它产品表现来窥见一二。</p>
+<p>以下是一些 Datadog 有别于开源产品的亮眼功能。</p>
+<h3 id="可以细粒度控制-function-展示内容"><a href="#可以细粒度控制-function-展示内容" class="headerlink" title="可以细粒度控制 function 展示内容"></a>可以细粒度控制 function 展示内容</h3><p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230209155039.png"></p>
+<h3 id="Only-My-Code-可以聚焦于用户代码"><a href="#Only-My-Code-可以聚焦于用户代码" class="headerlink" title="Only My Code 可以聚焦于用户代码"></a>Only My Code 可以聚焦于用户代码</h3><p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230209153132.png"></p>
+<p>聚焦前</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230209161309.png"></p>
+<p>聚焦后</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230209161312.png"></p>
+<h3 id="对比图表直观清晰"><a href="#对比图表直观清晰" class="headerlink" title="对比图表直观清晰"></a>对比图表直观清晰</h3><p>对比视图，通过颜色能够清晰获取不同时间的代码内存申请的异同。火焰图表现：</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230209162221.png"></p>
+<p>表格表现：</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230209162359.png"></p>
+<h3 id="常用的数据聚合快捷入口"><a href="#常用的数据聚合快捷入口" class="headerlink" title="常用的数据聚合快捷入口"></a>常用的数据聚合快捷入口</h3><p>在 CPU 数据上，已经根据不同纬度提供了聚合计算快捷入口。</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Pasted_image_20230209161756.png"></p>
+<h3 id="Elastic-Profiler"><a href="#Elastic-Profiler" class="headerlink" title="Elastic Profiler?"></a>Elastic Profiler?</h3><p>实话实说，实际上在本文写成的时候，笔者尚未体验过 Elastic Profiler ，这里就暂不置评，留空日后补充。</p>
+<h1 id="方案选型对抗赛"><a href="#方案选型对抗赛" class="headerlink" title="方案选型对抗赛"></a>方案选型对抗赛</h1><h2 id="推-vs-拉"><a href="#推-vs-拉" class="headerlink" title="推 vs 拉"></a>推 vs 拉</h2><p>在可观测领域，数据获取的方向一直是热议的话题，Profiling 也不例外。以下是概要性的对比：</p>
+<table>
+<thead>
+<tr>
+<th>对比特性</th>
+<th>pull</th>
+<th>push</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>配置方式</td>
+<td>原生中心化配置</td>
+<td>端上配置，通过配置中心支持中心化</td>
+</tr>
+<tr>
+<td>监控对象发现</td>
+<td>依赖服务发现机制</td>
+<td>由应用、Agent自主上报，无需服务发现模块</td>
+</tr>
+<tr>
+<td>部署方式</td>
+<td>应用暴露端口，接入服务发现，原生支持Pull协议</td>
+<td>1. Agent 统一代理抓取 2. 应用主动推送到监控系统</td>
+</tr>
+<tr>
+<td>指标获取灵活性</td>
+<td>On Demand按需获取</td>
+<td>被动接受，需要一些过滤器额外支持</td>
+</tr>
+<tr>
+<td>应用耦合性</td>
+<td>应用与监控系统解耦，应用无需关心对端地址、错误处理等</td>
+<td>与应用代码耦合</td>
+</tr>
+<tr>
+<td>安全性保证</td>
+<td>工作量大，需要保证应用暴露端口的安全性，容易被DDos攻击或者出现数据泄露</td>
+<td>难度低，ingest 接口交互一般都有鉴权控制</td>
+</tr>
+</tbody></table>
+<p>与 Prometheus 稍有不同的是，Continuous Profiling 基本不存在短任务数据上报的场景——既然都是 <em><strong>Continuous</strong></em> 了，那肯定不短，所以 pull 场景中最大的短板——难以适配短任务——基本不存在了。同时，由于 Go 语言是该领域的绝对“第一公民”，其标准库就支持的 pprof 模块能够以极低的开发成本添加 pprof HTTP 端点，所以三大开源软件在 pull 方向的支持上都是完备的，而 push 方向除了 pyroscope，其他项目均有不同程度的“残缺”。<strong>考虑到 OT 和其他语言工具转换 pprof 的进度，这种“重 pull 轻 push” 的现象仍将在 Profiling 领域持续一段时间。</strong></p>
+<h2 id="存算分离-vs-存算一体"><a href="#存算分离-vs-存算一体" class="headerlink" title="存算分离 vs 存算一体"></a>存算分离 vs 存算一体</h2><p>Profiling 项目最大的技术难点就是如何处理存储，这也是可观测领域一直以来的重点。其中存算分离和存算一体的选择，决定了存储引擎乃至整个产品的形态。</p>
+<p>在我们上面分享的几个开源产品中，它们无一例外都选择了内嵌式——也就是存算一体的方式，无论是性能较好、灵活度较高、但缺少水平扩容的 BadgerDB，还是列存 FrostDB，存取逻辑都是和计算进程绑定在一起。</p>
+<p>在我看来，产品的服务形态是存算分离与否的决定性因素。</p>
+<table>
+<thead>
+<tr>
+<th>服务形态&#x2F;存储类型</th>
+<th>选择存算一体（内嵌存储引擎）</th>
+<th>选择存算分离（分布式存储服务）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OSS</td>
+<td>少依赖，易部署 👍 <br>针对性优化灵活 👍</td>
+<td>额外依赖，数据优化灵活度低 👎</td>
+</tr>
+<tr>
+<td>SaaS</td>
+<td>扩展、灾备方案不完善 👎</td>
+<td>将状态向存储侧转移，组件复杂度相对低 👍 <br>针对性优化难度稍高 👎</td>
+</tr>
+</tbody></table>
+<p>总而言之，产品的服务形态将很大程度上决定存储的模式。如果是偏向于 OSS 分发，选内嵌存储，如果是以 SaaS 服务为主，选专用的分布式 DBMS。当然，从具体的工程实现来说，完全可以在存储上加一个可插拔的抽象层，以适配不同的服务形态，类似<a target="_blank" rel="noopener" href="https://github.com/grafana/pyroscope/issues/169">这里的讨论</a>。</p>
+<h2 id="块存储-vs-对象存储"><a href="#块存储-vs-对象存储" class="headerlink" title="块存储 vs 对象存储"></a>块存储 vs 对象存储</h2><p>在存储领域，块存储和对象存储都是非常常见的方式。</p>
+<p>块存储（Block Storage）是将存储数据分为固定大小的块进行存储，适合于需要低延迟、高性能、高可用的场景，如数据库、虚拟机、容器等。块存储一般使用本地存储或网络存储，操作系统可以使用块设备访问。<strong>缺点在于扩展性差、价格相较于对象存储更贵，不适合存储海量数据。</strong></p>
+<p>对象存储（Object Storage）则是将数据存储为对象，每个对象都有唯一的标识符（URI），将数据分散到多个节点上，通过分布式算法实现高可用和容错，适合于海量数据存储和分布式存储。<strong>缺点在于读写性能较差，不适合要求低延迟和高性能的场景。</strong></p>
+<p>在实际 Profiling 场景下，通常会有两部分数据：</p>
+<ul>
+<li>近期需要频繁访问的短期热数据</li>
+<li>可能会存在较长时间的冷数据</li>
+</ul>
+<p>从原理上来说，热、冷数据应该分别存放到块存储和对象存储中，类似上面提到的 Phlare 方案，而不是一股脑放到块存储（Pyroscope OSS 的做法）或者全部放到对象存储（好像也没人这么做）。</p>
+<p>即使 Phlare 的方案看起来很合理，但它依旧是内嵌型存储，目前还没有一个比较成熟的分布式 DBMS 支持这样的特性。Pyroscope 在其云服务中也放弃了原来的内嵌式 K-V 存储，而转向了借用 Parquet 的分布式存储 <a target="_blank" rel="noopener" href="https://github.com/grafana/tempo">Tempo</a> 方案（来自其 <a target="_blank" rel="noopener" href="https://pyroscope.io/blog/introducing-pyroscope-cloud/#pyroscope-clouds-major-scaling-improvements">blog</a>），在保证后端存储针对性优化的同时，利用类似 Thanos objstore 的方案实现了利用对象存储的扩展能力，遗憾的是尚未将这部分代码开源，也无法研究其内部细节了。</p>
+<h2 id="eBPF-vs-Native-Language-Tools"><a href="#eBPF-vs-Native-Language-Tools" class="headerlink" title="eBPF vs Native Language Tools"></a>eBPF vs Native Language Tools</h2><p>Profier 是 Profiling 数据来源的基础，上述不少产品中都采用了 eBPF 作为采集方案，那么是否只要使用了 eBPF 就代表着开销更小、数据更全呢？并不全是，Pyroscope 的<a target="_blank" rel="noopener" href="https://pyroscope.io/blog/ebpf-profiling-pros-cons/">这篇 blog</a> 给了我们一个比较客观的对比。首先从数据来源的层级来看，可以将 Profiler 分为两类：</p>
+<ul>
+<li>用户态: 流行的性能分析工具，如pprof，async-profiler，rbspy，py-spy，pprof-rs，dotnet-trace等，都在这个层面上运行。</li>
+<li>内核态: 基于 eBPF 的各种 Profiler 封装和 Linux perf 工具可以从内核获取整个系统的堆栈跟踪</li>
+</ul>
+<p>由于数据来源的层级不同，它们各有长短。</p>
+<p>对于用户态的工具而言：</p>
+<ul>
+<li>可以非常灵活的标记用户的应用代码（例如 标记 spans, controllers, functions）👍</li>
+<li>能够分析代码的各个特定部分（例如 Lambda 函数、测试套件、脚本）👍</li>
+<li>有着更容易分析其他类型数据的能力（例如内存、goroutines）👍</li>
+<li>本地开发十分便捷，容易使用 👍</li>
+<li>复杂，如果一个系统是多语言的，很难获取一个全局视图 👎</li>
+<li>对于基建元信息的标识能力有限（例如 Kubernetes） 👎</li>
+</ul>
+<p>对于内核态的工具而言：</p>
+<ul>
+<li>非常容易就能获取到跨语言的全局视图 👍</li>
+<li>很容易对基建元信息进行标识能力有限（例如 Kubernetes Pods） 👍</li>
+<li>所有语言在符号化上都是一致的 👍</li>
+<li>对 Linux 内核版本有要求 👎</li>
+<li>用户层级的代码比较难标记 👎</li>
+<li>内存、goroutines 很难获取对应数据 👎</li>
+<li>开发者想在本地开发比较困难 👎</li>
+<li>解释器型的语言获取的信息较为有限 👎</li>
+</ul>
+<p>简单来说，这两种方案的方向是反的：自下而上和自上而下，它们的数据信息理应做到互相补充，现阶段仅有 Pyroscope 对它做了<a target="_blank" rel="noopener" href="https://pyroscope.io/blog/ebpf-profiling-pros-cons/#pyroscopes-solution-merge-ebpf-profiling-and-native-language-profiling">有限的整合优化</a>，需要进一步关注进展。</p>
+<h2 id="pprof-vs-OT"><a href="#pprof-vs-OT" class="headerlink" title="pprof vs OT"></a>pprof vs OT</h2><p>pprof 本身是一个开源的性能分析工具套件，它可以抓取并组装 CPU、内存、goroutine 等性能数据，并且通过配套的工具可以生成各种可视化视图，例如火焰图、调用图等。</p>
+<p>同时 pprof 也定义了相关的 Profile 数据格式，<a target="_blank" rel="noopener" href="https://github.com/google/pprof/blob/main/proto/profile.proto">以 Protocol Buffers 呈现</a>。它由一系列的记录 Sample 组成：包含了函数调用堆栈以及相应的计数器值。</p>
+<p>以下讨论的 pprof 指的是<strong>其代表的数据格式。</strong></p>
+<p>可以通过<a target="_blank" rel="noopener" href="https://github.com/DataDog/go-profiler-notes/blob/18fd7f410e681d4b43c9afb403a4bdf23af29f99/examples/cpu/pprof.samples.cpu.001.pprof.txt#L1">它的文本表达示例</a>或者下面这张图理解其中的关联关系（除了 Stacktrace 是额外抽象出来的中间表）</p>
+<p><img src="/../images/%F0%9F%83%8F%20Continuous%20Profiling%20%E6%8C%81%E7%BB%AD%E5%88%86%E6%9E%90%E6%BC%AB%E8%B0%88/Untitled%206%201.png"></p>
+<p>基本对齐 pprof 模型的列存数据表，来自 Phlare</p>
+<p>pprof 在设计上是跨语言的，它理应成为一个跨语言标准，但受限于历史的进程，大多数语言的采集工具比它的历史更久，各种工具和采集链已经较为成熟，所以，除了 Go 语言有着极好的 pprof 支持，其他语言都没有成熟的 pprof 格式转换方案（例如 <a target="_blank" rel="noopener" href="https://github.com/timpalpant/pypprof">Python 虽然有，但缺乏维护</a>）。这中间的沟壑既给了 Pyroscope 较多的对接工作量，也给 OT 的标准化留足了空间。</p>
+<p>Open Telemetry <a target="_blank" rel="noopener" href="https://github.com/open-telemetry/oteps/blob/main/text/profiles/0212-profiling-vision.md">预期将 Profiling 格式做一个标准化</a>，包括了非常多的工作内容：</p>
+<ul>
+<li>尽可能多兼容各种 Profiling 格式</li>
+<li>应尽可能高效地传输分析数据，并且制定一个无损的 Profiling 模型，重点在于解析、转码（与其他格式之间的转换）和分析的效率上</li>
+<li>应该可以清晰地映射到标准数据模型（例如 collapsed、pprof、JFR 等）</li>
+<li>应该包含表示其他 OT Signal 之间关系的机制（例如 span 中的调用链）</li>
+<li>对于已经流行的 Profiler，保持尽可能小的转换开销</li>
+</ul>
+<p>OT 的愿景是非常美好的，但从可观察的<a target="_blank" rel="noopener" href="https://github.com/open-telemetry/opentelemetry-profiling">进展</a>来说，并不是非常顺利，至少距离上一次有效的更新已经过了几个月了。<strong>所以，现阶段在没有 OT 标准化格式之前，pprof 仍旧是 Profiling 数据格式为数不多的选择。</strong></p>
+<h1 id="总结-3"><a href="#总结-3" class="headerlink" title="总结"></a>总结</h1><p>Continuous Profiling 是一个不新不旧的领域，有着不大不小的市场，伴随着可观测领域常见的问题。在 OT 标准化前，Pyroscope 算是领先了一个身位，但各产品仍处于百舸争流的阶段，需要 Continuous Focusing 。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/continuous-profiling.html">https://emergencyexit.xyz/continuous-profiling.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/observability/"># observability</a>
+                    
+                        <a href="/tags/profiling/"># profiling</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/sre-surfing-1.html">🌊 SRE 冲浪记 - 1</a>
+            
+            
+            <a class="next" rel="next" href="/python-udp-prom-aggregation-gateway.html">🖋️ 开发散文：使用 Python 以 UDP 协议发送 Prometheus 指标数据</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

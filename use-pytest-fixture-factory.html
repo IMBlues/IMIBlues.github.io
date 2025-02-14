@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>善用 pytest fixture factory 构建结构优秀的单元测试 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">善用 pytest fixture factory 构建结构优秀的单元测试</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 6, 2021&nbsp;&nbsp;20:41:53</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="Why-pytest-？"><a href="#Why-pytest-？" class="headerlink" title="Why pytest ？"></a>Why pytest ？</h2><p>评价单元测试是否优秀，分支覆盖率是非常重要的指标，而覆盖率的决定因素除了开发自身的素质以外，足够低的用例构建成本也是必不可少。</p>
+<p>对于 Python 应用，当项目逻辑复杂度较高时，单纯使用原生的 <code>unittest</code> 或者是 Django 提供的 <code>TestCase</code> 都会遇到一个恼人的问题：测试代码大部分工作在构建各种用例。幸好有 <code>pytest</code> 提供的 <code>fixture</code> 机制，可以较好的解决这个问题。</p>
+<p>本文简单阐述个人的 pytest 使用实践，而关于 <code>fixture</code> 到底好在哪里或者具体使用方法，已经有比较多的文章做了更详细的介绍，我这里就不再赘述：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.daftcode.pl/the-cleaning-hand-of-pytest-28f434f4b684">https://blog.daftcode.pl/the-cleaning-hand-of-pytest-28f434f4b684</a></li>
+<li><a target="_blank" rel="noopener" href="https://salmonmode.github.io/2019/03/29/building-good-tests.html#dont-inherit-from-unittesttestcase-in-test-classes-either-directly-or-indirectly">https://salmonmode.github.io/2019/03/29/building-good-tests.html#dont-inherit-from-unittesttestcase-in-test-classes-either-directly-or-indirectly</a></li>
+</ul>
+<h2 id="理想的单元测试"><a href="#理想的单元测试" class="headerlink" title="理想的单元测试"></a>理想的单元测试</h2><p>从理论来讲，对于一个测试项，我们应该只需关心测试内容的输入和输出（或异常），并且最好能够放到一起管理维护，更形象地说，应该是下面这种伪代码的感觉</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(输入, 预期输出)</span><br><span class="line">(输入, 预期输出)</span><br><span class="line">(输入, 预期输出)</span><br><span class="line">(输入, 预期异常)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_some_content</span>(<span class="params">输入, 预期输出</span>):</span><br><span class="line">	<span class="keyword">if</span> 正常:</span><br><span class="line">		<span class="keyword">assert</span> some_process(输入) == 预期输出</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">with</span> should_raise(预期异常):</span><br><span class="line">			some_process(输入)</span><br></pre></td></tr></table></figure>
+
+<p>一个普通的 <code>pytest</code> 使用用例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@pytest.fixture</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">user</span>():</span><br><span class="line">    <span class="keyword">return</span> User(name=<span class="string">&quot;Chris&quot;</span>, hair_color=Color(<span class="string">&quot;brown&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="meta">@pytest.fixture(<span class="params">autouse=<span class="literal">True</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">set_user</span>(<span class="params">client, user</span>):</span><br><span class="line">    client.set_user(user)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_set_user</span>(<span class="params">client, user</span>):</span><br><span class="line">    <span class="comment"># client.get_user() returns another User object</span></span><br><span class="line">    <span class="keyword">assert</span> client.get_user() == user</span><br></pre></td></tr></table></figure>
+
+<p>可以看出 <code>pytest.fixture</code> 固然能够足够强大，但是并不能完全解决问题：因为 <code>fixture</code> 在这里的用法是 <strong>静态</strong> 的，而对于我们理想的状态，用例中的输入输出，都应该是动态指定的。</p>
+<h2 id="一个简单的实践"><a href="#一个简单的实践" class="headerlink" title="一个简单的实践"></a>一个简单的实践</h2><p>所以，我们需要利用 <a target="_blank" rel="noopener" href="https://docs.pytest.org/en/stable/fixture.html#factories-as-fixtures"><code>fixture factory</code></a> 来实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># fixture 依旧保留了复用性</span></span><br><span class="line"><span class="meta">@pytest.fixture</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">make_fake_resp</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_make_fake_resp</span>(<span class="params"><span class="built_in">input</span>: <span class="built_in">str</span></span>):</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">_wrapper</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">&quot;data&quot;</span>: <span class="built_in">input</span>&#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> _wrapper</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> _make_fake_resp</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestUtils</span>:</span><br><span class="line"><span class="meta">    @pytest.mark.parametrize(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="meta">        <span class="string">&quot;input, expected&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">        [</span></span></span><br><span class="line"><span class="params"><span class="meta">            <span class="comment"># 正常情况</span></span></span></span><br><span class="line"><span class="params"><span class="meta">            (<span class="params"><span class="string">&quot;abc&quot;</span>, <span class="string">&quot;xyz&quot;</span></span>),</span></span></span><br><span class="line"><span class="params"><span class="meta">						<span class="comment"># 异常情况，当然也可以多拆分一个测试项</span></span></span></span><br><span class="line"><span class="params"><span class="meta">            (<span class="params"><span class="string">&quot;abc&quot;</span>, ValueError</span>),</span></span></span><br><span class="line"><span class="params"><span class="meta">        ],</span></span></span><br><span class="line"><span class="params"><span class="meta">    </span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_some_content</span>(<span class="params">self, <span class="built_in">input</span>, expected, make_fake_resp</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;测试某些内容&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">with</span> mock.patch(<span class="string">&#x27;some-need-patching-refrences&#x27;</span>) <span class="keyword">as</span> _patch:</span><br><span class="line">						<span class="comment"># 利用 fixture factory 动态生成测试用例</span></span><br><span class="line">            _patch.side_effect = make_fake_resp(<span class="built_in">input</span>)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">type</span>(expected) <span class="keyword">is</span> <span class="built_in">type</span> <span class="keyword">and</span> <span class="built_in">issubclass</span>(expected, Exception):</span><br><span class="line">                <span class="keyword">with</span> pytest.raises(expected):</span><br><span class="line">										<span class="comment"># 主体测试逻辑</span></span><br><span class="line">                    call_test(<span class="built_in">input</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">								<span class="comment"># 主体测试逻辑</span></span><br><span class="line">                <span class="keyword">assert</span> call_test(<span class="built_in">input</span>) == expected</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，只要我在一开始构建好相关的工厂函数，添加更多的测试用例就只需在 <code>parametrize</code> 中不断添加即可，开发注意力成功从重复的工具构建转移到了真实用例。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/use-pytest-fixture-factory.html">https://emergencyexit.xyz/use-pytest-fixture-factory.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/best-practice/"># best-practice</a>
+                    
+                        <a href="/tags/pytest/"># pytest</a>
+                    
+                        <a href="/tags/unittest/"># unittest</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/strange-python-code.html">❓ 你看不懂的 Python 写法</a>
+            
+            
+            <a class="next" rel="next" href="/elk-back-pressure-study.html">🚰 ELK背压浅探</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🧟‍♂️ FileBeat 启动假死问题 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🧟‍♂️ FileBeat 启动假死问题</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 1, 2021&nbsp;&nbsp;15:20:34</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>上周因为 OOM 问题，某个集群内的 Filebeat 被迫重启后，观测了许久，仍不见事件流恢复，查看 Filebeat 输出日志，发现只有其自监控的日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2021-05-28T03:19:41.061Z	INFO	[monitoring]	<span class="built_in">log</span>/log.go:145	Non-zero metrics <span class="keyword">in</span> the last 30s	&#123;<span class="string">&quot;monitoring&quot;</span>: &#123;<span class="string">&quot;metrics&quot;</span>: &#123;<span class="string">&quot;beat&quot;</span>:&#123;<span class="string">&quot;cpu&quot;</span>:&#123;<span class="string">&quot;system&quot;</span>:&#123;<span class="string">&quot;ticks&quot;</span>:6249680,<span class="string">&quot;time&quot;</span>:&#123;<span class="string">&quot;ms&quot;</span>:3024&#125;&#125;,<span class="string">&quot;total&quot;</span>:&#123;<span class="string">&quot;ticks&quot;</span>:13659880,<span class="string">&quot;time&quot;</span>:&#123;<span class="string">&quot;ms&quot;</span>:6612&#125;,<span class="string">&quot;value&quot;</span>:13659880&#125;,<span class="string">&quot;user&quot;</span>:&#123;<span class="string">&quot;ticks&quot;</span>:7410200,<span class="string">&quot;time&quot;</span>:&#123;<span class="string">&quot;ms&quot;</span>:3588&#125;&#125;&#125;,<span class="string">&quot;handles&quot;</span>:&#123;<span class="string">&quot;limit&quot;</span>:&#123;<span class="string">&quot;hard&quot;</span>:1048576,<span class="string">&quot;soft&quot;</span>:1048576&#125;,<span class="string">&quot;open&quot;</span>:46&#125;,<span class="string">&quot;info&quot;</span>:&#123;<span class="string">&quot;ephemeral_id&quot;</span>:<span class="string">&quot;ca641ad8-e10a-496f-a087-6924e456aaea&quot;</span>,<span class="string">&quot;uptime&quot;</span>:&#123;<span class="string">&quot;ms&quot;</span>:60180037&#125;&#125;,<span class="string">&quot;memstats&quot;</span>:&#123;<span class="string">&quot;gc_next&quot;</span>:42518272,<span class="string">&quot;memory_alloc&quot;</span>:31026880,<span class="string">&quot;memory_total&quot;</span>:1715304668248,<span class="string">&quot;rss&quot;</span>:-1552384&#125;,<span class="string">&quot;runtime&quot;</span>:&#123;<span class="string">&quot;goroutines&quot;</span>:206&#125;&#125;,<span class="string">&quot;filebeat&quot;</span>:&#123;<span class="string">&quot;events&quot;</span>:&#123;<span class="string">&quot;added&quot;</span>:139,<span class="string">&quot;done&quot;</span>:139&#125;,**<span class="string">&quot;harvester&quot;</span>:&#123;<span class="string">&quot;open_files&quot;</span>:0,<span class="string">&quot;running&quot;</span>:0&#125;&#125;**,<span class="string">&quot;libbeat&quot;</span>:&#123;<span class="string">&quot;config&quot;</span>:&#123;<span class="string">&quot;module&quot;</span>:&#123;<span class="string">&quot;running&quot;</span>:0&#125;&#125;,<span class="string">&quot;pipeline&quot;</span>:&#123;<span class="string">&quot;clients&quot;</span>:1,<span class="string">&quot;events&quot;</span>:&#123;<span class="string">&quot;active&quot;</span>:1,<span class="string">&quot;filtered&quot;</span>:139,<span class="string">&quot;total&quot;</span>:139&#125;,<span class="string">&quot;registrar&quot;</span>:&#123;<span class="string">&quot;states&quot;</span>:&#123;<span class="string">&quot;current&quot;</span>:55084,<span class="string">&quot;update&quot;</span>:13&#125;,<span class="string">&quot;writes&quot;</span>:&#123;<span class="string">&quot;success&quot;</span>:139,<span class="string">&quot;total&quot;</span>:139&#125;&#125;,<span class="string">&quot;system&quot;</span>:&#123;<span class="string">&quot;load&quot;</span>:&#123;<span class="string">&quot;1&quot;</span>:9.21,<span class="string">&quot;15&quot;</span>:10.97,<span class="string">&quot;5&quot;</span>:10.87,<span class="string">&quot;norm&quot;</span>:&#123;<span class="string">&quot;1&quot;</span>:0.3838,<span class="string">&quot;15&quot;</span>:0.4571,<span class="string">&quot;5&quot;</span>:0.4529&#125;&#125;&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从 <code>&quot;harvester&quot;:&#123;&quot;open_files&quot;:0,&quot;running&quot;:0&#125;&#125;</code> 我们可以判断出  <code>harvester</code> 尚未启动采集，这让我非常疑惑，Filebeat 究竟在做什么？</p>
+<p>接着观察日志，发现除开自监控，最后输出一条日志的内容是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2021-05-28T02:46:39.019Z	INFO	beater/crawler.go:73	Loading Inputs: 1</span><br></pre></td></tr></table></figure>
+
+<p><code>Loading Inputs</code> 看起来也是符合逻辑的，短时间没有太多的头绪，放下忙其他工作了。</p>
+<p>随着时间推移，当我再次观测 Filebeat 时，发现它已经在正常工作了，但是日志内依旧没有错误输出，找到恢复时间点的最早日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2021-05-28T05:55:17.822Z	INFO	<span class="built_in">log</span>/input.go:152	Configured paths: [/data/logs/*/*.<span class="built_in">log</span>* /data/v3logs/*/*/*.<span class="built_in">log</span>*]</span><br><span class="line">2021-05-28T05:55:17.822Z	INFO	input/input.go:114	Starting input of <span class="built_in">type</span>: <span class="built_in">log</span>; ID: 3062577341473220485</span><br><span class="line">2021-05-28T05:55:17.822Z	INFO	beater/crawler.go:105	Loading and starting Inputs completed. Enabled inputs: 1</span><br></pre></td></tr></table></figure>
+
+<p>好家伙，从 <code>Loading Inputs</code> → <code>Loading and starting Inputs completed</code> 花费了3个多小时，这更让我疑惑了，Filebeat 究竟为什么一直装死？</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>根据日志打印翻阅了 Filebeat 源码</p>
+<p><img src="/../images/%F0%9F%A7%9F%E2%80%8D%E2%99%82%EF%B8%8F%20FileBeat%20%E5%90%AF%E5%8A%A8%E5%81%87%E6%AD%BB%E9%97%AE%E9%A2%98/Untitled.png"><br><a target="_blank" rel="noopener" href="https://github.com/elastic/beats/blob/23e4403ae093fcc8f7905345cad2c7ad256976d8/filebeat/beater/crawler.go#L71">https://github.com/elastic/beats/blob/23e4403ae093fcc8f7905345cad2c7ad256976d8/filebeat/beater/crawler.go#L71</a></p>
+<p><img src="/../images/%F0%9F%A7%9F%E2%80%8D%E2%99%82%EF%B8%8F%20FileBeat%20%E5%90%AF%E5%8A%A8%E5%81%87%E6%AD%BB%E9%97%AE%E9%A2%98/Untitled%201.png"><br><a target="_blank" rel="noopener" href="https://github.com/elastic/beats/blob/2ee21d95aef89af7f7e7aef8d07f679a24d690b4/filebeat/registrar/registrar.go#L172">https://github.com/elastic/beats/blob/2ee21d95aef89af7f7e7aef8d07f679a24d690b4/filebeat/registrar/registrar.go#L172</a></p>
+<p>Filebeat 使用 <code>registry file</code> 作为采集的状态存储，实际上就是一个纯文本的 JSON 文件。每次启动时都会检查 JSON 文件中的 <code>states</code> 是否需要更新（新增或者删除文件），而当任何一个 <code>state</code> 需要更新， <code>registry file</code> 将会全量序列化(读) → 持久化(写)，随着 <code>states</code> 越来越多，JSON 文件会越来越大（接近20MB），每次全量读写都会越来越慢，并且 CPU、内存的使用量都会暴涨。</p>
+<p><img src="/../images/%F0%9F%A7%9F%E2%80%8D%E2%99%82%EF%B8%8F%20FileBeat%20%E5%90%AF%E5%8A%A8%E5%81%87%E6%AD%BB%E9%97%AE%E9%A2%98/Untitled%202.png"></p>
+<p>总的来说，在当前的数据存储选型下，Filebeat 无法应对过多的文件数据数量，启动时的数据核验时间过长（几小时→几天不等，视数据量而定），就会产生了“假死”的现象。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="临时的解决方案"><a href="#临时的解决方案" class="headerlink" title="临时的解决方案"></a>临时的解决方案</h3><p>暂停 Filebeat 进程，删除 <code>registry file</code> ，重启 Filebeat 进程。这时候由于 JSON 文件是比较小的，所有 <code>state</code> 均处于增量状态，数据同步是比较快的。但是所有已经发送过的事件将难以**避免地重复发送一次，**所以这种做法只能应急，不能长久处理。</p>
+<h3 id="长久的权宜之计"><a href="#长久的权宜之计" class="headerlink" title="长久的权宜之计"></a>长久的权宜之计</h3><p>Filebeat 的纯文本的 JSON 存储选型天生就是存在问题的，社区内也曾做过一些<a target="_blank" rel="noopener" href="https://github.com/elastic/beats/pull/12908">小改进的尝试</a>，最终并没有被合并到柱分枝。所以 Filebeat 无法应用过多的日志文件，这是一个短期内无法改变的事实。</p>
+<p>而在当前选择的<a href="https://emergencyexit.xyz/elk-back-pressure-study.html">依赖背压的采集方案</a> 中，我们并不倾向将日志文件留在采集管道中，而是将日志留在原处——机器的磁盘上，然后尽量保证管道的通畅，将日志实时采集到 ES 中。</p>
+<p>这样做的好处，就是避免因为过多的管道传输导致日志丢失（例如 Redis 写满后崩溃）。</p>
+<p>同时也会引入另一个问题：如果采集链路阻塞，同时过多的日志（采集条目每日2亿+）大于机器的磁盘承载能力时，日志丢失的风险依旧存在。</p>
+<p>所以我们需要定期清理过期的日志，但问题也没那么简单：</p>
+<ul>
+<li>直接删除日志文件  → 写日志的<a target="_blank" rel="noopener" href="https://stackoverflow.com/a/2031100/6122939">应用进程无法感知，将向无效文件句柄写日志</a> → 导致日志丢失</li>
+<li>清空文件日志内容( <code>echo &#39;&#39; &gt; &#123;&#125;</code>) → 导致文件数量不会减少</li>
+<li>如果因为硬盘容量限制，删除日志的周期小于<em>产品许诺的日志保存时长</em>，当链路出现堵塞又未能及时处理 → 导致日志丢失</li>
+</ul>
+<p>所以我写了一个 <a target="_blank" rel="noopener" href="https://gist.github.com/IMBlues/2803c02420d01309d33f9d26ee501223">删除脚本</a>，在保证清理过期日志的同时，会判断日志文件的句柄使用情况，跳过那些仍在被写入的文件，保证日志不丢失。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> getopt</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> Generator, <span class="type">Dict</span></span><br><span class="line"></span><br><span class="line">logging.basicConfig(level=logging.DEBUG)</span><br><span class="line"></span><br><span class="line">Process = namedtuple(<span class="string">&quot;Process&quot;</span>, <span class="string">&quot;command,pid,user&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_processes_open</span>(<span class="params">file_regex: <span class="built_in">str</span></span>) -&gt; <span class="type">Dict</span>[<span class="built_in">str</span>, Process]:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Find processes with open handles for the specified file(s).&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    open_file_process_map = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># maybe not safe</span></span><br><span class="line">        output = subprocess.getoutput(<span class="string">f&quot;echo <span class="subst">&#123;file_regex&#125;</span> | xargs lsof&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        logging.exception(<span class="string">&quot;exec error&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> open_file_process_map</span><br><span class="line"></span><br><span class="line">    lines = output.split(<span class="string">&quot;\n&quot;</span>)[<span class="number">1</span>:]</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> lines:</span><br><span class="line">        parts = [x <span class="keyword">for</span> x <span class="keyword">in</span> line.split(<span class="string">&quot; &quot;</span>) <span class="keyword">if</span> x]</span><br><span class="line">        open_file_process_map[parts[-<span class="number">1</span>]] = Process(*parts[:<span class="number">3</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> open_file_process_map</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">try_to_delete_files</span>(<span class="params">file_regex: <span class="built_in">str</span>, minutes: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Try to delete files&quot;&quot;&quot;</span></span><br><span class="line">    skipped_count = deleted_count = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">filter_files_by_expire_minutes</span>() -&gt; Generator[Path, <span class="literal">None</span>, <span class="literal">None</span>]:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Get all expired files&quot;&quot;&quot;</span></span><br><span class="line">        now = datetime.datetime.now()</span><br><span class="line">        <span class="keyword">for</span> name <span class="keyword">in</span> glob.glob(file_regex, recursive=<span class="literal">True</span>):</span><br><span class="line">            file_obj = Path(name)</span><br><span class="line">            updated = datetime.datetime.fromtimestamp(file_obj.stat().st_mtime)</span><br><span class="line">            <span class="keyword">if</span> updated &lt; now - datetime.timedelta(minutes=minutes):</span><br><span class="line">                <span class="keyword">yield</span> file_obj</span><br><span class="line"></span><br><span class="line">    open_file_process_map = get_processes_open(file_regex)</span><br><span class="line">    <span class="keyword">for</span> f <span class="keyword">in</span> filter_files_by_expire_minutes():</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">str</span>(f) <span class="keyword">not</span> <span class="keyword">in</span> open_file_process_map:</span><br><span class="line">            logging.info(<span class="string">f&quot;deleting <span class="subst">&#123;f&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                f.unlink()</span><br><span class="line">                deleted_count += <span class="number">1</span></span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                skipped_count += <span class="number">1</span></span><br><span class="line">                logging.warning(<span class="string">&quot;failed to delete file: %s, for: %s&quot;</span>, <span class="built_in">str</span>(f), e)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            skipped_count += <span class="number">1</span></span><br><span class="line">            logging.info(<span class="string">f&quot;skipping <span class="subst">&#123;f&#125;</span>, for process: <span class="subst">&#123;open_file_process_map[<span class="built_in">str</span>(f)]&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Skipped: <span class="subst">&#123;skipped_count&#125;</span>, deleted: <span class="subst">&#123;deleted_count&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        opts, args = getopt.getopt(sys.argv[<span class="number">1</span>:], <span class="string">&quot;hf:m:&quot;</span>, [<span class="string">&quot;files=&quot;</span>, <span class="string">&quot;minutes=&quot;</span>])</span><br><span class="line">    <span class="keyword">except</span> getopt.GetoptError:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Example: python delete_files.py -f /data/*/*.log* -m 1440&quot;</span>)</span><br><span class="line">        sys.exit(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    arg_files = <span class="string">&quot;&quot;</span></span><br><span class="line">    arg_minutes = <span class="number">1440</span></span><br><span class="line">    <span class="keyword">for</span> opt, arg <span class="keyword">in</span> opts:</span><br><span class="line">        <span class="keyword">if</span> opt == <span class="string">&quot;-h&quot;</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Usage: python delete_files.py -f /data/*/*.log* -m 1440&quot;</span>)</span><br><span class="line">            sys.exit(<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">elif</span> opt <span class="keyword">in</span> (<span class="string">&quot;-f&quot;</span>, <span class="string">&quot;--files&quot;</span>):</span><br><span class="line">            arg_files = arg</span><br><span class="line">        <span class="keyword">elif</span> opt <span class="keyword">in</span> (<span class="string">&quot;-m&quot;</span>, <span class="string">&quot;--minutes&quot;</span>):</span><br><span class="line">            arg_minutes = <span class="built_in">int</span>(arg)</span><br><span class="line"></span><br><span class="line">    started = datetime.datetime.now()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Started: <span class="subst">&#123;started&#125;</span>\n&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>)</span><br><span class="line">    try_to_delete_files(arg_files, arg_minutes)</span><br><span class="line">    finished = datetime.datetime.now()</span><br><span class="line">    <span class="built_in">print</span>(</span><br><span class="line">        <span class="string">f&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;\nFinished: <span class="subst">&#123;finished&#125;</span>, total cost: <span class="subst">&#123;(finished - started).total_seconds()&#125;</span> seconds \n&quot;</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>当然你也可以根据需求用 Bash 实现，这里就不展开了。<em><del>（其实就是我不会 Bash）</del></em></p>
+<p>然后我们需要将它跑在集群中的每一个节点上，定期执行清理工作：</p>
+<p>首先定义镜像</p>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> python:<span class="number">3</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> apt-get update &amp;&amp; apt-get install -y lsof</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> delete_files.py /</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;python&quot;</span>, <span class="string">&quot;./delete_files.py&quot;</span>, <span class="string">&quot;-f&quot;</span>, <span class="string">&quot;./*.no&quot;</span>, <span class="string">&quot;-m&quot;</span>, <span class="string">&quot;1440&quot;</span> ]</span></span><br></pre></td></tr></table></figure>
+
+<p>Kubernetes DaemonSet 定义，在每一个节点上都尝试清理日志：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">DaemonSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">log-cleaner</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">k8s-app:</span> <span class="string">log-cleaner</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">k8s-app:</span> <span class="string">log-cleaner</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">log-cleaner</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">k8s-app:</span> <span class="string">log-cleaner</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">hostPID:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">batch-delete-files</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">some-registry/batch-delete-files:v1.0.0</span></span><br><span class="line">        <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">        <span class="attr">command:</span> [<span class="string">&quot;bash&quot;</span>]</span><br><span class="line">        <span class="attr">args:</span> [<span class="string">&quot;-c&quot;</span>, <span class="string">&quot;while true; do python delete_files.py -f /some-path/*/*/*.log* -m 1440; sleep 3600; done;&quot;</span>]</span><br><span class="line">        <span class="attr">resources:</span></span><br><span class="line">          <span class="attr">limits:</span></span><br><span class="line">            <span class="attr">cpu:</span> <span class="string">2560m</span></span><br><span class="line">            <span class="attr">memory:</span> <span class="string">256Mi</span></span><br><span class="line">          <span class="attr">requests:</span></span><br><span class="line">            <span class="attr">cpu:</span> <span class="string">25m</span></span><br><span class="line">            <span class="attr">memory:</span> <span class="string">32Mi</span></span><br><span class="line">        <span class="attr">volumeMounts:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/some-path/</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">some-volume</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">some-volume</span></span><br><span class="line">        <span class="attr">hostPath:</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/some-path/</span></span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是，由于我们需要在容器内使用 <code>lsof</code> 来看查看母机文件的 <code>fd</code> 使用情况，所以这里需要额外添加 <code>hostPID: true</code> 来保证能够读取到母机的进程信息。</p>
+<p>由于我们需要定时执行，所以通过 <code>while true; do ... sleep 3600; done;</code> 来要额外控制执行周期。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>由于 Filebeat 存在天生的存储缺陷，我们需要通过额外的脚本较为精确的控制 Filebeat 的输入文件数量，当前的方案断然达不到完善，仍需要我们继续探索。</p>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/elastic/beats/issues/16076">https://github.com/elastic/beats/issues/16076</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/36186630/python-error-subprocess-calledprocesserror-command-returned-non-zero-exit-stat">https://stackoverflow.com/questions/36186630/python-error-subprocess-calledprocesserror-command-returned-non-zero-exit-stat</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/55901375/is-this-possible-to-schedule-cronjob-to-execute-on-each-of-kubernetes-nodes">https://stackoverflow.com/questions/55901375/is-this-possible-to-schedule-cronjob-to-execute-on-each-of-kubernetes-nodes</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/filebeat-hangs-problem.html">https://emergencyexit.xyz/filebeat-hangs-problem.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/best-practice/"># best-practice</a>
+                    
+                        <a href="/tags/k8s/"># k8s</a>
+                    
+                        <a href="/tags/ELK/"># ELK</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/cue-vs-helm.html">👋 再见 Helm，你好 CUE</a>
+            
+            
+            <a class="next" rel="next" href="/make-serializer-as-dependency-injector.html">👴 让 DRF Views 支持依赖注入</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

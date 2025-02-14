@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Blues Yu">
+
+
+
+
+
+<title>🐍 让你的 Python 静态起来 | 布鲁斯鱼的妙想天开</title>
+
+
+
+    <link rel="icon" href="/favicon.svg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">布鲁斯鱼的妙想天开</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">布鲁斯鱼的妙想天开</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/category">生活</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🐍 让你的 Python 静态起来</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Blues Yu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 1, 2019&nbsp;&nbsp;19:58:42</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="为什么要-“静态”？"><a href="#为什么要-“静态”？" class="headerlink" title="为什么要 “静态”？"></a>为什么要 “静态”？</h2><p>在一切开始前，我们可以先看一个小例子:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_weapons_status</span>():</span><br><span class="line">	weapon_status = &#123;</span><br><span class="line">		<span class="string">&quot;LeviathanAxe&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">		<span class="string">&quot;BladesofChaos&quot;</span>: <span class="literal">False</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> weapon_status,</span><br><span class="line"></span><br><span class="line">weapons_status = get_weapons_status()</span><br><span class="line"><span class="keyword">for</span> weapon, status <span class="keyword">in</span> weapons_status.items():</span><br><span class="line">	<span class="keyword">if</span> status:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;weapon&#125;</span> is ready&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在我们的预想里，上述代码应该会输出 <code>LeviathanAxe is ready</code>，但实际运行则会报错：<code>AttributeError: &#39;tuple&#39; object has no attribute &#39;items&#39;</code></p>
+<p>眼尖的同学肯定发现了，这段代码的问题是在 <code>get_weapons_status</code>的<code>return</code> 语句后多加了一个 <code>,</code>，所以函数的返回值并不是预期的 <code>dict</code> 类型，而是 <code>tuple</code>。然而对于这样的写法，IDE 可能不会有明显提示，所以在我们做<strong>大段的</strong>代码重构或迁移时，它们很容易被忽略，直到运行时才会冒出来。</p>
+<p>我们常把这类问题归结于自己的粗心大意，但是没有想过它们的“原罪”其实应该是 <strong>Python 的动态</strong>。</p>
+<p>诚然，Python 的动态给我们带来了诸多酷炫的特性：<code>monkey_patch</code>、各种魔法方法、极为方便的 mock 测试…..但在逻辑分层设计、参数校验、代码补全时我们又无比渴望一些 “静态” 特性。</p>
+<p>所以，如果 Python 能够 “静态” 一些，将会给我们带来几个明显的增益：</p>
+<ul>
+<li>大幅度提升代码的可读性</li>
+<li>能够将参数传递时的 <code>类型错误</code> 扼杀在摇(biān)篮(mǎ)中</li>
+<li>能够最大程度利用 IDE 提供的代码提示，减少 <code>typo</code></li>
+</ul>
+<p>那么该如何拥有这些“静态”的特性呢？下面我们将时间留给本文的主角——<code>typing annotaion</code>。</p>
+<h2 id="Typing-Annotation"><a href="#Typing-Annotation" class="headerlink" title="Typing Annotation"></a>Typing Annotation</h2><p>从 Python 3.5 开始， <code>type annotation</code> 已经正式被引入了。</p>
+<p>我们可以对任何变量进行类型注解，无论是<strong>赋值之前</strong>还是<strong>函数传参和返回</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我们可以从类、模块、函数的 `__annotations__` 变量中获取这些注解</span></span><br><span class="line">nine_realms: <span class="type">List</span>[<span class="built_in">str</span>] = [<span class="string">&quot;Niflheim&quot;</span>, <span class="string">&quot;Muspelheim&quot;</span>, <span class="string">&quot;Asgard&quot;</span>, <span class="string">&quot;Midgard&quot;</span>, <span class="string">&quot;Jotunheim&quot;</span>, <span class="string">&quot;Vanaheim&quot;</span>, <span class="string">&quot;Alfheim&quot;</span>, <span class="string">&quot;Svartalfheim&quot;</span>, <span class="string">&quot;Helheim&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Yggdrasill</span>:</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">transport</span>(<span class="params">realm: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="类型注释？"><a href="#类型注释？" class="headerlink" title="类型注释？"></a>类型注释？</h3><p>除了“注解”，我们也可以使用类型注释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pi = <span class="number">3.142</span> <span class="comment"># type: <span class="built_in">float</span></span></span><br></pre></td></tr></table></figure>
+
+<p>相较于“注解”，注释对代码的侵入性更小，但同时可读性更差，只适用于不支持注解的场景。官方推荐使用类型注解，所以类型注释的内容就不再展开了。</p>
+<h3 id="Gradual-typing"><a href="#Gradual-typing" class="headerlink" title="Gradual typing"></a>Gradual typing</h3><p>类型注解只会生存于“编码时”，并不影响运行时，我们可以放心大胆地为旧代码添加注解，而不用担心对实际功能产生影响。当然对于大型项目（只要注解本身不写错），我们可以采取“渐进式注解”，对一些关键的核心模块先进行改造，详见 <a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0483/#summary-of-gradual-typing">gradual typing</a></p>
+<h3 id="Types-和-Classes"><a href="#Types-和-Classes" class="headerlink" title="Types 和 Classes"></a>Types 和 Classes</h3><p>需要额外说明的是，在类型注解中，我们经常会使用 “类(class)” 和 “类型(type)” 做注解：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name: <span class="built_in">str</span> = <span class="string">&quot;Atreus&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">List</span></span><br><span class="line">names: <span class="type">List</span>[<span class="built_in">str</span>] = [<span class="string">&quot;Atreus&quot;</span>, <span class="string">&quot;Loki&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>str</code> 既是一种 “类”，同时也是一种 “类型”，而 <code>List</code> 只是一种 “类型”，我们是不能够在 “运行时” 使用它们的，例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Names</span>(<span class="type">List</span>[<span class="built_in">str</span>]): ... <span class="comment"># raises TypeError</span></span><br></pre></td></tr></table></figure>
+
+<p>简单来说，任何一种 “类” 都可以被当作一种 ”类型“，反过来 ”类型” 却不一定能被当作 “类” 使用。</p>
+<h2 id="各种使用场景"><a href="#各种使用场景" class="headerlink" title="各种使用场景"></a>各种使用场景</h2><p>下面我们主要将常用的类型注解结合工程场景举例</p>
+<h3 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">hey_boy</span>(<span class="params">name: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line"><span class="keyword">return</span> <span class="string">&#x27;Boy: &#x27;</span> + name</span><br></pre></td></tr></table></figure>
+
+<p>正如上面提到，任何基本类型都可以直接当做注解使用，包括但不限于：<code>int</code>、<code>str</code>、<code>list</code>、<code>dict</code>、<code>set</code>、<code>None</code>、<code>bool</code>、<code>tuple</code>等等，</p>
+<h3 id="容器类型"><a href="#容器类型" class="headerlink" title="容器类型"></a>容器类型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">List</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 纯容器</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_names</span>(<span class="params">names: <span class="type">List</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 容器 &amp; 容器内元素</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_names</span>(<span class="params">names: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">print_names([<span class="string">&#x27;Kratos&#x27;</span>, <span class="string">&#x27;Thor&#x27;</span>])</span><br><span class="line">print_names([<span class="string">&#x27;any_type&#x27;</span>, <span class="number">128</span>, &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">8</span>&#125;, (<span class="number">1</span>, <span class="number">2</span>, <span class="number">8</span>)]) <span class="comment"># 不被允许，容器内元素类型不一致</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_names</span>(<span class="params">names: <span class="type">Dict</span>[<span class="built_in">str</span>, <span class="built_in">str</span>]</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">print_names(&#123;<span class="string">&#x27;Blues&#x27;</span>: <span class="string">&#x27;Yu&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型别名"><a href="#类型别名" class="headerlink" title="类型别名"></a>类型别名</h3><p>容器内元素会非常复杂，我们可能会有类似 <code>Dict[str, Dict[str: SomeObject]]</code> 这种不容易阅读的写法，此时我们也可以用<code>类型别名</code>来简化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Dict</span></span><br><span class="line"></span><br><span class="line">Point = <span class="type">Dict</span>[<span class="built_in">str</span>: SomeObject]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_points</span>(<span class="params">points: <span class="type">Dict</span>[Point]</span>):</span><br><span class="line">	<span class="keyword">for</span> point <span class="keyword">in</span> points:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;X:&quot;</span>, point[<span class="number">0</span>], <span class="string">&quot; Y:&quot;</span>, point[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数类型"><a href="#函数类型" class="headerlink" title="函数类型"></a>函数类型</h3><p>在类似装饰器、回调等场景下，我们需要对函数参数作注解，基本的格式为：<code>Callable[[Arg1Type, Arg2Type], ReturnType]</code>。其中 <code>[Arg1Type, Arg2Type]</code> 是输入参数列表，<code>ReturnType</code> 是返回内容。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Callable</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">foo</span>(<span class="params">func: <span class="type">Callable</span>[[<span class="built_in">int</span>], <span class="built_in">str</span>], argument: <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">	<span class="built_in">print</span>(func(argument))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bar</span>(<span class="params">name: <span class="built_in">int</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">	<span class="keyword">return</span> <span class="string">f&quot;Hello <span class="subst">&#123;name&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">foo(create_greeting, <span class="string">&quot;Jekyll&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="“泛”-型"><a href="#“泛”-型" class="headerlink" title="“泛” 型"></a>“泛” 型</h3><h3 id="Any"><a href="#Any" class="headerlink" title="Any"></a>Any</h3><p>有时候我们对于某些“泛”型变量，我们可以用 <code>Any</code> 来表明</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> TypeVar, AnyStr, <span class="type">Any</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 任意类型</span></span><br><span class="line"><span class="comment"># Any 兼容任意类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">concat</span>(<span class="params">a: <span class="type">Any</span>, b: <span class="type">Any</span></span>) -&gt; <span class="type">Any</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="TypeVar"><a href="#TypeVar" class="headerlink" title="TypeVar"></a>TypeVar</h3><p><code>TypeVar</code> 表示 <code>Type</code> 类型。简单来说，她就是“类型”的“类型”。和 <code>type</code> 可以创造 “类” 一样，我们可以通过 <code>TypeVar</code> 来创造 “类型”。</p>
+<p>例如 <code>typing</code> 中提供的 <code>AnyStr</code> 其实就是通过 <code>TypeVar(&#39;AnyStr&#39;, Text, bytes)</code> 来表示的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 任意字符型</span></span><br><span class="line"><span class="comment"># AnyStr = TypeVar(&#x27;AnyStr&#x27;, Text, bytes)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">concat</span>(<span class="params">a: AnyStr, b: AnyStr</span>) -&gt; AnyStr:</span><br><span class="line">	<span class="keyword">return</span> a + b</span><br><span class="line"></span><br><span class="line">concat(<span class="string">u&quot;foo&quot;</span>, <span class="string">u&quot;bar&quot;</span>) </span><br><span class="line">concat(<span class="string">b&quot;foo&quot;</span>, <span class="string">b&quot;bar&quot;</span>) </span><br><span class="line">concat(<span class="string">u&quot;foo&quot;</span>, <span class="string">b&quot;bar&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以上三种写法都会被类型检查接受，但是运行时，最后一种调用会报错 `TypeError: can&#x27;t concat str to bytes`</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="函数的“泛”型"><a href="#函数的“泛”型" class="headerlink" title="函数的“泛”型"></a>函数的“泛”型</h3><p>有时候，函数可能需要支持多种类型输入输出，我们可以通过多种方法来实现注解。</p>
+<p>使用 <code>typing.overload</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> overload, <span class="type">List</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@overload</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">switch_names</span>(<span class="params">developers: <span class="built_in">str</span></span>) -&gt; <span class="type">List</span>:</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">@overload</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">switch_names</span>(<span class="params">developers: <span class="type">List</span>[<span class="built_in">str</span>]</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里不能有类型注解，并且需要实现一个通用的做法</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">switch_names</span>(<span class="params">developers</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">isinstance</span>(developers, <span class="built_in">str</span>):</span><br><span class="line">		<span class="comment"># 例如 &quot;ponyma,jackma,allenzhang&quot;</span></span><br><span class="line">		developers = developers.split(<span class="string">&quot;,&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> developers</span><br><span class="line">	<span class="keyword">elif</span> <span class="built_in">isinstance</span>(developers, <span class="type">List</span>):</span><br><span class="line">		<span class="comment"># 例如 [&quot;ponyma&quot;, &quot;jackma&quot;, &quot;allenzhang&quot;]</span></span><br><span class="line">		developers = <span class="string">&#x27;,&#x27;</span>.join(developers)</span><br><span class="line">		<span class="keyword">return</span> developers</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>Union[Type1, Type2]</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Union[X, Y] 意味着是 X 或 Y 类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">switch_names</span>(<span class="params">name: <span class="type">Union</span>[<span class="built_in">str</span>, <span class="type">List</span>]</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">isinstance</span>(developers, <span class="built_in">str</span>):</span><br><span class="line">		<span class="comment"># 例如 &quot;ponyma,jackma,allenzhang&quot;</span></span><br><span class="line">		developers = developers.split(<span class="string">&quot;,&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> developers</span><br><span class="line">	<span class="keyword">elif</span> <span class="built_in">isinstance</span>(developers, <span class="type">List</span>):</span><br><span class="line">		<span class="comment"># 例如 [&quot;ponyma&quot;, &quot;jackma&quot;, &quot;allenzhang&quot;]</span></span><br><span class="line">		developers = <span class="string">&#x27;,&#x27;</span>.join(developers)</span><br><span class="line">		<span class="keyword">return</span> developers</span><br></pre></td></tr></table></figure>
+
+<h3 id="Union-和-Optional"><a href="#Union-和-Optional" class="headerlink" title="Union 和 Optional"></a>Union 和 Optional</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Union</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 通常的 Union 用法</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_grade</span>(<span class="params">grade: <span class="type">Union</span>[<span class="built_in">int</span>, <span class="built_in">str</span>]</span>):</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">isinstance</span>(grade, <span class="built_in">str</span>):</span><br><span class="line">		<span class="built_in">print</span>(grade + <span class="string">&#x27; percent&#x27;</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="built_in">str</span>(grade) + <span class="string">&#x27; percent&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Optional[X] 相当于 Union[X, None]</span></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Optional</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">foo</span>(<span class="params">optional_info: <span class="type">Optional</span>[<span class="type">Dict</span>] = <span class="literal">None</span></span>):</span><br><span class="line">	<span class="keyword">return</span> optional_info <span class="keyword">or</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Django-model"><a href="#Django-model" class="headerlink" title="Django model"></a>Django model</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Union</span>, <span class="type">List</span></span><br><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> QuerySet</span><br><span class="line"><span class="keyword">from</span> my_app.models <span class="keyword">import</span> MyModel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在后续代码中，records 的类型将被等同于 MyModel 的 QuerySet</span></span><br><span class="line"><span class="comment"># 不过同时需要注意，如果此时传入一个单纯的 List[MyModel]，</span></span><br><span class="line"><span class="comment"># 并调用 QuerySet 的方法，静态检查是不会探测出问题的</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">foo</span>(<span class="params">records: <span class="type">Union</span>[QuerySet, <span class="type">List</span>[MyModel]]</span>):</span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h3><p>协议类型是一个特殊的结构化类型，它表示一种静态的鸭子类型，有点像是 Go 中的接口定义，但依旧只存在于“编码时”。<code>Protocol</code> 的好处是，我们可以很明确的定义和使用鸭子类型，而不用人工核对方法的输入输出。</p>
+<p>举个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Union</span>, <span class="type">Optional</span>, Protocol</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Exitable</span>(<span class="title class_ inherited__">Protocol</span>):</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">exit</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>: ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Quittable</span>(<span class="title class_ inherited__">Protocol</span>):</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">quit</span>(<span class="params">self</span>) -&gt; <span class="type">Optional</span>[<span class="built_in">int</span>]: ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">finish</span>(<span class="params">task: <span class="type">Union</span>[Exitable, Quittable]</span>) -&gt; <span class="built_in">int</span>: ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">QuitJob</span>:</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">quit</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ExitJob</span>:</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">exit</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Server</span>: </span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">run_forever</span>(<span class="params">self</span>): -&gt; NoReturn:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;no return&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">finish(QuitJob()) <span class="comment"># OK</span></span><br><span class="line">finish(ExitJob()) <span class="comment"># OK</span></span><br><span class="line">finish(Server()) <span class="comment"># Error</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们定义了两种协议，<code>Exitable</code> 和 <code>Quittable</code>，同时在传参时支持它们俩的并集，那么只要实现了 <code>exit(self) -&gt; int</code> 或 <code>quit(self) -&gt; int</code> 的对象都会被接受。</p>
+<p>关于 <code>Protocol</code> 的其他定义和示例，可以通过 <a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0544">PEP 544</a> 了解更多，这里就不再展开了。</p>
+<h3 id="自定义类型"><a href="#自定义类型" class="headerlink" title="自定义类型"></a>自定义类型</h3><h3 id="普通用法"><a href="#普通用法" class="headerlink" title="普通用法"></a>普通用法</h3><p>可以使用 <code>Type</code> 来接受子类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Type</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">User</span>: ...</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BasicUser</span>(<span class="title class_ inherited__">User</span>): ...</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ProUser</span>(<span class="title class_ inherited__">User</span>): ...</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TeamUser</span>(<span class="title class_ inherited__">User</span>): ...</span><br><span class="line"></span><br><span class="line"><span class="comment"># Accepts User, BasicUser, ProUser, TeamUser, ...</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">make_new_user</span>(<span class="params">user_class: <span class="type">Type</span>[User]</span>) -&gt; User:</span><br><span class="line">	<span class="keyword">return</span> user_class()</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型自定义时"><a href="#类型自定义时" class="headerlink" title="类型自定义时"></a>类型自定义时</h3><p>不使用 <code>TypeVar</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Animal</span>:</span><br><span class="line"><span class="meta">@classmethod</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">newborn</span>(<span class="params">cls, name: <span class="built_in">str</span></span>) -&gt; <span class="string">&#x27;Animal&#x27;</span>:</span><br><span class="line">	<span class="keyword">return</span> cls(name, date.today())</span><br></pre></td></tr></table></figure>
+
+<p>正如上面提到，我们还可以用 <code>TypeVar</code> 来创造类型，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">TAnimal = TypeVar(<span class="string">&quot;TAnimal&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Animal</span>(<span class="type">Generic</span>(<span class="string">&quot;TAnimal&quot;</span>)):</span><br><span class="line"><span class="meta">	@classmethod</span></span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">newborn</span>(<span class="params">cls, name: <span class="built_in">str</span></span>) -&gt; TAnimal:</span><br><span class="line">		<span class="keyword">return</span> cls(name, date.today())</span><br></pre></td></tr></table></figure>
+
+<p>倘若此时还有继承，需要添加参数 <code>bound</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> date</span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Type</span>, TypeVar</span><br><span class="line"></span><br><span class="line">TAnimal = TypeVar(<span class="string">&quot;TAnimal&quot;</span>, bound=<span class="string">&quot;Animal&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Animal</span>:</span><br><span class="line"><span class="meta">	@classmethod</span></span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">newborn</span>(<span class="params">cls: <span class="type">Type</span>[TAnimal], name: <span class="built_in">str</span></span>) -&gt; TAnimal:</span><br><span class="line">		<span class="keyword">return</span> cls(name, date.today())</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Dog</span>(<span class="title class_ inherited__">Animal</span>):</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">bark</span>(<span class="params">self</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;self.name&#125;</span> says woof!&quot;</span>)</span><br><span class="line"></span><br><span class="line">fido = Dog.newborn(<span class="string">&quot;Fido&quot;</span>)</span><br><span class="line">fido.bark()</span><br></pre></td></tr></table></figure>
+
+<h3 id="辅助函数"><a href="#辅助函数" class="headerlink" title="辅助函数"></a>辅助函数</h3><p>有时候我们并不想在简单类型上多费精力，可以直接使用辅助函数来快捷创建类型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> NewType</span><br><span class="line"></span><br><span class="line">UserId = NewType(<span class="string">&#x27;UserId&#x27;</span>, <span class="built_in">int</span>)</span><br><span class="line">some_id = UserId(<span class="number">524313</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 类型可以再次被创建</span></span><br><span class="line">ProUserId = NewType(<span class="string">&#x27;ProUserId&#x27;</span>, UserId)</span><br><span class="line">some_pro_id = ProUserId(<span class="number">12345</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="typing-extensions"><a href="#typing-extensions" class="headerlink" title="typing-extensions"></a>typing-extensions</h2><p>由于 <code>typing</code> 模块已经被引入标准库，其发布频率需要和 Python 发行版保持一致，所以有很多新类型被放到了 <code>typing-extensions</code> 中，我们可以通过 <code>pip</code> 安装它。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install typing-extensions</span><br></pre></td></tr></table></figure>
+
+<p><code>typing-extensions</code>中有很多特殊类型，下面我们简单举一个小例子，其他的大家可以自行探索。</p>
+<h3 id="实例：简化的枚举类型"><a href="#实例：简化的枚举类型" class="headerlink" title="实例：简化的枚举类型"></a>实例：简化的枚举类型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing_extensions <span class="keyword">import</span> <span class="type">Literal</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Literal 表示字面类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fetch_data</span>(<span class="params">raw: <span class="type">Literal</span>[<span class="string">&quot;red&quot;</span>, <span class="string">&quot;blue&quot;</span>, <span class="string">&quot;yellow&quot;</span>]</span>) -&gt; <span class="built_in">bytes</span>: ...</span><br></pre></td></tr></table></figure>
+
+<p>原则上这里就只能输入字符串 “red” “blue” “yellow”，某些简单的场景下，我们不用额外定义枚举类型。</p>
+<h2 id="工程技巧"><a href="#工程技巧" class="headerlink" title="工程技巧"></a>工程技巧</h2><h3 id="避免循环引用"><a href="#避免循环引用" class="headerlink" title="避免循环引用"></a>避免循环引用</h3><p>A 模块：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> B <span class="keyword">import</span> AppFooController</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">App</span>:</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">name: <span class="built_in">str</span></span>):</span><br><span class="line">		<span class="variable language_">self</span>.name = name</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_app</span>():</span><br><span class="line">	controller = AppFooController(App(<span class="string">&#x27;bar&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<p>在这个场景下，B 模块并不是真正的需要引用 A 模块的内容，而是需要获得 A 模块内容的 <code>typing hint</code>，如果直接引用会导致循环 import，可以通过如下方法规避：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> TYPE_CHECKING</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> TYPE_CHECKING:</span><br><span class="line">    <span class="keyword">from</span> A <span class="keyword">import</span> App</span><br><span class="line">    </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AppFooController</span>:</span><br><span class="line">    <span class="comment"># 注意：TYPE_CHECKING 语句下 import 的内容，都必须用引号包裹</span></span><br><span class="line">    app: <span class="string">&#x27;App&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里的 <code>TYPING_CHECKING</code> 在运行时将永远为 <code>False</code>，所以并不会真正 import A 模块，同时也能起到 <code>hint</code> 的作用。</p>
+<h2 id="mypy"><a href="#mypy" class="headerlink" title="mypy"></a>mypy</h2><p><a target="_blank" rel="noopener" href="https://github.com/python/mypy">mypy</a> 原来是一个兼容大部分 Python 语法的静态类型的 Python 发行版，后来在官方受到启发，并加入类型注解之后，mypy 已经演化成了一个静态类型检查器，我们可以通过 pip 来安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install mypy</span><br></pre></td></tr></table></figure>
+
+<p>在某些场景下，我们可以通过 mypy 来对项目进行全局扫描</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">➜ mypy some-python-project-path/</span><br><span class="line">foo/utils/sanitizer.py:18: error: Cannot find module named <span class="string">&#x27;bleach.encoding&#x27;</span></span><br><span class="line">foo/utils/sanitizer.py:19: error: Cannot find module named <span class="string">&#x27;bleach.sanitizer&#x27;</span></span><br><span class="line">foo/fake/tee/gitlab/client.py:5: error: Cannot find module named <span class="string">&#x27;bar&#x27;</span></span><br><span class="line">foo/fake/tee/gitlab/client.py:6: error: Cannot find module named <span class="string">&#x27;bar&#x27;</span></span><br><span class="line">foo/fake/tee/gitlab/client.py:7: error: Cannot find module named <span class="string">&#x27;bar.objects&#x27;</span></span><br><span class="line">foo/accessories/fake/tags.py:48: error: <span class="string">&quot;type&quot;</span> has no attribute <span class="string">&quot;tag_type&quot;</span></span><br><span class="line">foo/utils/log.py:4: error: Cannot find module named <span class="string">&#x27;logstash&#x27;</span></span><br><span class="line">foo/utils/log.py:5: error: No library stub file <span class="keyword">for</span> module <span class="string">&#x27;redis&#x27;</span></span><br><span class="line">foo/utils/detector.py:32: error: Need <span class="built_in">type</span> annotation <span class="keyword">for</span> <span class="string">&#x27;detect_map&#x27;</span></span><br><span class="line">foo/utils/basic.py:3: error: Cannot find module named <span class="string">&#x27;past.utils&#x27;</span></span><br><span class="line">foo/utils/basic.py:9: error: Cannot find module named <span class="string">&#x27;bar&#x27;</span></span><br><span class="line">foo/utils/basic.py:10: error: Cannot find module named <span class="string">&#x27;aenum&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>在我们项目整体类型注解完善的情况下，可以考虑将 mypy 放到 CI 的流程中。</p>
+<p>比如 <a target="_blank" rel="noopener" href="https://github.com/tornadoweb/tornado">Tornado</a> 的源码基本已经做到 100% 静态了，扫描整个工程只有两个小问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜ mypy tornado/</span><br><span class="line">tornado/testing.py:263: error: Return <span class="built_in">type</span> of <span class="string">&quot;run&quot;</span> incompatible with supertype <span class="string">&quot;TestCase&quot;</span></span><br><span class="line">tornado/testing.py:270: error: Incompatible <span class="built_in">return</span> value <span class="built_in">type</span> (got <span class="string">&quot;Optional[TestResult]&quot;</span>, expected <span class="string">&quot;TestCase&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="再让我们看看那个例子"><a href="#再让我们看看那个例子" class="headerlink" title="再让我们看看那个例子"></a>再让我们看看那个例子</h2><p>以下是在 Pycharm 里提示的样子：</p>
+<p><img src="/../images/%F0%9F%90%8D%20%E8%AE%A9%E4%BD%A0%E7%9A%84%20Python%20%E9%9D%99%E6%80%81%E8%B5%B7%E6%9D%A5/Untitled.png"></p>
+<p>好了，只要加上了类型注解，那个 <strong>企图让所有变量都变成元组</strong> 的”元凶”——逗号，就无处遁形了 xD</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>类型注解给 Python 带来了全新的开发体验，相信此刻的你也有了答案，让 Python “静态” 起来吧。</p>
+<p>参考文档：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dev.to/dstarner/using-pythons-type-annotations-4cfe">Using Python’s Type Annotations</a></li>
+<li><a target="_blank" rel="noopener" href="https://realpython.com/python-type-checking/">The Ultimate Guide to Python Type Checking</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0483/">PEP 483</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0484/">PEP 484</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0544/">PEP 544</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/typing.html">typing library</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Blues Yu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://emergencyexit.xyz/python-type-hint.html">https://emergencyexit.xyz/python-type-hint.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2025 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/python/"># python</a>
+                    
+                        <a href="/tags/tech/"># tech</a>
+                    
+                        <a href="/tags/pep/"># pep</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/django-orm-best-practice.html">👹 Django ORM：天使与魔鬼</a>
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Blues Yu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
